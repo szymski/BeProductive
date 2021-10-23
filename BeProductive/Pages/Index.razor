@@ -1,9 +1,50 @@
 @page "/"
+@inject NavigationManager NavigationManager
 
-<PageTitle>Index</PageTitle>
+<Layout Style="min-height: 100%">
+    <Content>
+        <Space Direction="DirectionVHType.Vertical" Style="width: 100%">
+            @foreach (var goal in _goals)
+            {
+                <SpaceItem>
+                    <GoalListEntry Goal="@goal" OnClick="() => OpenGoalDetails(goal)"/>
+                </SpaceItem>
+            }
+        </Space>
 
-<h1>Hello, world!</h1>
+        <div>
+            <Button Block Type="@ButtonType.Link" Icon="@IconType.Outline.Plus" @onclick="() => NavigateToAddGoal()">Add goal</Button>
+        </div>
+    </Content>
 
-Welcome to your new app.
+    @if (SelectedGoal != null)
+    {
+        <Sider Theme="SiderTheme.Light" Style="margin-left: 1rem" Width="400">
+            <GoalDetails Goal="@SelectedGoal"/>
+        </Sider>
+    }
+</Layout>
 
-<SurveyPrompt Title="How is Blazor working for you?"/>
+@code {
+    public Goal? SelectedGoal { get; set; }
+
+    private List<Goal> _goals = new()
+    {
+        new Goal() { Name = "Test goal" },
+        new Goal() { Name = "Zwalić gruchę raz dziennie" },
+        new Goal() { Name = "Wykonać poranny rytuał" },
+        new Goal() { Name = "Obrazić kogoś" },
+        new Goal() { Name = "Przytulić Nataszę" },
+    };
+
+    private void OpenGoalDetails(Goal goal)
+    {
+        SelectedGoal = goal;
+    }
+
+    private void NavigateToAddGoal()
+    {
+        NavigationManager.NavigateTo("/add-goal");
+    }
+
+}

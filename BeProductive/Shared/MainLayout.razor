@@ -1,19 +1,19 @@
 ﻿@inherits LayoutComponentBase
 
-<PageTitle>BeProductive</PageTitle>
+<PageTitle>Test</PageTitle>
 
-<div class="page">
-    <div class="sidebar">
-        <NavMenu/>
-    </div>
-
-    <main>
-        <div class="top-row px-4">
-            <a href="https://docs.microsoft.com/aspnet/" target="_blank">About</a>
-        </div>
-
-        <article class="content px-4">
+<Layout Style="min-height: 100%">
+    <Sidebar/>
+    
+    <Layout>
+        <Header Style="background: transparent; font-size: 24px">
+            Goal list
+        </Header>
+        
+        <Content Style="padding: 1rem">
             @Body
-        </article>
-    </main>
-</div>
+        </Content>
+        
+        <Footer Style="background: cornflowerblue">Footer</Footer>
+    </Layout>
+</Layout>

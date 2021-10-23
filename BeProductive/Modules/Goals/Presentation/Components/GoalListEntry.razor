@@ -1,0 +1,24 @@
+﻿<div @onclick="OnClick">
+    <Card Bordered="true" Size="small" Hoverable>
+        <Space>
+            <SpaceItem>
+                <Avatar Size="large" Icon="user"/>
+            </SpaceItem>
+            <SpaceItem>
+                <Text Strong Style="font-size: 18px">
+                    @Goal.Name
+                </Text>
+            </SpaceItem>
+        </Space>
+    </Card>
+</div>
+
+@code {
+
+    [Parameter]
+    public Goal Goal { get; set; }
+
+    [Parameter]
+    public EventCallback<MouseEventArgs> OnClick { get; set; }
+
+}

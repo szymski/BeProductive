@@ -1,0 +1,15 @@
+﻿<Card Title="@Goal.Name">
+    <Extra>
+        <a>Edit</a>
+    </Extra>
+    <Body>
+    <Calendar FullScreen="false" Mode="@DatePickerType.Month"/>
+    </Body>
+</Card>
+
+@code {
+
+    [Parameter]
+    public Goal Goal { get; set; }
+
+}
