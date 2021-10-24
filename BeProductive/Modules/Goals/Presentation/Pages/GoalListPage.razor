@@ -1,5 +1,7 @@
 @page "/"
+@using Microsoft.AspNetCore.WebUtilities
 @inject NavigationManager NavigationManager
+@inject GoalService GoalService
 
 <Layout Style="min-height: 100%">
     <Content>
@@ -26,20 +28,33 @@
 </Layout>
 
 @code {
-    public Goal? SelectedGoal { get; set; }
 
-    private List<Goal> _goals = new()
+    [Parameter]
+    [SupplyParameterFromQuery]
+    public int? GoalId { get; set; }
+
+    private Goal? SelectedGoal { get; set; }
+
+    private List<Goal> _goals;
+
+    protected override void OnInitialized()
     {
-        new Goal() { Name = "Test goal" },
-        new Goal() { Name = "Zwalić gruchę raz dziennie" },
-        new Goal() { Name = "Wykonać poranny rytuał" },
-        new Goal() { Name = "Obrazić kogoś" },
-        new Goal() { Name = "Przytulić Nataszę" },
-    };
+        _goals = GoalService.GetGoals();
+    }
+
+    protected override void OnParametersSet()
+    {
+        if (GoalId.HasValue)
+        {
+            Console.WriteLine(GoalId);
+            SelectedGoal = _goals.SingleOrDefault(goal => goal.Id == GoalId);
+        }
+    }
 
     private void OpenGoalDetails(Goal goal)
     {
-        SelectedGoal = goal;
+        var url = NavigationManager.GetUriWithQueryParameter(nameof(GoalId), goal.Id);
+        NavigationManager.NavigateTo(url);
     }
 
     private void NavigateToAddGoal()
@@ -47,4 +62,10 @@
         NavigationManager.NavigateTo("/add-goal");
     }
 
+}
+
+@code
+{
+    public static string GetUrlWithSelectedGoal(Goal goal) =>
+        QueryHelpers.AddQueryString("/", "GoalId", goal.Id.ToString());
 }

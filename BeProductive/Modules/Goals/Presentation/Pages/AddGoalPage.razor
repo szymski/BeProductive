@@ -1,27 +1,44 @@
 ﻿@page "/add-goal"
+@using System.ComponentModel.DataAnnotations
+@using Microsoft.AspNetCore.WebUtilities
+@inject GoalService GoalService
 
-<div class="site-page-header-ghost-wrapper">
-    <PageHeader BackIcon="true" Ghost="false">
+<div>
+    <PageHeader BackIcon="true">
         <PageHeaderTitle>Add goal</PageHeaderTitle>
-        <PageHeaderExtra>
-            <Button>Operation</Button>
-            <Button>Operation</Button>
-            <Button Type="@ButtonType.Primary">Primary</Button>
-        </PageHeaderExtra>
         <PageHeaderContent>
-            <Descriptions Size="small" Column="3">
-                <DescriptionsItem Title="Created" Span="1">Lili Qu</DescriptionsItem>
-                <DescriptionsItem Title="Association" Span="1"><a>421421</a></DescriptionsItem>
-                <DescriptionsItem Title="Creation Time" Span="1">2017-01-10</DescriptionsItem>
-                <DescriptionsItem Title="Effective Time" Span="1">2017-10-10</DescriptionsItem>
-                <DescriptionsItem Title="Remarks" Span="2">
-                    Gonghu Road, Xihu District, Hangzhou, Zhejiang, China
-                </DescriptionsItem>
-            </Descriptions>
+            <Form Model="@_model" OnFinish="@OnFinish">
+                <FormItem Label="Name">
+                    <Input @bind-Value="@context.Name"/>
+                </FormItem>
+                <Button Block Type="@ButtonType.Primary" HtmlType="submit">
+                    Add goal
+                </Button>
+            </Form>
         </PageHeaderContent>
     </PageHeader>
 </div>
 
 @code {
-    
+
+    public class Model
+    {
+        [Required]
+        public string Name { get; set; }
+    }
+
+    private Model _model = new();
+
+    private void OnFinish()
+    {
+        var goal = GoalService.AddGoal(new()
+        {
+            Name = _model.Name,
+        });
+        
+        NotificationService.Success("Task added successfully!");
+        
+        NavigationManager.NavigateTo(GoalListPage.GetUrlWithSelectedGoal(goal));
+    }
+
 }
