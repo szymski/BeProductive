@@ -1,0 +1,52 @@
+﻿@inherits AntInputComponentBase<string>
+
+<div style="display: flex;">
+    <Space>
+        @foreach (var color in _colors)
+        {
+            <SpaceItem>
+                <div
+                    @onclick="() => OnSelectColor(color)">
+                    <Avatar
+                        Class=@($"color {(Value == color ? "selected" : "")}")
+                        Size="48"
+                        Style="@($"background: {color}")"/>
+                </div>
+            </SpaceItem>
+        }
+    </Space>
+</div>
+
+<style>
+    .color {
+        cursor: pointer;
+    }
+    
+    .selected {
+        border: 2px solid white;
+        outline: 3px solid #3e99ea;
+    }
+</style>
+
+@code {
+
+    private static List<string> _colors = new()
+    {
+        "#cf1322",
+        "#fa8c16",
+        "#a0d911",
+        "#13c2c2",
+        "#1890ff",
+        "#722ed1",
+        "#eb2f96",
+        "#fadb14",
+    };
+    
+
+    private void OnSelectColor(string color)
+    {
+        Value = color;
+        ValueChanged.InvokeAsync(color);
+    }
+
+}

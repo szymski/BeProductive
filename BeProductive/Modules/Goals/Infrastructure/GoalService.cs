@@ -4,8 +4,8 @@ public class GoalService
 {
     private readonly List<Goal> _goals = new()
     {
-        new Goal() { Name = "Test goal" },
-        new Goal() { Name = "Zwalić gruchę raz dziennie" },
+        new Goal() { Name = "Test goal", Color = "#f28" },
+        new Goal() { Name = "Zwalić gruchę raz dziennie", Color = "#2af" },
         new Goal() { Name = "Wykonać poranny rytuał" },
         new Goal() { Name = "Obrazić kogoś" },
         new Goal() { Name = "Dupa" },

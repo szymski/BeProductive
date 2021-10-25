@@ -1,0 +1,4 @@
+﻿.selected ::deep .card {
+    background: #eef6ff !important;
+    border: 1px solid #b9e2ff;
+}

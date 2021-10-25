@@ -9,7 +9,10 @@
             @foreach (var goal in _goals)
             {
                 <SpaceItem>
-                    <GoalListEntry Goal="@goal" OnClick="() => OpenGoalDetails(goal)"/>
+                    <GoalListEntry
+                        Goal="@goal"
+                        OnClick="() => OpenGoalDetails(goal)"
+                        Selected="@(goal == SelectedGoal)"/>
                 </SpaceItem>
             }
         </Space>
@@ -46,7 +49,6 @@
     {
         if (GoalId.HasValue)
         {
-            Console.WriteLine(GoalId);
             SelectedGoal = _goals.SingleOrDefault(goal => goal.Id == GoalId);
         }
     }

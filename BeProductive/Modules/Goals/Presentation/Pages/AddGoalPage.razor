@@ -1,6 +1,5 @@
 ﻿@page "/add-goal"
 @using System.ComponentModel.DataAnnotations
-@using Microsoft.AspNetCore.WebUtilities
 @inject GoalService GoalService
 
 <div>
@@ -10,6 +9,9 @@
             <Form Model="@_model" OnFinish="@OnFinish">
                 <FormItem Label="Name">
                     <Input @bind-Value="@context.Name"/>
+                </FormItem>
+                <FormItem Style="align-items: center" Label="Color">
+                    <ColorPicker @bind-Value="@context.Color"/>
                 </FormItem>
                 <Button Block Type="@ButtonType.Primary" HtmlType="submit">
                     Add goal
@@ -21,10 +23,13 @@
 
 @code {
 
-    public class Model
+    class Model
     {
         [Required]
         public string Name { get; set; }
+        
+        [Required]
+        public string Color { get; set; }
     }
 
     private Model _model = new();
@@ -34,10 +39,11 @@
         var goal = GoalService.AddGoal(new()
         {
             Name = _model.Name,
+            Color = _model.Color,
         });
-        
+
         NotificationService.Success("Task added successfully!");
-        
+
         NavigationManager.NavigateTo(GoalListPage.GetUrlWithSelectedGoal(goal));
     }
 
