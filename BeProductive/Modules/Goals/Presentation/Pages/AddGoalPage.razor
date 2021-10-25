@@ -9,11 +9,8 @@
 
     private void OnFinish()
     {
-        var goal = GoalService.AddGoal(new()
-        {
-            Name = _model.Name,
-            Color = _model.Color,
-        });
+        var goal = _model.ApplyToGoal(new());
+        GoalService.AddGoal(goal);
 
         NotificationService.Success("Task added successfully!");
 

@@ -2,7 +2,14 @@
     <Card Class="card" Bordered="true" Size="small" Hoverable>
         <Space>
             <SpaceItem>
-                <Avatar Size="large" Style=@($"background: {@Goal.Color}") />
+                @if (string.IsNullOrEmpty(Goal.Icon))
+                {
+                    <Avatar Size="large" Style=@($"background: {@Goal.Color}")/>
+                }
+                else
+                {
+                    <Avatar Size="large" Style=@($"color: {@Goal.Color}; background: transparent; font-size: 36px") Icon="@Goal.Icon"/>
+                }
             </SpaceItem>
             <SpaceItem>
                 <Text Strong Style="font-size: 18px">

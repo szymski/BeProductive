@@ -17,6 +17,9 @@
                 <FormItem Style="align-items: center" Label="Color">
                     <ColorPicker @bind-Value="@context.Color"/>
                 </FormItem>
+                <FormItem Style="align-items: center" Label="Icon">
+                    <IconPicker @bind-Value="@context.Icon" Color="@context.Color"/>
+                </FormItem>
                 @if (Type == GoalFormType.New)
                 {
                     <Button Block Type="@ButtonType.Primary" HtmlType="submit">Add goal</Button>

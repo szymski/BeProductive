@@ -1,0 +1,66 @@
+﻿@using BeProductive.Modules.Goals.Domain
+@inherits AntInputComponentBase<string?>
+
+<div style="display: flex;">
+    <Space Wrap>
+        <SpaceItem Style="margin-top: 4px">
+            <div
+                @onclick="() => OnSelectIcon(null)">
+                <Icon
+                    Class=@($"icon none {(Value is null ? "selected" : "")}")
+                    Style=@(Value is null ? $"background: {Color}" : "")
+                    Type=""/>
+
+            </div>
+        </SpaceItem>
+        @foreach (var icon in GoalIcons.Icons)
+        {
+            <SpaceItem Style="margin-top: 4px">
+                <div
+                    @onclick="() => OnSelectIcon(icon)">
+                    <Icon
+                        Class=@($"icon {(Value == icon ? "selected" : "")}")
+                        Style=@(Value == icon ? $"color: {Color}" : "")
+                        Width="48"
+                        Height="48"
+                        Theme="@IconThemeType.Outline"
+                        Type="@icon"/>
+                </div>
+            </SpaceItem>
+        }
+    </Space>
+</div>
+
+<style>
+    .icon {
+        cursor: pointer;
+        padding: 4px;
+    }
+    
+    .icon.selected {
+        outline: 3px solid @Color;
+        border-radius: 50%;
+    }
+    
+    .icon.none {
+        border-radius: 50%;
+        background: black;
+        border: 8px solid white;
+        width: 56px;
+        height: 56px;
+    }
+</style>
+
+@code {
+
+    [Parameter]
+    [EditorRequired]
+    public string? Color { get; set; }
+
+    private void OnSelectIcon(string? icon)
+    {
+        Value = icon;
+        ValueChanged.InvokeAsync(icon);
+    }
+
+}
