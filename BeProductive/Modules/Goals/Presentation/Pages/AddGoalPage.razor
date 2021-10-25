@@ -1,38 +1,11 @@
 ﻿@page "/add-goal"
-@using System.ComponentModel.DataAnnotations
-@inject GoalService GoalService
+@using BeProductive.Modules.Goals.Presentation.Models
 
-<div>
-    <PageHeader BackIcon="true">
-        <PageHeaderTitle>Add goal</PageHeaderTitle>
-        <PageHeaderContent>
-            <Form Model="@_model" OnFinish="@OnFinish">
-                <FormItem Label="Name">
-                    <Input @bind-Value="@context.Name"/>
-                </FormItem>
-                <FormItem Style="align-items: center" Label="Color">
-                    <ColorPicker @bind-Value="@context.Color"/>
-                </FormItem>
-                <Button Block Type="@ButtonType.Primary" HtmlType="submit">
-                    Add goal
-                </Button>
-            </Form>
-        </PageHeaderContent>
-    </PageHeader>
-</div>
+<GoalForm Type="GoalForm.GoalFormType.New" Value="@_model" OnFinish="@OnFinish"/>
 
 @code {
 
-    class Model
-    {
-        [Required]
-        public string Name { get; set; }
-        
-        [Required]
-        public string Color { get; set; }
-    }
-
-    private Model _model = new();
+    private GoalModel _model = new();
 
     private void OnFinish()
     {

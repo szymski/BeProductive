@@ -1,6 +1,6 @@
 ﻿<Card Title="@Goal.Name">
     <Extra>
-        <a>Edit</a>
+        <a @onclick="() => NavigateToEditGoalPage()">Edit</a>
     </Extra>
     <Body>
     <Calendar FullScreen="false" Mode="@DatePickerType.Month"/>
@@ -11,5 +11,10 @@
 
     [Parameter]
     public Goal Goal { get; set; }
+
+    private void NavigateToEditGoalPage()
+    {
+        NavigationManager.NavigateTo($"/goal/{Goal.Id}/edit");
+    }
 
 }

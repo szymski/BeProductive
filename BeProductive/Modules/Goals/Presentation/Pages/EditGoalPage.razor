@@ -1,0 +1,31 @@
+﻿@page "/goal/{GoalId:int}/edit"
+@using BeProductive.Modules.Goals.Presentation.Models
+
+<GoalForm Type="GoalForm.GoalFormType.Edit" Value="@_model" OnFinish="@OnFinish" GoalName="@_goal.Name"/>
+
+@code {
+
+    [Parameter]
+    public int GoalId { get; set; }
+
+    private Goal? _goal;
+
+    private GoalModel _model = new();
+
+    protected override void OnParametersSet()
+    {
+        _goal = GoalService.GetGoal(GoalId);
+        _model = GoalModel.FromGoal(_goal);
+    }
+
+    private void OnFinish()
+    {
+        var goal = _model.ApplyToGoal(_goal);
+        GoalService.SaveGoal(goal);
+        
+        NotificationService.Success("Task patched successfully!");
+
+        NavigationManager.NavigateTo(GoalListPage.GetUrlWithSelectedGoal(goal));
+    }
+
+}

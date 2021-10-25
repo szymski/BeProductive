@@ -1,0 +1,60 @@
+﻿@using Microsoft.AspNetCore.Components
+@using System.ComponentModel.DataAnnotations
+@using BeProductive.Modules.Goals.Presentation.Models
+@using BeProductive.Modules.Goals.Presentation.Pages
+@inject IJSRuntime JS
+
+<div>
+    <PageHeader BackIcon="true">
+        <PageHeaderTitle>
+            @(Type == GoalFormType.New ? "Add goal" : $"Edit goal{(GoalName != null ? $" - {GoalName}" : "")}")
+        </PageHeaderTitle>
+        <PageHeaderContent>
+            <Form Model="@Value" OnFinish="@OnFinish">
+                <FormItem Label="Name">
+                    <Input @bind-Value="@context.Name"/>
+                </FormItem>
+                <FormItem Style="align-items: center" Label="Color">
+                    <ColorPicker @bind-Value="@context.Color"/>
+                </FormItem>
+                @if (Type == GoalFormType.New)
+                {
+                    <Button Block Type="@ButtonType.Primary" HtmlType="submit">Add goal</Button>
+                }
+                else if (Type == GoalFormType.Edit)
+                {
+                    <Space Style="display: flex; justify-content: end;">
+                        <SpaceItem>
+                            <Button Type="@ButtonType.Default" OnClick=@(() => JS.InvokeVoidAsync("history.back"))>Cancel</Button>
+                        </SpaceItem>
+                        <SpaceItem>
+                            <Button Type="@ButtonType.Primary" HtmlType="submit">Save</Button>
+                        </SpaceItem>
+                    </Space>
+                }
+            </Form>
+        </PageHeaderContent>
+    </PageHeader>
+</div>
+
+@code {
+
+    public enum GoalFormType
+    {
+        New,
+        Edit,
+    }
+
+    [Parameter]
+    public GoalFormType Type { get; set; }
+
+    [Parameter]
+    public string? GoalName { get; set; }
+
+    [Parameter]
+    public GoalModel Value { get; set; }
+
+    [Parameter]
+    public EventCallback OnFinish { get; set; }
+
+}

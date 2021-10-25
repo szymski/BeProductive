@@ -1,9 +1,38 @@
-﻿<Sider Width="200">
-    <Menu Style="height: 100%"
-          Mode=@MenuMode.Inline
-          SelectedKeys=@(new []{ "1" })
-          >
-        <MenuItem Key="1">Goals</MenuItem>
-        <MenuItem Key="2">Settings</MenuItem>
+﻿@implements IDisposable
+
+<Sider Width="200">
+    <Menu Style="height: 100%" Mode="@MenuMode.Inline">
+        @foreach (var (name, route) in _items)
+        {
+            <MenuItem RouterLink="@route" RouterMatch="NavLinkMatch.Prefix">@name</MenuItem>
+        }
     </Menu>
 </Sider>
+
+@code {
+
+    record MenuItem(string Name, string Route);
+
+    private List<MenuItem> _items = new()
+    {
+        new("Goals", "/"),
+        new("About", "/about"),
+        new("Account", "/account"),
+    };
+
+    protected override void OnInitialized()
+    {
+        NavigationManager.LocationChanged += OnLocationChanged;
+    }
+
+    public void Dispose()
+    {
+        NavigationManager.LocationChanged -= OnLocationChanged;
+    }
+
+    private void OnLocationChanged(object? sender, LocationChangedEventArgs args)
+    {
+        InvokeAsync(StateHasChanged);
+    }
+
+}
