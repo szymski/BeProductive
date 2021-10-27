@@ -6,6 +6,7 @@ namespace BeProductive.Modules.Common.Persistence;
 public class AppContext : DbContext
 {
     public DbSet<Goal> Goals { get; set; }
+    public DbSet<GoalDayState> GoalDayStates { get; set; }
 
     public AppContext(DbContextOptions options) : base(options)
     {
