@@ -1,3 +1,10 @@
+:root {
+    --goal-color-success: #4dd020;
+    --goal-color-failure: #e51818;
+    --goal-color-emergency: #f1b61f;
+    --goal-color-unknown: #ffffff;
+}
+
 html, body {
     font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
 }

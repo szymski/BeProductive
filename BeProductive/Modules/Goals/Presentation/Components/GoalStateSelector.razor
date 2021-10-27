@@ -1,0 +1,59 @@
+﻿@using BeProductive.Modules.Goals.Domain
+@using Microsoft.AspNetCore.Mvc.Razor
+
+<div>
+    <Popover @ref="_popover" Trigger=@(new Trigger[] { Trigger.Hover, Trigger.Focus }) Placement="Placement.Left">
+        <ChildContent>
+            <Button Class=@($"goal-state-selector {StateToClass(State)}") Type="@ButtonType.Default">@Text</Button>
+        </ChildContent>
+        <ContentTemplate>
+            <Space Direction="DirectionVHType.Vertical">
+                @StateButton(GoalState.Success, "Success", Color.Green7)
+                @StateButton(GoalState.Failure, "Failed", Color.Red6)
+                @StateButton(GoalState.Emergency, "Emergency", Color.Orange5)
+                @StateButton(GoalState.Unknown, "Uncheck", Color.None, ButtonType.Default)
+            </Space>
+        </ContentTemplate>
+    </Popover>
+</div>
+
+@code {
+
+    private RenderFragment StateButton(GoalState state, string name, Color color, string type = ButtonType.Primary) =>
+        @<SpaceItem>
+            <Button Block Type="@type" Color="@color" OnClick="() => OnStateButtonClick(state)">@name</Button>
+        </SpaceItem>;
+
+}
+
+@code {
+
+    private Popover _popover;
+
+    [Parameter]
+    public GoalState State { get; set; }
+
+    [Parameter]
+    public EventCallback<GoalState> StateChanged { get; set; }
+
+    [Parameter]
+    public string Text { get; set; } = "MON";
+
+    private void OnStateButtonClick(GoalState state)
+    {
+        State = state;
+        StateChanged.InvokeAsync(state);
+        _popover.Close();
+    }
+
+    private static string StateToClass(GoalState state)
+        => state switch
+        {
+            GoalState.Unknown => "unknown",
+            GoalState.Success => "success",
+            GoalState.Failure => "failure",
+            GoalState.Emergency => "emergency",
+            _ => "error"
+            };
+
+}

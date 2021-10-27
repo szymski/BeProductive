@@ -8,7 +8,7 @@
                 @onclick="() => OnSelectIcon(null)">
                 <Icon
                     Class=@($"icon none {(Value is null ? "selected" : "")}")
-                    Style=@(Value is null ? $"background: {Color}" : "")
+                    Style=@(Value is null ? $"background: {Color}; outline-color: {Color}" : "")
                     Type=""/>
 
             </div>
@@ -20,7 +20,7 @@
                     @onclick="() => OnSelectIcon(icon)">
                     <Icon
                         Class=@($"icon {(Value == icon ? "selected" : "")}")
-                        Style=@(Value == icon ? $"color: {Color}" : "")
+                        Style=@(Value == icon ? $"color: {Color}; outline-color: {Color}" : "")
                         Width="48"
                         Height="48"
                         Theme="@IconThemeType.Outline"
@@ -31,24 +31,24 @@
     </Space>
 </div>
 
-<style>
-    .icon {
-        cursor: pointer;
-        padding: 4px;
-    }
+<style >
+    /*.icon {*/
+    /*    cursor: pointer;*/
+    /*    padding: 4px;*/
+    /*}*/
     
-    .icon.selected {
-        outline: 3px solid @Color;
-        border-radius: 50%;
-    }
+    /*.icon.selected {*/
+    /*    outline: 3px solid @Color;*/
+    /*    border-radius: 50%;*/
+    /*}*/
     
-    .icon.none {
-        border-radius: 50%;
-        background: black;
-        border: 8px solid white;
-        width: 56px;
-        height: 56px;
-    }
+    /*.icon.none {*/
+    /*    border-radius: 50%;*/
+    /*    background: black;*/
+    /*    border: 8px solid white;*/
+    /*    width: 56px;*/
+    /*    height: 56px;*/
+    /*}*/
 </style>
 
 @code {

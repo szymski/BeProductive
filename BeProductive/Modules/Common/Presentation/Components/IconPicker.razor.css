@@ -1,0 +1,17 @@
+﻿::deep .icon {
+    cursor: pointer;
+    padding: 4px;
+}
+
+::deep .icon.selected {
+    outline: 3px solid violet;
+    border-radius: 50%;
+}
+
+::deep .icon.none {
+    border-radius: 50%;
+    background: black;
+    border: 8px solid white;
+    width: 56px;
+    height: 56px;
+}

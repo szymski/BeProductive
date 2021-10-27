@@ -1,0 +1,30 @@
+::deep .goal-state-selector {
+    width: 48px;
+    height: 48px;
+    overflow: hidden;
+    padding: 0;
+    font-weight: bold;
+    color: rgba(0, 0, 0, 0.6);
+    border-radius: 2px;
+}
+
+::deep .goal-state-selector:hover {
+    color: rgba(0, 0, 0, 0.8);
+    border: 1px solid transparent;
+}
+
+::deep .goal-state-selector.unknown {
+    background: var(--goal-color-unknown);
+}
+
+::deep .goal-state-selector.success {
+    background: var(--goal-color-success);
+}
+
+::deep .goal-state-selector.failure {
+    background: var(--goal-color-failure);
+}
+
+::deep .goal-state-selector.emergency {
+    background: var(--goal-color-emergency);
+}

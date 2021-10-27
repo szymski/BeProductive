@@ -1,0 +1,28 @@
+﻿@page "/Components"
+@using BeProductive.Modules.Goals.Domain
+
+<Divider Orientation="left">Color picker</Divider>
+<ColorPicker/>
+
+<Divider Orientation="left">Icon picker</Divider>
+<IconPicker Color="#5a1"/>
+
+<Divider Orientation="left">Goal state selector</Divider>
+<Space>
+    <SpaceItem>
+        <GoalStateSelector/>
+    </SpaceItem>
+    <SpaceItem>
+        <GoalStateSelector State="GoalState.Success"/>
+    </SpaceItem>
+    <SpaceItem>
+        <GoalStateSelector State="GoalState.Failure"/>
+    </SpaceItem>
+    <SpaceItem>
+        <GoalStateSelector State="GoalState.Emergency"/>
+    </SpaceItem>
+</Space>
+
+@code {
+
+}

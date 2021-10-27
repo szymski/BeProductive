@@ -2,3 +2,7 @@
     background: #eef6ff !important;
     border: 1px solid #b9e2ff;
 }
+
+::deep .card {
+    align-content: center;
+}
