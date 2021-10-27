@@ -8,10 +8,6 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <Folder Include="Modules\Common\Persistence" />
-    </ItemGroup>
-
-    <ItemGroup>
       <PackageReference Include="AntDesign" Version="0.10.1" />
       <PackageReference Include="LibSassBuilder" Version="1.6.4" />
       <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="6.0.0-rc.2.21480.5" />

@@ -1,6 +1,9 @@
+global using AppContext = BeProductive.Modules.Common.Persistence.AppContext;
+
+using BeProductive.Modules.Common.Infrastructure;
+using BeProductive.Modules.Common.Persistence;
 using BeProductive.Modules.Goals.Infrastructure;
-using Microsoft.AspNetCore.Components;
-using Microsoft.AspNetCore.Components.Web;
+using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -8,9 +11,15 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddRazorPages();
 builder.Services.AddServerSideBlazor();
 builder.Services.AddAntDesign();
+
+builder.Services.AddCommonModule();
 builder.Services.AddGoalModule();
 
 var app = builder.Build();
+
+await using var scope = app.Services.GetRequiredService<IServiceScopeFactory>().CreateAsyncScope();
+var options = scope.ServiceProvider.GetRequiredService<DbContextOptions<AppContext>>();
+await DbUtils.InitializeDb(options);
 
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
@@ -25,7 +34,6 @@ app.UseHttpsRedirection();
 app.UseStaticFiles();
 
 app.UseRouting();
-
 
 app.MapBlazorHub();
 app.MapFallbackToPage("/_Host");
