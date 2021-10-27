@@ -4,12 +4,21 @@ namespace BeProductive.Modules.Common.Infrastructure;
 
 public static class CommonModuleExtensions
 {
-    public static IServiceCollection AddCommonModule(this IServiceCollection services)
+    public class Options
     {
-        services.AddDbContextFactory<AppContext>(options =>
+        public string DbFile { get; set; }
+    }
+    
+    public static IServiceCollection AddCommonModule(this IServiceCollection services, Action<Options> builder)
+    {
+        var options = new Options();
+        builder(options);
+        
+        services.AddDbContext<AppContext>(dbOptions =>
         {
-            options.UseSqlite($"Data Source=database.db");
-        });
+            dbOptions.UseSqlite($"Data Source={options.DbFile}");
+        }, ServiceLifetime.Singleton);
+        
         return services;
     }
 }

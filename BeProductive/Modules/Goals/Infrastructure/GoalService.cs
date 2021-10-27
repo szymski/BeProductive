@@ -1,36 +1,38 @@
 ﻿using BeProductive.Modules.Goals.Domain;
+using Microsoft.EntityFrameworkCore;
 
 namespace BeProductive.Modules.Goals.Infrastructure;
 
 public class GoalService
 {
-    private readonly List<Goal> _goals = new()
-    {
-        new() { Name = "Test goal", Color = GoalColors.Colors[1], Icon = GoalIcons.Icons[1] },
-        new() { Name = "Zwalić gruchę raz dziennie", Color = GoalColors.Colors[2], Icon = GoalIcons.Icons[2] },
-        new() { Name = "Wykonać poranny rytuał", Color = GoalColors.Colors[3] },
-        new() { Name = "Obrazić kogoś", Color = GoalColors.Colors[4], Icon = GoalIcons.Icons[8] },
-        new() { Name = "Dupa", Color = GoalColors.Colors[5] },
-    };
+    private readonly AppContext _context;
 
-    public List<Goal> GetGoals()
+    public GoalService(AppContext context)
     {
-        return _goals;
+        _context = context;
     }
 
-    public Goal? GetGoal(int id)
+    public async Task<List<Goal>> GetGoals()
     {
-        return _goals.SingleOrDefault(goal => goal.Id == id);
+        return await _context.Goals.ToListAsync();
     }
 
-    public Goal SaveGoal(Goal goal)
+    public async Task<Goal?> GetGoal(int id)
     {
+        return await _context.Goals.FindAsync(id);
+    }
+
+    public async Task<Goal> SaveGoal(Goal goal)
+    {
+        _context.Goals.Update(goal);
+        await _context.SaveChangesAsync();
         return goal;
     }
 
-    public Goal AddGoal(Goal goal)
+    public async Task<Goal> AddGoal(Goal goal)
     {
-        _goals.Add(goal);
+        await _context.Goals.AddAsync(goal);
+        await _context.SaveChangesAsync();
         return goal;
     }
 }

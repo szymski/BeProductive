@@ -45,9 +45,9 @@
 
     private List<Goal> _goals;
 
-    protected override void OnInitialized()
+    protected override async Task OnInitializedAsync()
     {
-        _goals = GoalService.GetGoals();
+        _goals = await GoalService.GetGoals();
     }
 
     protected override void OnParametersSet()

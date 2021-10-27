@@ -12,16 +12,16 @@
 
     private GoalModel _model = new();
 
-    protected override void OnParametersSet()
+    protected override async Task OnParametersSetAsync()
     {
-        _goal = GoalService.GetGoal(GoalId);
+        _goal = await GoalService.GetGoal(GoalId);
         _model = GoalModel.FromGoal(_goal);
     }
 
-    private void OnFinish()
+    private async Task OnFinish()
     {
         var goal = _model.ApplyToGoal(_goal);
-        GoalService.SaveGoal(goal);
+        await GoalService.SaveGoal(goal);
         
         NotificationService.Success("Task patched successfully!");
 

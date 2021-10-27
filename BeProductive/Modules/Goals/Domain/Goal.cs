@@ -1,6 +1,7 @@
-﻿public class Goal
+﻿using BeProductive.Modules.Common.Domain;
+
+public class Goal : BaseEntity
 {
-    public int Id { get; set; } = Random.Shared.Next(1, int.MaxValue);
     public string Name { get; set; }
     public string Color { get; set; }
     public string? Icon { get; set; }

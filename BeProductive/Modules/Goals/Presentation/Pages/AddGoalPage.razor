@@ -7,10 +7,10 @@
 
     private GoalModel _model = new();
 
-    private void OnFinish()
+    private async Task OnFinish()
     {
         var goal = _model.ApplyToGoal(new());
-        GoalService.AddGoal(goal);
+        await GoalService.AddGoal(goal);
 
         NotificationService.Success("Task added successfully!");
 
