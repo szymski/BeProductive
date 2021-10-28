@@ -1,0 +1,44 @@
+﻿@using BeProductive.Modules.Goals.Domain
+@using BeProductive.Modules.Goals.Presentation.Models
+<Calendar
+    FullScreen="false"
+    Mode="@DatePickerType.Date"
+    DateCellRender="DateCellRender"
+    OnChange="DateChanged"/>
+
+@code {
+
+    [Parameter]
+    public IEnumerable<DayState> DayStates { get; set; } = Enumerable.Empty<DayState>();
+
+    private RenderFragment DateCellRender(DateTime datetime)
+    {
+        var date = DateOnly.FromDateTime(datetime);
+
+        if (DayStates.SingleOrDefault(dayState => dayState.Day == date) is { } state)
+        {
+            return (
+                @<div style="position: absolute; inset: 0; background: @GoalStateToColor(state.State); z-index: -1; border-radius: 50%">
+                    @* <Badge Dot Color="#22aa15" Style="" /> *@
+                </div>
+                );
+        }
+
+        return @<RenderFragment/>;
+    }
+
+    private static string GoalStateToColor(GoalState state)
+        => state switch
+        {
+            GoalState.Success => "#44aa35",
+            GoalState.Failure => "#ee3542",
+            GoalState.Emergency => "#fa9a44",
+            _ => "magenta"
+            };
+
+    private void DateChanged(DateTime date)
+    {
+        
+    }
+    
+}

@@ -1,4 +1,5 @@
-﻿using BeProductive.Modules.Goals.Domain;
+﻿using BeProductive.Modules.Common.Helpers;
+using BeProductive.Modules.Goals.Domain;
 using Microsoft.EntityFrameworkCore;
 
 namespace BeProductive.Modules.Goals.Infrastructure;
@@ -12,7 +13,7 @@ public class GoalService
         _context = context;
     }
 
-    public async Task<List<Goal>> GetGoals()
+    public async Task<IReadOnlyList<Goal>> GetGoals()
     {
         return await _context.Goals.ToListAsync();
     }
@@ -34,5 +35,25 @@ public class GoalService
         await _context.Goals.AddAsync(goal);
         await _context.SaveChangesAsync();
         return goal;
+    }
+
+    public async Task<IReadOnlyList<GoalDayState>> GetStatesForMonth(Goal goal, DateTime date)
+    {
+        var (firstDay, lastDate) = DateHelper.FirstAndLastDayOfMonth(DateOnly.FromDateTime(date));
+
+        return await _context.Entry(goal)
+            .Collection(goal => goal.GoalDayStates)
+            .Query()
+            .Where(state => state.Day >= firstDay && state.Day <= lastDate)
+            .ToListAsync();
+    }
+
+    public async Task<GoalDayState?> GetLastDayState(Goal goal)
+    {
+        return await _context.Entry(goal)
+            .Collection(goal => goal.GoalDayStates)
+            .Query()
+            .OrderByDescending(goal => goal.Day)
+            .FirstOrDefaultAsync();
     }
 }

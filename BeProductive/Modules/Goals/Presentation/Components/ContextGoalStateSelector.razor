@@ -1,0 +1,64 @@
+﻿@using BeProductive.Modules.Goals.Domain
+@using BeProductive.Modules.Goals.Domain.Services
+@inject GoalDomainService GoalDomainService
+
+<GoalStateSelector State="@State" StateChanged="OnGoalStateChanged" Text="@_day.DayOfWeek.ToString()[..3].ToUpper()"/>
+
+@code {
+
+    [Parameter]
+    public Goal Goal { get; set; }
+
+    [Parameter]
+    public EventCallback OnStateUpdated { get; set; }
+
+    private GoalState State { get; set; } = GoalState.Unknown;
+
+    private DateOnly _day = DateOnly.FromDateTime(DateTime.Today);
+
+    protected override async Task OnParametersSetAsync()
+    {
+        await GetLastDay();
+    }
+
+    private async Task GetLastDay()
+    {
+        var lastState = await GoalService.GetLastDayState(Goal);
+        if (lastState is not null)
+        {
+            UpdateDayUsingLastDay(lastState);
+        }
+        else
+        {
+            State = GoalState.Unknown;
+        }
+    }
+
+    private void UpdateDayUsingLastDay(GoalDayState lastState)
+    {
+        _day = lastState.Day.AddDays(1);
+        var afterToday = _day > DateOnly.FromDateTime(DateTime.Today);
+        if (afterToday)
+        {
+            _day = DateOnly.FromDateTime(DateTime.Today);
+            State = lastState.State;
+        }
+        else
+        {
+            State = GoalState.Unknown;
+        }
+    }
+
+    private async Task OnGoalStateChanged(GoalState state)
+    {
+        var wasChanged = await GoalDomainService.SetStateForDay(Goal, _day, state);
+        if (wasChanged)
+        {
+            NotificationService.Success($"State changed to {state}");
+            await OnStateUpdated.InvokeAsync();
+        }
+        
+        await GetLastDay();
+    }
+
+}

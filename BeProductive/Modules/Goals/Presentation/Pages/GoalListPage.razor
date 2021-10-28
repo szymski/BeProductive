@@ -11,12 +11,14 @@
         <Space Direction="DirectionVHType.Vertical" Style="width: 100%">
             @foreach (var goal in _goals)
             {
-                <SpaceItem>
-                    <GoalListEntry
-                        Goal="@goal"
-                        OnClick="() => OpenGoalDetails(goal)"
-                        Selected="@(goal == SelectedGoal)"/>
-                </SpaceItem>
+                <CascadingValue Value="@(goal == SelectedGoal ? _goalDetails : null)" Name="@nameof(GoalDetails)">
+                    <SpaceItem>
+                        <GoalListEntry
+                            Goal="@goal"
+                            OnClick="() => OpenGoalDetails(goal)"
+                            Selected="@(goal == SelectedGoal)"/>
+                    </SpaceItem>
+                </CascadingValue>
             }
         </Space>
 
@@ -30,7 +32,7 @@
     @if (SelectedGoal != null)
     {
         <Sider Theme="SiderTheme.Light" Style="margin-left: 1rem" Width="400">
-            <GoalDetails Goal="@SelectedGoal"/>
+            <GoalDetails @ref="_goalDetails" Goal="@SelectedGoal"/>
         </Sider>
     }
 </Layout>
@@ -43,7 +45,9 @@
 
     private Goal? SelectedGoal { get; set; }
 
-    private List<Goal> _goals;
+    private GoalDetails? _goalDetails;
+
+    private IReadOnlyList<Goal> _goals;
 
     protected override async Task OnInitializedAsync()
     {

@@ -1,5 +1,6 @@
-﻿@page "/Components"
+﻿@page "/components"
 @using BeProductive.Modules.Goals.Domain
+@using BeProductive.Modules.Goals.Presentation.Models
 
 <Divider Orientation="left">Color picker</Divider>
 <ColorPicker/>
@@ -23,6 +24,18 @@
     </SpaceItem>
 </Space>
 
+<Divider Orientation="left">Goal calendar</Divider>
+<div style="width: 380px">
+    <GoalCalendar DayStates="@_dayStates"/>
+</div>
+
 @code {
+
+    private readonly List<DayState> _dayStates = new()
+    {
+        new(DateTime.Today.AddDays(-2), GoalState.Success),
+        new(DateTime.Today.AddDays(-3), GoalState.Failure),
+        new(DateTime.Today.AddDays(1), GoalState.Emergency)
+    };
 
 }

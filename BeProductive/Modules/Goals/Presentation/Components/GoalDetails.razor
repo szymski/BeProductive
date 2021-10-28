@@ -1,16 +1,41 @@
-﻿<Card Title="@Goal.Name">
+﻿@using BeProductive.Modules.Goals.Presentation.Models
+<Card Title="@Goal.Name">
     <Extra>
-        <a @onclick="() => NavigateToEditGoalPage()">Edit</a>
+        <a @onclick="NavigateToEditGoalPage">Edit</a>
     </Extra>
     <Body>
-    <Calendar FullScreen="false" Mode="@DatePickerType.Month"/>
+    <GoalCalendar DayStates="_dayStates"/>
     </Body>
 </Card>
 
 @code {
 
+    private int _lastGoalId = 0;
+    
     [Parameter]
     public Goal Goal { get; set; }
+
+    private IEnumerable<DayState> _dayStates;
+
+    protected override async Task OnParametersSetAsync()
+    {
+        if (Goal.Id != _lastGoalId)
+        {
+            _dayStates = Enumerable.Empty<DayState>();
+            await UpdateStates();
+            _lastGoalId = Goal.Id;
+        }
+    }
+
+    public async Task UpdateStates()
+    {
+        var domainStates = await GoalService.GetStatesForMonth(Goal, DateTime.Today);
+        var states = domainStates.Select(DayState.FromDomain);
+
+        _dayStates = states;
+        
+        StateHasChanged();
+    }
 
     private void NavigateToEditGoalPage()
     {

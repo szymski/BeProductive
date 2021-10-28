@@ -11,7 +11,10 @@
                 @StateButton(GoalState.Success, "Success", Color.Green7)
                 @StateButton(GoalState.Failure, "Failed", Color.Red6)
                 @StateButton(GoalState.Emergency, "Emergency", Color.Orange5)
-                @StateButton(GoalState.Unknown, "Uncheck", Color.None, ButtonType.Default)
+                @if (State != GoalState.Unknown)
+                {
+                    @StateButton(GoalState.Unknown, "Uncheck", Color.None, ButtonType.Default)
+                }
             </Space>
         </ContentTemplate>
     </Popover>
