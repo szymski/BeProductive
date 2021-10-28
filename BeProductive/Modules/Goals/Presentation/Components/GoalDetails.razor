@@ -4,7 +4,7 @@
         <a @onclick="NavigateToEditGoalPage">Edit</a>
     </Extra>
     <Body>
-    <GoalCalendar DayStates="_dayStates"/>
+    <GoalCalendar DayStates="_dayStates" OnMonthChanged="OnMonthChanged"/>
     </Body>
 </Card>
 
@@ -14,6 +14,8 @@
     
     [Parameter]
     public Goal Goal { get; set; }
+
+    private DateTime _date = DateTime.Today;
 
     private IEnumerable<DayState> _dayStates;
 
@@ -29,8 +31,8 @@
 
     public async Task UpdateStates()
     {
-        var domainStates = await GoalService.GetStatesForMonth(Goal, DateTime.Today);
-        var states = domainStates.Select(DayState.FromDomain);
+        var domainStates = await GoalService.GetStatesForMonth(Goal, _date);
+        var states = domainStates.Select(DayState.FromDomain).ToArray();
 
         _dayStates = states;
         
@@ -40,6 +42,12 @@
     private void NavigateToEditGoalPage()
     {
         NavigationManager.NavigateTo($"/goal/{Goal.Id}/edit");
+    }
+
+    private async Task OnMonthChanged(DateTime date)
+    {
+        _date = date;
+        await UpdateStates();
     }
 
 }

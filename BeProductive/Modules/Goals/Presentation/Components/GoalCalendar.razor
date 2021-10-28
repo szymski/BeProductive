@@ -2,14 +2,19 @@
 @using BeProductive.Modules.Goals.Presentation.Models
 <Calendar
     FullScreen="false"
-    Mode="@DatePickerType.Date"
     DateCellRender="DateCellRender"
-    OnChange="DateChanged"/>
+    OnChange="DateChanged"
+    Value="@_date"/>
 
 @code {
 
     [Parameter]
     public IEnumerable<DayState> DayStates { get; set; } = Enumerable.Empty<DayState>();
+
+    [Parameter]
+    public EventCallback<DateTime> OnMonthChanged { get; set; }
+
+    private DateTime _date = DateTime.Today;
 
     private RenderFragment DateCellRender(DateTime datetime)
     {
@@ -36,9 +41,15 @@
             _ => "magenta"
             };
 
-    private void DateChanged(DateTime date)
+    private async Task DateChanged(DateTime date)
     {
-        
+        var isSameMonth = DateHelper.IsSameMonth(date, _date);
+        _date = date;
+
+        if (!isSameMonth)
+        {
+            await OnMonthChanged.InvokeAsync(date);
+        }
     }
-    
+
 }
