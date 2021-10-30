@@ -1,19 +1,28 @@
 ﻿@using BeProductive.Modules.Goals.Presentation.Models
+@using BeProductive.Modules.Goals.Domain
+@using BeProductive.Modules.Goals.Domain.Services
+@inject GoalDomainService GoalDomainService
+
 <Card Title="@Goal.Name">
     <Extra>
         <a @onclick="NavigateToEditGoalPage">Edit</a>
     </Extra>
     <Body>
-    <GoalCalendar DayStates="_dayStates" OnMonthChanged="OnMonthChanged"/>
+    <GoalCalendar
+        DayStates="_dayStates"
+        OnMonthChanged="OnMonthChanged"
+        OnGoalStateChanged="GoalStateChanged"/>
     </Body>
 </Card>
 
 @code {
 
     private int _lastGoalId = 0;
-    
+
     [Parameter]
     public Goal Goal { get; set; }
+    
+    public EventHandler<(DateTime date, GoalState state)>? OnGoalStateChanged { get; set; }
 
     private DateTime _date = DateTime.Today;
 
@@ -35,7 +44,7 @@
         var states = domainStates.Select(DayState.FromDomain).ToArray();
 
         _dayStates = states;
-        
+
         StateHasChanged();
     }
 
@@ -48,6 +57,14 @@
     {
         _date = date;
         await UpdateStates();
+    }
+
+    private async Task GoalStateChanged((DateTime date, GoalState state) args)
+    {
+        var (date, state) = args;
+        await GoalDomainService.SetStateForDay(Goal, DateOnly.FromDateTime(date), state);
+        await UpdateStates();
+        OnGoalStateChanged?.Invoke(this, args);
     }
 
 }

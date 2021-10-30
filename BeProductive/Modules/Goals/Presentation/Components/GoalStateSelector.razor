@@ -7,15 +7,7 @@
             <Button Class=@($"goal-state-selector {StateToClass(State)}") Type="@ButtonType.Default">@Text</Button>
         </ChildContent>
         <ContentTemplate>
-            <Space Direction="DirectionVHType.Vertical">
-                @StateButton(GoalState.Success, "Success", Color.Green7)
-                @StateButton(GoalState.Failure, "Failed", Color.Red6)
-                @StateButton(GoalState.Emergency, "Emergency", Color.Orange5)
-                @if (State != GoalState.Unknown)
-                {
-                    @StateButton(GoalState.Unknown, "Uncheck", Color.None, ButtonType.Default)
-                }
-            </Space>
+            <GoalStatePopoverContent State="@State" OnStateButtonClick="OnStateButtonClick"/>
         </ContentTemplate>
     </Popover>
 </div>

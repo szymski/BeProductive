@@ -1,0 +1,30 @@
+﻿@using BeProductive.Modules.Goals.Domain
+
+<Space Direction="DirectionVHType.Vertical">
+    @StateButton(GoalState.Success, "Success", Color.Green7)
+    @StateButton(GoalState.Failure, "Failed", Color.Red6)
+    @StateButton(GoalState.Emergency, "Emergency", Color.Orange5)
+    @if (State != GoalState.Unknown)
+    {
+        @StateButton(GoalState.Unknown, "Uncheck", Color.None, ButtonType.Default)
+    }
+</Space>
+
+@code {
+
+    private RenderFragment StateButton(GoalState state, string name, Color color, string type = ButtonType.Primary) =>
+        @<SpaceItem>
+            <Button Block Type="@type" Color="@color" OnClick="() => OnStateButtonClick.InvokeAsync(state)">@name</Button>
+        </SpaceItem>;
+
+}
+
+@code {
+
+    [Parameter]
+    public GoalState State { get; set; }
+
+    [Parameter]
+    public EventCallback<GoalState> OnStateButtonClick { get; set; }
+
+}

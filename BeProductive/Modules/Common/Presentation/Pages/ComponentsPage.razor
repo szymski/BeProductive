@@ -1,6 +1,7 @@
 ﻿@page "/components"
 @using BeProductive.Modules.Goals.Domain
 @using BeProductive.Modules.Goals.Presentation.Models
+@using DateHelper = BeProductive.Modules.Common.Helpers.DateHelper
 
 <Divider Orientation="left">Color picker</Divider>
 <ColorPicker/>
@@ -26,7 +27,7 @@
 
 <Divider Orientation="left">Goal calendar</Divider>
 <div style="width: 380px">
-    <GoalCalendar DayStates="@_dayStates"/>
+    <GoalCalendar DayStates="@_dayStates" OnGoalStateChanged="Callback"/>
 </div>
 
 @code {
@@ -37,5 +38,15 @@
         new(DateTime.Today.AddDays(-3), GoalState.Failure),
         new(DateTime.Today.AddDays(1), GoalState.Emergency)
     };
+
+    private void Callback((DateTime date, GoalState state) args)
+    {
+        var (date, state) = args;
+        _dayStates.RemoveAll(state => DateHelper.IsSameDay(state.Day, DateOnly.FromDateTime(date)));
+        if (state != GoalState.Unknown)
+        {
+            _dayStates.Add(new(date, state));
+        }
+    }
 
 }

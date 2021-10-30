@@ -1,5 +1,6 @@
 ﻿@using BeProductive.Modules.Goals.Domain
 @using BeProductive.Modules.Goals.Domain.Services
+@implements IDisposable
 @inject GoalDomainService GoalDomainService
 
 <GoalStateSelector State="@State" StateChanged="OnGoalStateChanged" Text="@_day.DayOfWeek.ToString()[..3].ToUpper()"/>
@@ -12,6 +13,28 @@
     [Parameter]
     public EventCallback OnStateUpdated { get; set; }
 
+    [CascadingParameter(Name = nameof(GoalDetails))]
+    public GoalDetails? GoalDetails
+    {
+        get => _goalDetails;
+        set
+        {
+            if (value is null && _goalDetails is not null)
+            {
+                _goalDetails.OnGoalStateChanged -= OnGoalStateChangedExternally;
+            }
+
+            _goalDetails = value;
+            if (_goalDetails is not null)
+            {
+                _goalDetails.OnGoalStateChanged -= OnGoalStateChangedExternally;
+                _goalDetails.OnGoalStateChanged += OnGoalStateChangedExternally;
+            }
+        }
+    }
+
+    private GoalDetails? _goalDetails;
+
     private GoalState State { get; set; } = GoalState.Unknown;
 
     private DateOnly _day = DateOnly.FromDateTime(DateTime.Today);
@@ -19,6 +42,16 @@
     protected override async Task OnParametersSetAsync()
     {
         await GetLastDay();
+    }
+
+    private void OnGoalStateChangedExternally(object? sender, (DateTime date, GoalState state) e)
+    {
+        Console.WriteLine($"External Change ({Goal}): {e.date}, {e.state}");
+        InvokeAsync(async () =>
+        {
+            await GetLastDay();
+            StateHasChanged();
+        });
     }
 
     private async Task GetLastDay()
@@ -57,8 +90,16 @@
             NotificationService.Success($"State changed to {state}");
             await OnStateUpdated.InvokeAsync();
         }
-        
+
         await GetLastDay();
+    }
+
+    public void Dispose()
+    {
+        if (GoalDetails is not null)
+        {
+            GoalDetails.OnGoalStateChanged -= OnGoalStateChangedExternally;
+        }
     }
 
 }

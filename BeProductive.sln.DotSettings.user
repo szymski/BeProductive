@@ -2,4 +2,5 @@
 	<s:String x:Key="/Default/CodeInspection/ExcludedFiles/FilesAndFoldersToSkip2/=1CE64F8D_002D6D63_002D493A_002D8CD8_002DF4B205C4064B_002Fd_003APages_002Ff_003ACounter_002Erazor_002Fz_003A2_002D0/@EntryIndexedValue">ForceIncluded</s:String>
 	<s:String x:Key="/Default/Environment/AssemblyExplorer/XmlDocument/@EntryValue">&lt;AssemblyExplorer&gt;&#xD;
   &lt;Assembly Path="C:\Users\szymski\.nuget\packages\oneof\2.1.155\lib\netstandard1.3\OneOf.dll" /&gt;&#xD;
-&lt;/AssemblyExplorer&gt;</s:String></wpf:ResourceDictionary>
+&lt;/AssemblyExplorer&gt;</s:String>
+	</wpf:ResourceDictionary>
