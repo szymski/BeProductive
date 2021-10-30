@@ -28,7 +28,7 @@
         </div>
     </Content>
 
-    @if (SelectedGoal != null)
+    @if (SelectedGoal != null && _goalContexts.ContainsKey(SelectedGoal))
     {
         <Sider Theme="SiderTheme.Light" Style="margin-left: 1rem" Width="400">
             <CascadingValue Value="@_goalContexts[SelectedGoal]">
@@ -49,6 +49,7 @@
     private Goal? SelectedGoal { get; set; }
 
     private GoalDetails? _goalDetails;
+    private bool _firstGoalSet = false;
 
     private IReadOnlyList<Goal> _goals;
     private Dictionary<Goal, GoalContext> _goalContexts = new();
@@ -58,9 +59,19 @@
         _goals = await GoalService.GetGoals();
     }
 
+    protected override void OnAfterRender(bool firstRender)
+    {
+        if (SelectedGoal is null && _goalDetails is null && GoalId.HasValue && !_firstGoalSet)
+        {
+            _firstGoalSet = true;
+            SelectedGoal = _goals.SingleOrDefault(goal => goal.Id == GoalId);
+            StateHasChanged();
+        }
+    }
+
     protected override void OnParametersSet()
     {
-        if (GoalId.HasValue)
+        if (GoalId.HasValue && _goalDetails is not null)
         {
             SelectedGoal = _goals.SingleOrDefault(goal => goal.Id == GoalId);
         }
@@ -71,7 +82,7 @@
         Console.ForegroundColor = ConsoleColor.Magenta;
         Console.WriteLine($"Context ({context?.Goal.Id}): {context}");
         Console.ResetColor();
-        
+
         var url = NavigationManager.GetUriWithQueryParameter(nameof(GoalId), context.Goal.Id);
         NavigationManager.NavigateTo(url);
     }

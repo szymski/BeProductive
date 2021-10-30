@@ -31,6 +31,7 @@
 
     private void OnGoalStateChangedExternally(object? sender, (DateOnly date, GoalState state) args)
     {
+        
         var (date, state) = args;
 
         if (date != _day || state != State)
