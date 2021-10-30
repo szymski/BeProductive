@@ -11,14 +11,13 @@
         <Space Direction="DirectionVHType.Vertical" Style="width: 100%">
             @foreach (var goal in _goals)
             {
-                <CascadingValue Value="@(goal == SelectedGoal ? _goalDetails : null)" Name="@nameof(GoalDetails)">
+                <GoalContext @ref="@_goalContexts[goal]" Goal="goal">
                     <SpaceItem>
                         <GoalListEntry
-                            Goal="@goal"
-                            OnClick="() => OpenGoalDetails(goal)"
+                            OnClick="() => OpenGoalDetails(_goalContexts[goal])"
                             Selected="@(goal == SelectedGoal)"/>
                     </SpaceItem>
-                </CascadingValue>
+                </GoalContext>
             }
         </Space>
 
@@ -32,7 +31,11 @@
     @if (SelectedGoal != null)
     {
         <Sider Theme="SiderTheme.Light" Style="margin-left: 1rem" Width="400">
-            <GoalDetails @ref="_goalDetails" Goal="@SelectedGoal"/>
+            <CascadingValue Value="@_goalContexts[SelectedGoal]">
+                <CascadingValue Value="@SelectedGoal">
+                    <GoalDetails @ref="@_goalDetails"/>
+                </CascadingValue>
+            </CascadingValue>
         </Sider>
     }
 </Layout>
@@ -48,6 +51,7 @@
     private GoalDetails? _goalDetails;
 
     private IReadOnlyList<Goal> _goals;
+    private Dictionary<Goal, GoalContext> _goalContexts = new();
 
     protected override async Task OnInitializedAsync()
     {
@@ -62,9 +66,13 @@
         }
     }
 
-    private void OpenGoalDetails(Goal goal)
+    private void OpenGoalDetails(GoalContext context)
     {
-        var url = NavigationManager.GetUriWithQueryParameter(nameof(GoalId), goal.Id);
+        Console.ForegroundColor = ConsoleColor.Magenta;
+        Console.WriteLine($"Context ({context?.Goal.Id}): {context}");
+        Console.ResetColor();
+        
+        var url = NavigationManager.GetUriWithQueryParameter(nameof(GoalId), context.Goal.Id);
         NavigationManager.NavigateTo(url);
     }
 

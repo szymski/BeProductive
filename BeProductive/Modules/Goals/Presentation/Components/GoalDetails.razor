@@ -19,10 +19,25 @@
 
     private int _lastGoalId = 0;
 
-    [Parameter]
+    [CascadingParameter]
+    public GoalContext GoalContext
+    {
+        get => _goalContext!;
+        set
+        {
+            if (_goalContext is not null)
+            {
+                _goalContext.GoalStateChanged -= OnGoalStateChangedExternally;
+            }
+            _goalContext = value;
+            _goalContext.GoalStateChanged += OnGoalStateChangedExternally;
+        }
+    }
+
+    private GoalContext? _goalContext;
+
+    [CascadingParameter]
     public Goal Goal { get; set; }
-    
-    public EventHandler<(DateTime date, GoalState state)>? OnGoalStateChanged { get; set; }
 
     private DateTime _date = DateTime.Today;
 
@@ -62,9 +77,19 @@
     private async Task GoalStateChanged((DateTime date, GoalState state) args)
     {
         var (date, state) = args;
-        await GoalDomainService.SetStateForDay(Goal, DateOnly.FromDateTime(date), state);
-        await UpdateStates();
-        OnGoalStateChanged?.Invoke(this, args);
+        await GoalContext.SetGoalState(DateOnly.FromDateTime(date), state);
+        // await GoalDomainService.SetStateForDay(Goal, DateOnly.FromDateTime(date), state);
+        // await UpdateStates();
+        // OnGoalStateChanged?.Invoke(this, args);
+    }
+
+    private void OnGoalStateChangedExternally(object? sender, (DateOnly date, GoalState state) e)
+    {
+        Console.ForegroundColor = ConsoleColor.Yellow;
+        Console.WriteLine($"OnGoalStateChangedExternally ({GoalContext.Goal.Id}): {GoalContext}");
+        Console.ResetColor();
+        
+        InvokeAsync(UpdateStates);
     }
 
 }

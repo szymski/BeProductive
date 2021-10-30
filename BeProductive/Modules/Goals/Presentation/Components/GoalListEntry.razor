@@ -22,7 +22,7 @@
                 <Text Disabled>@Goal.Id</Text>
             </SpaceItem>
             <SpaceItem Style="float: right; margin-left: auto;">
-                <ContextGoalStateSelector Goal="@Goal" OnStateUpdated="OnGoalStateUpdated" />
+                <ContextGoalStateSelector/>
             </SpaceItem>
         </Space>
         @* <Button Type="@ButtonType.Default" Style="width: 40px; height: 40px; float: right; z-index: 1" OnClick="() => { }">&nbsp;</Button> *@
@@ -31,7 +31,7 @@
 
 @code {
 
-    [Parameter]
+    [CascadingParameter]
     public Goal Goal { get; set; }
 
     [Parameter]
@@ -39,13 +39,14 @@
 
     [Parameter]
     public EventCallback<MouseEventArgs> OnClick { get; set; }
-    
+
     [CascadingParameter(Name = nameof(GoalDetails))]
     public GoalDetails? GoalDetails { get; set; }
 
-    private async Task OnGoalStateUpdated()
-    {
-        await GoalDetails?.UpdateStates();
-    }
+    // TODO
+    // private async Task OnGoalStateUpdated()
+    // {
+    //     await GoalDetails?.UpdateStates();
+    // }
 
 }

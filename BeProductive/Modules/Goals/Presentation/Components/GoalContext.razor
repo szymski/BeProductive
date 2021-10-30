@@ -1,0 +1,30 @@
+﻿@using BeProductive.Modules.Goals.Domain
+@using BeProductive.Modules.Goals.Domain.Services
+@inject GoalDomainService GoalDomainService
+
+<CascadingValue Value="this">
+    <CascadingValue Value="Goal">
+        @ChildContent
+    </CascadingValue>
+</CascadingValue>
+
+@code {
+    
+    [Parameter]
+    public Goal Goal { get; set; }
+
+    [Parameter]
+    public RenderFragment ChildContent { get; set; }
+    
+    public event EventHandler<(DateOnly date, GoalState state)> GoalStateChanged; 
+
+    public async Task SetGoalState(DateOnly date, GoalState state)
+    {
+        var wasChanged = await GoalDomainService.SetStateForDay(Goal, date, state);
+        if (wasChanged)
+        {
+            NotificationService.Success($"State changed to {state} for {date}");
+            GoalStateChanged?.Invoke(this, (date, state));
+        }
+    }
+}
