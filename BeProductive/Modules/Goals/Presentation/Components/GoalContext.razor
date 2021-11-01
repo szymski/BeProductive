@@ -18,12 +18,6 @@
     
     public event EventHandler<(DateOnly date, GoalState state)> GoalStateChanged;
 
-    // protected override void OnParametersSet()
-    // {
-    //     Console.WriteLine($"OnParametersSet {Goal.Id}");
-    //     InvokeAsync(StateHasChanged);
-    // }
-
     public async Task SetGoalState(DateOnly date, GoalState state)
     {
         var wasChanged = await GoalDomainService.SetStateForDay(Goal, date, state);

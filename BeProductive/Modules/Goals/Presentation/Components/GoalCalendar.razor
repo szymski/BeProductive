@@ -1,12 +1,57 @@
 ﻿@using BeProductive.Modules.Goals.Domain
 @using BeProductive.Modules.Goals.Presentation.Models
 
-<Calendar
-    FullScreen="false"
-    DateCellRender="DateCellRender"
-    OnChange="DateChanged"
-    Value="@_date"
-    />
+<div style="text-align: center; background: white">
+    <Calendar
+        @ref="_calendar"
+        FullScreen="false"
+        DateCellRender="DateCellRender"
+        OnChange="DateChanged"
+        Value="@_date"/>
+
+    <Space Style="margin-bottom: 1rem; display: flex">
+        @RenderButton(IconType.Outline.Left, () => AddMonth(-1))
+        <SpaceItem Style="width: 100%">
+            @_date.ToString("MMMM")
+        </SpaceItem>
+        @RenderButton(IconType.Outline.Right, () => AddMonth(1))
+    </Space>
+</div>
+
+@code {
+
+    private RenderFragment RenderButton(string icon, Func<Task> callback)
+    {
+        return (
+            @<SpaceItem>
+                <Button Type="@ButtonType.Default" Shape="@ButtonShape.CircleOutline" Icon="@icon" OnClick="@callback"/>
+            </SpaceItem>
+            );
+    }
+
+}
+
+@* @code { *@
+@* *@
+@*     private RenderFragment HeaderRender(CalendarHeaderRenderArgs arg) *@
+@*     { *@
+@*         return @<CascadingValue Value="@_calendar" Name="Calendar"> *@
+@*                    <CascadingValue Value=@("ant-picker-calendar") Name="PrefixCls"> *@
+@*                        <Space Style=""> *@
+@*                            <SpaceItem> *@
+@*                                <Button Type="@ButtonType.Default" Shape="@ButtonShape.CircleOutline" Icon="@IconType.Outline.Left"/> *@
+@*                            </SpaceItem> *@
+@*                            <SpaceItem> *@
+@*                                <Button Type="@ButtonType.Default" Shape="@ButtonShape.CircleOutline" Icon="@IconType.Outline.Right"/> *@
+@*                            </SpaceItem> *@
+@*                        </Space> *@
+@*                        <CalendarHeader/> *@
+@*                    </CascadingValue> *@
+@*                </CascadingValue>; *@
+@*     } *@
+@* *@
+@* } *@
+
 
 @code {
 
@@ -19,10 +64,17 @@
     [Parameter]
     public EventCallback<(DateTime date, GoalState state)> OnGoalStateChanged { get; set; }
 
+    private Calendar _calendar;
+
     private DateTime _date = DateTime.Today;
 
     private RenderFragment DateCellRender(DateTime datetime)
     {
+        if (!DateHelper.IsSameMonth(datetime, _date))
+        {
+            return @<RenderFragment/>;
+        }
+        
         var date = DateOnly.FromDateTime(datetime);
 
         var dayState = DayStates.SingleOrDefault(dayState => dayState.Day == date);
@@ -54,6 +106,12 @@
             GoalState.Emergency => "#fa9a44",
             _ => "transparent"
             };
+
+    private async Task AddMonth(int direction)
+    {
+        var newDate = _date.AddMonths(direction);
+        _date = newDate;
+    }
 
     private async Task DateChanged(DateTime date)
     {
