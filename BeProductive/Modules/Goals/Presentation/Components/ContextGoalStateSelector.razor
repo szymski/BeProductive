@@ -5,6 +5,7 @@
 <GoalStateSelector
     State="@State"
     Text="@_day.DayOfWeek.ToString()[..3].ToUpper()"
+    Date="@_day.ToDateTime(TimeOnly.MinValue)"
     StateChanged="OnGoalStateChanged"/>
 
 @code {

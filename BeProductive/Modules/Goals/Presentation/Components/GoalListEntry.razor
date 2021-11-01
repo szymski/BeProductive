@@ -19,14 +19,13 @@
                 <Text Strong Style="font-size: 18px">
                     @Goal.Name
                 </Text>
-                <Text Disabled>@Goal.Id</Text>
-                <Text Strong >@GoalContext.Goal.Id</Text>
+                @* <Text Disabled>@Goal.Id</Text> *@
+                @* <Text Strong >@GoalContext.Goal.Id</Text> *@
             </SpaceItem>
             <SpaceItem Style="float: right; margin-left: auto;">
                 <ContextGoalStateSelector/>
             </SpaceItem>
         </Space>
-        @* <Button Type="@ButtonType.Default" Style="width: 40px; height: 40px; float: right; z-index: 1" OnClick="() => { }">&nbsp;</Button> *@
     </Card>
 </div>
 

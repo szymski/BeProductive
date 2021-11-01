@@ -1,6 +1,9 @@
 ﻿@using BeProductive.Modules.Goals.Domain
 
-<Space Direction="DirectionVHType.Vertical">
+<Space Direction="DirectionVHType.Vertical" Style="text-align: center">
+    <SpaceItem>
+        <Text Strong>@Date.ToString("d")</Text>
+    </SpaceItem>
     @StateButton(GoalState.Success, "Success", Color.Green7)
     @StateButton(GoalState.Failure, "Failed", Color.Red6)
     @StateButton(GoalState.Emergency, "Emergency", Color.Orange5)
@@ -21,6 +24,9 @@
 
 @code {
 
+    [Parameter]
+    public DateTime Date { get; set; } = DateTime.Today;
+    
     [Parameter]
     public GoalState State { get; set; }
 

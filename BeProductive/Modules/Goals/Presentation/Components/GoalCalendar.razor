@@ -7,12 +7,12 @@
         FullScreen="false"
         DateCellRender="DateCellRender"
         OnChange="DateChanged"
-        Value="@_date"/>
+        Value="@Date"/>
 
     <Space Style="margin-bottom: 1rem; display: flex">
         @RenderButton(IconType.Outline.Left, () => AddMonth(-1))
         <SpaceItem Style="width: 100%">
-            @_date.ToString("MMMM")
+            @Date.ToString("MMMM")
         </SpaceItem>
         @RenderButton(IconType.Outline.Right, () => AddMonth(1))
     </Space>
@@ -57,6 +57,9 @@
 
     [Parameter]
     public IEnumerable<DayState> DayStates { get; set; } = Enumerable.Empty<DayState>();
+    
+    [Parameter]
+    public DateTime Date { get; set; } = DateTime.Today;
 
     [Parameter]
     public EventCallback<DateTime> OnMonthChanged { get; set; }
@@ -66,15 +69,13 @@
 
     private Calendar _calendar;
 
-    private DateTime _date = DateTime.Today;
-
     private RenderFragment DateCellRender(DateTime datetime)
     {
-        if (!DateHelper.IsSameMonth(datetime, _date))
+        if (!DateHelper.IsSameMonth(datetime, Date))
         {
             return @<RenderFragment/>;
         }
-        
+
         var date = DateOnly.FromDateTime(datetime);
 
         var dayState = DayStates.SingleOrDefault(dayState => dayState.Day == date);
@@ -91,6 +92,7 @@
                 </ChildContent>
                 <ContentTemplate>
                     <GoalStatePopoverContent
+                        Date="@datetime"
                         State="@(dayState?.State ?? GoalState.Unknown)"
                         OnStateButtonClick="state => OnGoalStateChanged.InvokeAsync((datetime, state))"/>
                 </ContentTemplate>
@@ -109,14 +111,14 @@
 
     private async Task AddMonth(int direction)
     {
-        var newDate = _date.AddMonths(direction);
-        _date = newDate;
+        var newDate = Date.AddMonths(direction);
+        await DateChanged(newDate);
     }
 
     private async Task DateChanged(DateTime date)
     {
-        var isSameMonth = DateHelper.IsSameMonth(date, _date);
-        _date = date;
+        var isSameMonth = DateHelper.IsSameMonth(date, Date);
+        Date = date;
 
         if (!isSameMonth)
         {
