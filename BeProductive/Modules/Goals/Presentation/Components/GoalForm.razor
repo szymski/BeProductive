@@ -10,7 +10,7 @@
             @(Type == GoalFormType.New ? "Add goal" : $"Edit goal{(GoalName != null ? $" - {GoalName}" : "")}")
         </PageHeaderTitle>
         <PageHeaderContent>
-            <Form Model="@Value" OnFinish="@OnFinish">
+            <Form Model="@Value" OnFinish="@OnFinished">
                 <FormItem Label="Name">
                     <Input @bind-Value="@context.Name"/>
                 </FormItem>
@@ -26,8 +26,11 @@
                 }
                 else if (Type == GoalFormType.Edit)
                 {
-                    <Space Style="display: flex; justify-content: end;">
+                    <Space Style="width: 100%">
                         <SpaceItem>
+                            <Button Danger Type="@ButtonType.Primary" OnClick="@OnDeleted">Delete</Button>
+                        </SpaceItem>
+                        <SpaceItem Style="margin-left: auto">
                             <Button Type="@ButtonType.Default" OnClick=@(() => JS.InvokeVoidAsync("history.back"))>Cancel</Button>
                         </SpaceItem>
                         <SpaceItem>
@@ -58,6 +61,9 @@
     public GoalModel Value { get; set; }
 
     [Parameter]
-    public EventCallback OnFinish { get; set; }
+    public EventCallback OnFinished { get; set; }
+    
+    [Parameter]
+    public EventCallback OnDeleted { get; set; }
 
 }

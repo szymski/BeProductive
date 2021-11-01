@@ -9,6 +9,11 @@
 <Layout Style="min-height: 100%">
     <Content>
         <Space Direction="DirectionVHType.Vertical" Style="width: 100%">
+            @if (_goals.Count == 0)
+            {
+                <Empty Description=@("You have no goals defined. Add the first one by clicking the button below.")/>
+            }
+            
             @foreach (var goal in _goals)
             {
                 <GoalContext @ref="@_goalContexts[goal]" Goal="goal">
@@ -98,4 +103,6 @@
 {
     public static string GetUrlWithSelectedGoal(Goal goal) =>
         QueryHelpers.AddQueryString("/", "GoalId", goal.Id.ToString());
+
+    public static string Url => "/";
 }

@@ -37,6 +37,12 @@ public class GoalService
         return goal;
     }
 
+    public async Task DeleteGoal(Goal goal)
+    {
+        _context.Goals.Remove(goal);
+        await _context.SaveChangesAsync();
+    }
+
     public async Task<IReadOnlyList<GoalDayState>> GetStatesForMonth(Goal goal, DateTime date)
     {
         var (firstDay, lastDate) = DateHelper.FirstAndLastDayOfMonth(DateOnly.FromDateTime(date));
