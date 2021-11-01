@@ -1,7 +1,7 @@
 ﻿@page "/rituals"
-@using Rituals.Presentation.Components
+@page "/rituals/{ActiveTab}"
 
-<Tabs Animated>
+<Tabs Animated ActiveKey="@ActiveTab" ActiveKeyChanged="@OnTabChanged">
     <TabPane Tab="Morning ritual" Key="morning">
         <RitualsTab Type="@RitualType.Morning"/>
     </TabPane>
@@ -11,5 +11,35 @@
 </Tabs>
 
 @code {
+
+    [Parameter]
+    public string ActiveTab { get; set; } = "morning";
+
+    protected override void OnInitialized()
+    {
+        if (string.IsNullOrEmpty(ActiveTab))
+        {
+            NavigationManager.NavigateTo(GetUrlForType(RitualType.Morning), replace: true);
+        }
+    }
+    
+    private void OnTabChanged(string key)
+    {
+        NavigationManager.NavigateTo(GetUrlForType(key), replace: true);
+    }
+
+}
+
+@code {
+
+    public static string GetUrlForType(RitualType type)
+    {
+        return $"/rituals/{type.ToString().ToLower()}";
+    }
+    
+    public static string GetUrlForType(string type)
+    {
+        return $"/rituals/{type.ToString().ToLower()}";
+    }
 
 }

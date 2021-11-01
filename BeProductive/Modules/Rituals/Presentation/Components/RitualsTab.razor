@@ -1,4 +1,9 @@
-﻿@foreach (var ritual in _rituals)
+﻿@if (_rituals.Count == 0 && !_addingNew)
+{
+    <Empty Description=@("You have no ritual steps. Add the first step by clicking the button below.")/>
+}
+
+@foreach (var ritual in _rituals)
 {
     <RitualListEntry
         Title="@ritual.Title"
@@ -17,7 +22,7 @@ else
 {
     <div>
         <Button Size="large" Block Type="@ButtonType.Link" Icon="@IconType.Outline.Plus" @onclick="StartAddingEntry">
-            Add entry
+            Add step
         </Button>
     </div>
 }
@@ -46,7 +51,7 @@ else
             ritual.Title = newTitle;
             await RitualDomainService.UpdateRitual(ritual);
         }
-        catch(Exception e)
+        catch (Exception e)
         {
             ritual.Title = oldTitle;
             throw e;
@@ -57,7 +62,7 @@ else
     {
         await RitualDomainService.RemoveRitual(ritual);
         _rituals.Remove(ritual);
-        
+
         NotificationService.Success($"Removed {ritual.Type} ritual ({ritual.Title})");
     }
 
@@ -74,14 +79,14 @@ else
     private async Task AddNewEntry(string title)
     {
         _addingNew = false;
-        
+
         var ritual = await RitualDomainService.AddRitual(new()
         {
             Title = title,
             Type = Type,
         });
         _rituals.Add(ritual);
-        
+
         NotificationService.Success($"Added new {ritual.Type} ritual");
     }
 
