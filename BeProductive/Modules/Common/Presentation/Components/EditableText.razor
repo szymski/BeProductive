@@ -1,0 +1,97 @@
+﻿@if (!Editing)
+{
+    <RenderFragment>
+        <Text @attributes="@Attributes">
+            @Text
+        </Text>
+        <Button
+            Shape="@ButtonShape.Circle"
+            Icon="@IconType.Outline.Edit"
+            Size="@AntSizeLDSType.Small"
+            Type="@ButtonType.Link"
+            @onclick="StartEditing"/>
+    </RenderFragment>
+}
+else
+{
+    <Input
+        Style="width: 500px"
+        Placeholder="Enter title"
+        @bind-Value="@_editText"
+        @onkeyup="OnInputKeyPress"/>
+    <Button
+        Shape="@ButtonShape.CircleOutline"
+        Icon="@IconType.Outline.Check"
+        Type="@ButtonType.Primary"
+        Loading="@Loading"
+        @onclick="Save"/>
+    <Button
+        Shape="@ButtonShape.CircleOutline"
+        Icon="@IconType.Outline.Close"
+        Type="@ButtonType.Default"
+        disabled="@Loading"
+        @onclick="Cancel"/>
+}
+
+@code {
+
+    [Parameter]
+    public string Text { get; set; } = "";
+
+    [Parameter]
+    public EventCallback<string> TextChanged { get; set; }
+
+    [Parameter]
+    public bool Loading { get; set; }
+
+    [Parameter(CaptureUnmatchedValues = true)]
+    public Dictionary<string, object> Attributes { get; set; }
+
+    public bool Editing { get; set; }
+
+    public string _editText = "";
+
+
+    private async Task OnInputKeyPress(KeyboardEventArgs args)
+    {
+        switch (args.Key)
+        {
+            case "Enter":
+                await Save();
+                break;
+            case "Escape":
+                Cancel();
+                break;
+        }
+    }
+
+    private void StartEditing()
+    {
+        _editText = Text;
+        Editing = true;
+    }
+
+    private async Task Save()
+    {
+        if (Loading) return;
+
+        Loading = true;
+        Text = _editText;
+        try
+        {
+            await TextChanged.InvokeAsync(_editText);
+        }
+        finally
+        {
+            Editing = false;
+            Loading = false;
+        }
+    }
+
+    private void Cancel()
+    {
+        if (Loading) return;
+        Editing = false;
+    }
+
+}
