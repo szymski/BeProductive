@@ -1,0 +1,34 @@
+﻿@implements IDisposable
+
+@if (!string.IsNullOrEmpty(Layout.Title))
+{
+    <PageHeader Title="@Layout.Title" Subtitle="@Layout.Subtitle"/>
+}
+
+@code {
+
+    protected override void OnInitialized()
+    {
+        Layout.OnUpdate += OnUpdate;
+        NavigationManager.LocationChanged += OnNavigation;
+    }
+
+    private void OnNavigation(object? sender, LocationChangedEventArgs e)
+    {
+    // Layout.Reset();
+    // InvokeAsync(StateHasChanged);
+    }
+
+    public void Dispose()
+    {
+        Layout.OnUpdate -= OnUpdate;
+        NavigationManager.LocationChanged -= OnNavigation;
+    }
+
+    private void OnUpdate()
+    {
+        Console.WriteLine("Updated");
+        InvokeAsync(StateHasChanged);
+    }
+
+}

@@ -1,6 +1,10 @@
 ﻿@page "/goal/{GoalId:int}/edit"
 @using BeProductive.Modules.Goals.Presentation.Models
 
+@{
+    Layout.Title = "";
+}
+
 <GoalForm
     Type="GoalForm.GoalFormType.Edit"
     GoalName="@_goal.Name"

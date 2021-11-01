@@ -1,6 +1,10 @@
 ﻿@page "/add-goal"
 @using BeProductive.Modules.Goals.Presentation.Models
 
+@{
+    Layout.Title = "";
+}
+
 <GoalForm Type="GoalForm.GoalFormType.New" Value="@_model" OnFinished="@OnFinish"/>
 
 @code {

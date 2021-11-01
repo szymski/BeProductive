@@ -1,6 +1,10 @@
 ﻿@page "/rituals"
 @page "/rituals/{ActiveTab}"
 
+@{
+    Layout.Title = "Rituals";
+}
+
 <Tabs Animated ActiveKey="@ActiveTab" ActiveKeyChanged="@OnTabChanged">
     <TabPane Tab="Morning ritual" Key="morning">
         <RitualsTab Type="@RitualType.Morning"/>

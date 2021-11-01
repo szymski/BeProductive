@@ -9,8 +9,13 @@
 
     <ItemGroup>
       <PackageReference Include="AntDesign" Version="0.10.1" />
+      <PackageReference Include="blazor-dragdrop" Version="2.3.0" />
       <PackageReference Include="LibSassBuilder" Version="1.6.4" />
       <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="6.0.0-rc.2.21480.5" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Folder Include="Modules\Common\Presentation\Layout" />
     </ItemGroup>
 
 </Project>

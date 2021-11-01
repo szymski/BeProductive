@@ -1,19 +1,20 @@
 ﻿@inherits LayoutComponentBase
 
-<PageTitle>Test</PageTitle>
-
 <Layout Style="min-height: 100%">
     <Sidebar/>
-    
+
     <Layout>
-        <Header Style="background: transparent; font-size: 24px">
-            Goal list
-        </Header>
-        
+        <ContextPageHeader/>
+
         <Content Style="padding: 1rem">
             @Body
         </Content>
-        
-        <Footer Style="background: cornflowerblue">Footer</Footer>
+
+        <Footer Style="background: white; text-align: right">
+            <Text Disabled>Copyright Szymon Jankowski © @(DateTime.Today.Year) </Text>
+        </Footer>
     </Layout>
 </Layout>
+
+@code {
+}

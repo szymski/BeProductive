@@ -4,6 +4,10 @@
 @inject NavigationManager NavigationManager
 @inject GoalService GoalService
 
+@{
+    Layout.Title = "Goals";
+}
+
 <PageTitle>Goal list</PageTitle>
 
 <Layout Style="min-height: 100%">
@@ -13,7 +17,7 @@
             {
                 <Empty Description=@("You have no goals defined. Add the first one by clicking the button below.")/>
             }
-            
+
             @foreach (var goal in _goals)
             {
                 <GoalContext @ref="@_goalContexts[goal]" Goal="goal">
