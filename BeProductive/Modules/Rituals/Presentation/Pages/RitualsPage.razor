@@ -1,0 +1,15 @@
+﻿@page "/rituals"
+@using Rituals.Presentation.Components
+
+<Tabs Animated>
+    <TabPane Tab="Morning ritual" Key="morning">
+        <RitualsTab Type="@RitualType.Morning"/>
+    </TabPane>
+    <TabPane Tab="Evening ritual" Key="evening">
+        <RitualsTab Type="@RitualType.Evening"/>
+    </TabPane>
+</Tabs>
+
+@code {
+
+}

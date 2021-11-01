@@ -1,0 +1,88 @@
+﻿@foreach (var ritual in _rituals)
+{
+    <RitualListEntry
+        Title="@ritual.Title"
+        OnChangesSaved="title => UpdateEntry(ritual, title)"
+        OnRemoved="() => RemoveEntry(ritual)"/>
+}
+
+@if (_addingNew)
+{
+    <RitualListEntry
+        Adding
+        OnChangesSaved="AddNewEntry"
+        OnEditCancelled="CancelEditing"/>
+}
+else
+{
+    <div>
+        <Button Size="large" Block Type="@ButtonType.Link" Icon="@IconType.Outline.Plus" @onclick="StartAddingEntry">
+            Add entry
+        </Button>
+    </div>
+}
+
+@code {
+
+    [Parameter]
+    public RitualType Type { get; set; }
+
+    private List<Ritual> _rituals = new();
+
+    private bool _addingNew = false;
+
+    protected override async Task OnInitializedAsync()
+    {
+        var rituals = await RitualDomainService.GetRituals(Type);
+        _rituals = rituals.ToList();
+    }
+
+    private async Task UpdateEntry(Ritual ritual, string newTitle)
+    {
+        var oldTitle = ritual.Title;
+
+        try
+        {
+            ritual.Title = newTitle;
+            await RitualDomainService.UpdateRitual(ritual);
+        }
+        catch(Exception e)
+        {
+            ritual.Title = oldTitle;
+            throw e;
+        }
+    }
+
+    private async Task RemoveEntry(Ritual ritual)
+    {
+        await RitualDomainService.RemoveRitual(ritual);
+        _rituals.Remove(ritual);
+        
+        NotificationService.Success($"Removed {ritual.Type} ritual ({ritual.Title})");
+    }
+
+    private void StartAddingEntry()
+    {
+        _addingNew = true;
+    }
+
+    private void CancelEditing()
+    {
+        _addingNew = false;
+    }
+
+    private async Task AddNewEntry(string title)
+    {
+        _addingNew = false;
+        
+        var ritual = await RitualDomainService.AddRitual(new()
+        {
+            Title = title,
+            Type = Type,
+        });
+        _rituals.Add(ritual);
+        
+        NotificationService.Success($"Added new {ritual.Type} ritual");
+    }
+
+}

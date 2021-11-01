@@ -1,0 +1,70 @@
+﻿<Card Class="card" Bordered="true" Size="small" Hoverable>
+    <Space Style="width: 100%">
+        <SpaceItem>
+            <EditableText
+                Editing="@Adding"
+                Strong Style="font-size: 16px"
+                MinLength="3"
+                MaxLength="255"
+                Text="@Title"
+                TextChanged="OnTitleEdited"
+                OnCancelled="OnEditCancelled"/>
+        </SpaceItem>
+        @if (!Adding)
+        {
+            <SpaceItem Style="margin-left: auto">
+                <Tooltip Title=@("Remove")>
+                    <Button Danger
+                            Loading="@_isLoadingRemove"
+                            Shape="@ButtonShape.Circle"
+                            Icon="@IconType.Outline.Close"
+                            Size="@AntSizeLDSType.Default"
+                            Type="@ButtonType.Default"
+                            OnClick="@OnRemoveButtonClick"/>
+                </Tooltip>
+            </SpaceItem>
+        }
+    </Space>
+</Card>
+
+@code {
+
+    [Parameter]
+    [EditorRequired]
+    public string Title { get; set; }
+
+    [Parameter]
+    public bool Adding { get; set; }
+
+    [Parameter]
+    public EventCallback OnEditCancelled { get; set; }
+
+    [Parameter]
+    public EventCallback<string> OnChangesSaved { get; set; }
+
+    [Parameter]
+    public EventCallback OnRemoved { get; set; }
+
+    private bool _isLoadingRemove = false;
+
+    private async Task OnTitleEdited(string newValue)
+    {
+        Title = newValue;
+        await OnChangesSaved.InvokeAsync(newValue);
+    }
+
+    private async Task OnRemoveButtonClick()
+    {
+        if (_isLoadingRemove) return;
+        _isLoadingRemove = true;
+        try
+        {
+            await OnRemoved.InvokeAsync();
+        }
+        finally
+        {
+            _isLoadingRemove = false;
+        }
+    }
+
+}

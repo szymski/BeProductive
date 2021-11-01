@@ -17,6 +17,7 @@ else
     <Input
         Style="width: 500px"
         Placeholder="Enter title"
+        Disabled="@Loading"
         @bind-Value="@_editText"
         autofocus
         @onkeyup="OnInputKeyPress"/>
@@ -24,6 +25,7 @@ else
         Shape="@ButtonShape.CircleOutline"
         Icon="@IconType.Outline.Check"
         Type="@ButtonType.Primary"
+        Disabled="@(!IsValid)"
         Loading="@Loading"
         @onclick="Save"/>
     <Button
@@ -43,15 +45,28 @@ else
     public EventCallback<string> TextChanged { get; set; }
 
     [Parameter]
+    public EventCallback OnCancelled { get; set; }
+
+    [Parameter]
     public bool Loading { get; set; }
 
     [Parameter(CaptureUnmatchedValues = true)]
     public Dictionary<string, object> Attributes { get; set; }
 
+    [Parameter]
     public bool Editing { get; set; }
 
-    public string _editText = "";
+    [Parameter]
+    public int MinLength { get; set; } = 0;
 
+    [Parameter]
+    public int MaxLength { get; set; } = int.MaxValue;
+
+    private string? _editText = "";
+
+    private bool IsValid
+        => _editText is not null &&
+            _editText.Length >= MinLength && _editText.Length <= MaxLength;
 
     private async Task OnInputKeyPress(KeyboardEventArgs args)
     {
@@ -61,7 +76,7 @@ else
                 await Save();
                 break;
             case "Escape":
-                Cancel();
+                await Cancel();
                 break;
         }
     }
@@ -74,7 +89,7 @@ else
 
     private async Task Save()
     {
-        if (Loading) return;
+        if (Loading || !IsValid) return;
 
         if (_editText == Text)
         {
@@ -83,7 +98,7 @@ else
         }
 
         Loading = true;
-        Text = _editText;
+        Text = _editText!;
 
         try
         {
@@ -96,10 +111,11 @@ else
         }
     }
 
-    private void Cancel()
+    private async Task Cancel()
     {
         if (Loading) return;
         Editing = false;
+        await OnCancelled.InvokeAsync();
     }
 
 }

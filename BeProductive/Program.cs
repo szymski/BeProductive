@@ -3,6 +3,7 @@ global using AppContext = BeProductive.Modules.Common.Persistence.AppContext;
 using BeProductive.Modules.Common.Infrastructure;
 using BeProductive.Modules.Common.Persistence;
 using BeProductive.Modules.Goals.Infrastructure;
+using BeProductive.Modules.Rituals.Infrastructure;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -15,7 +16,8 @@ builder.Services.AddCommonModule(options =>
 {
     options.DbFile = "database.db";
 });
-builder.Services.AddGoalModule();
+builder.Services.AddGoalsModule();
+builder.Services.AddRitualsModule();
 
 var app = builder.Build();
 
