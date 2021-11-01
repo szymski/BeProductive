@@ -20,6 +20,7 @@
                     @Goal.Name
                 </Text>
                 <Text Disabled>@Goal.Id</Text>
+                <Text Strong >@GoalContext.Goal.Id</Text>
             </SpaceItem>
             <SpaceItem Style="float: right; margin-left: auto;">
                 <ContextGoalStateSelector/>
@@ -33,6 +34,9 @@
 
     [CascadingParameter]
     public Goal Goal { get; set; }
+    
+    [CascadingParameter]
+    public GoalContext GoalContext { get; set; }
 
     [Parameter]
     public bool Selected { get; set; }
@@ -40,8 +44,8 @@
     [Parameter]
     public EventCallback<MouseEventArgs> OnClick { get; set; }
 
-    [CascadingParameter(Name = nameof(GoalDetails))]
-    public GoalDetails? GoalDetails { get; set; }
+    // [CascadingParameter(Name = nameof(GoalDetails))]
+    // public GoalDetails? GoalDetails { get; set; }
 
     // TODO
     // private async Task OnGoalStateUpdated()

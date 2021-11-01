@@ -13,23 +13,18 @@
 
 <Layout Style="min-height: 100%">
     <Content>
-        <Space Direction="DirectionVHType.Vertical" Style="width: 100%">
-            @if (_goals.Count == 0)
-            {
-                <Empty Description=@("You have no goals defined. Add the first one by clicking the button below.")/>
-            }
+        @if (_goals.Count == 0)
+        {
+            <Empty Description=@("You have no goals defined. Add the first one by clicking the button below.")/>
+        }
 
-            @foreach (var goal in _goals)
-            {
-                <GoalContext @ref="@_goalContexts[goal]" Goal="goal">
-                    <SpaceItem>
-                        <GoalListEntry
-                            OnClick="() => OpenGoalDetails(_goalContexts[goal])"
-                            Selected="@(goal == SelectedGoal)"/>
-                    </SpaceItem>
-                </GoalContext>
-            }
-        </Space>
+        <Dropzone Items="_goals" DragEnd="DragEnd">
+            <GoalContext @key="@context" @ref="@context.Context" Goal="@context.Goal">
+                <GoalListEntry
+                    OnClick="() => OpenGoalDetails(context.Context)"
+                    Selected="@(context == SelectedGoal)"/>
+            </GoalContext>
+        </Dropzone>
 
         <div>
             <Button Size="large" Block Type="@ButtonType.Link" Icon="@IconType.Outline.Plus" @onclick="NavigateToAddGoal">
@@ -47,11 +42,11 @@
         }
     </Content>
 
-    @if (SelectedGoal != null && _goalContexts.ContainsKey(SelectedGoal))
+    @if (SelectedGoal is not null)
     {
         <Sider Theme="SiderTheme.Light" Style="margin-left: 1rem" Width="400">
-            <CascadingValue Value="@_goalContexts[SelectedGoal]">
-                <CascadingValue Value="@SelectedGoal">
+            <CascadingValue Value="@SelectedGoal.Context">
+                <CascadingValue Value="@SelectedGoal.Goal">
                     <GoalDetails @ref="@_goalDetails"/>
                 </CascadingValue>
             </CascadingValue>
@@ -61,47 +56,38 @@
 
 @code {
 
+    private record GoalEntry(Goal Goal, GoalContext? Context = null)
+    {
+        public GoalContext? Context { get; set; } = Context;
+    }
+
     [Parameter]
     [SupplyParameterFromQuery]
     public int? GoalId { get; set; }
 
-    private Goal? SelectedGoal { get; set; }
+    private GoalEntry? SelectedGoal { get; set; }
 
     private GoalDetails? _goalDetails;
-    private bool _firstGoalSet = false;
 
-    private IReadOnlyList<Goal> _goals;
-    private Dictionary<Goal, GoalContext> _goalContexts = new();
+    private List<GoalEntry> _goals;
 
     protected override async Task OnInitializedAsync()
     {
-        _goals = await GoalService.GetGoals();
-    }
-
-    protected override void OnAfterRender(bool firstRender)
-    {
-        if (SelectedGoal is null && _goalDetails is null && GoalId.HasValue && !_firstGoalSet)
-        {
-            _firstGoalSet = true;
-            SelectedGoal = _goals.SingleOrDefault(goal => goal.Id == GoalId);
-            StateHasChanged();
-        }
+        _goals = (await GoalService.GetGoals())
+            .Select(goal => new GoalEntry(goal))
+            .ToList();
     }
 
     protected override void OnParametersSet()
     {
-        if (GoalId.HasValue && _goalDetails is not null)
+        if (GoalId.HasValue)
         {
-            SelectedGoal = _goals.SingleOrDefault(goal => goal.Id == GoalId);
+            SelectedGoal = _goals.SingleOrDefault(goal => goal.Goal.Id == GoalId);
         }
     }
 
     private void OpenGoalDetails(GoalContext context)
     {
-        Console.ForegroundColor = ConsoleColor.Magenta;
-        Console.WriteLine($"Context ({context?.Goal.Id}): {context}");
-        Console.ResetColor();
-
         var url = NavigationManager.GetUriWithQueryParameter(nameof(GoalId), context.Goal.Id);
         NavigationManager.NavigateTo(url);
     }
@@ -114,15 +100,45 @@
     private async Task SeedGoal()
     {
         var faker = new Bogus.DataSets.Commerce();
-        
+
         var goal = await GoalService.AddGoal(new()
         {
             Color = GoalColors.RandomColor,
             Icon = GoalIcons.RandomIcon,
             Name = faker.Department(),
+            Order = _goals.Count,
         });
 
         await OnInitializedAsync();
+    }
+
+    private async Task ReorderEntries()
+    {
+        var previousOrder = _goals.Select(entry => entry.Goal.Order).ToArray();
+
+        _goals.ForEach((entry, i) => entry.Goal.Order = i);
+        var currentOrder = _goals.Select(entry => entry.Goal.Order).ToArray();
+
+        _goals.ForEach(Console.WriteLine);
+
+        if (!previousOrder.SequenceEqual(currentOrder))
+        {
+            Console.WriteLine("Order differs, updating");
+            var goalOrders = _goals
+                .Select((entry, i) => new KeyValuePair<Goal, int>(entry.Goal, i));
+            await GoalService.UpdateOrders(goalOrders);
+        }
+
+    // _goals = (await GoalService.GetGoals())
+    //     .Select(goal => new GoalEntry(goal))
+    //     .ToList();
+    //
+    // await InvokeAsync(StateHasChanged);
+    }
+
+    private async void DragEnd(GoalEntry _)
+    {
+        await ReorderEntries();
     }
 
 }

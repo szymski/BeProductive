@@ -19,13 +19,9 @@
 
     private DateOnly _day = DateOnly.FromDateTime(DateTime.Today);
 
-    protected override void OnInitialized()
+    protected override async Task OnInitializedAsync()
     {
         GoalContext.GoalStateChanged += OnGoalStateChangedExternally;
-    }
-
-    protected override async Task OnParametersSetAsync()
-    {
         await GetLastDay();
     }
 
