@@ -1,6 +1,7 @@
 @page "/"
 @page "/goal"
 @using Microsoft.AspNetCore.WebUtilities
+@using BeProductive.Modules.Goals.Domain
 @inject NavigationManager NavigationManager
 @inject GoalService GoalService
 
@@ -35,6 +36,15 @@
                 Add goal
             </Button>
         </div>
+
+        @if (HostEnvironment.IsDevelopment())
+        {
+            <div>
+                <Button Size="large" Block Type="@ButtonType.Link" Icon="@IconType.Outline.Thunderbolt" OnClick="SeedGoal">
+                    Seed
+                </Button>
+            </div>
+        }
     </Content>
 
     @if (SelectedGoal != null && _goalContexts.ContainsKey(SelectedGoal))
@@ -101,12 +111,28 @@
         NavigationManager.NavigateTo("/add-goal");
     }
 
+    private async Task SeedGoal()
+    {
+        var faker = new Bogus.DataSets.Commerce();
+        
+        var goal = await GoalService.AddGoal(new()
+        {
+            Color = GoalColors.RandomColor,
+            Icon = GoalIcons.RandomIcon,
+            Name = faker.Department(),
+        });
+
+        await OnInitializedAsync();
+    }
+
 }
 
 @code
 {
+
     public static string GetUrlWithSelectedGoal(Goal goal) =>
         QueryHelpers.AddQueryString("/", "GoalId", goal.Id.ToString());
 
     public static string Url => "/";
+
 }

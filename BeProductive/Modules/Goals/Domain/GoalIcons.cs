@@ -33,4 +33,6 @@ public static class GoalIcons
         "tablet",
         "schedule",
     };
+    
+    public static string RandomIcon => Icons[Random.Shared.Next(Icons.Length)];
 }

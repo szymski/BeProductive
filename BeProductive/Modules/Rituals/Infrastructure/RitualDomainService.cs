@@ -16,6 +16,7 @@ public class RitualDomainService
     {
         return await _context.Rituals
             .Where(ritual => ritual.Type == type)
+            .OrderBy(ritual => ritual.Order)
             .ToListAsync();
     }
 
@@ -36,6 +37,23 @@ public class RitualDomainService
     public async Task RemoveRitual(Ritual ritual)
     {
         _context.Rituals.Remove(ritual);
+        await _context.SaveChangesAsync();
+    }
+
+    public async Task UpdateOrders(IEnumerable<KeyValuePair<Ritual, int>> ritualOrders)
+    {
+        var ritualIds = ritualOrders.Select(x => x.Key);
+        
+        var rituals = await _context.Rituals
+            .Where(ritual => ritualIds.Contains(ritual))
+            .ToArrayAsync();
+
+        foreach (var (ritual, order) in ritualOrders)
+        {
+            var entity = rituals.Single(r => r.Id == ritual.Id);
+            entity.Order = order;
+        }
+
         await _context.SaveChangesAsync();
     }
 }

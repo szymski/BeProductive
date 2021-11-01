@@ -4,6 +4,7 @@ using BeProductive.Modules.Common.Infrastructure;
 using BeProductive.Modules.Common.Persistence;
 using BeProductive.Modules.Goals.Infrastructure;
 using BeProductive.Modules.Rituals.Infrastructure;
+using Plk.Blazor.DragDrop;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -11,6 +12,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddRazorPages();
 builder.Services.AddServerSideBlazor();
 builder.Services.AddAntDesign();
+builder.Services.AddBlazorDragDrop();
 
 builder.Services.AddCommonModule(options =>
 {

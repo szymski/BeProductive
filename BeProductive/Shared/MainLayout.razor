@@ -17,4 +17,13 @@
 </Layout>
 
 @code {
+
+    protected override void OnInitialized()
+    {
+        NotificationService.Config(new()
+        {
+            Placement = NotificationPlacement.BottomLeft,
+        });
+    }
+
 }

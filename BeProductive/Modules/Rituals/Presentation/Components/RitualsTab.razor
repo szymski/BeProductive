@@ -1,15 +1,17 @@
-﻿@if (_rituals.Count == 0 && !_addingNew)
+﻿@using Bogus
+
+@if (_rituals.Count == 0 && !_addingNew)
 {
     <Empty Description=@("You have no ritual steps. Add the first step by clicking the button below.")/>
 }
 
-@foreach (var ritual in _rituals)
-{
+<Dropzone Items="@_rituals" DragEnd="OnDragEnd">
     <RitualListEntry
-        Title="@ritual.Title"
-        OnChangesSaved="title => UpdateEntry(ritual, title)"
-        OnRemoved="() => RemoveEntry(ritual)"/>
-}
+        Title="@context.Title"
+        Number="@(context.Order + 1)"
+        OnChangesSaved="title => UpdateEntry(context, title)"
+        OnRemoved="() => RemoveEntry(context)"/>
+</Dropzone>
 
 @if (_addingNew)
 {
@@ -25,6 +27,14 @@ else
             Add step
         </Button>
     </div>
+    @if (HostEnvironment.IsDevelopment())
+    {
+        <div>
+            <Button Size="large" Block Type="@ButtonType.Link" Icon="@IconType.Outline.Thunderbolt" @onclick="SeedEntry">
+                Seed
+            </Button>
+        </div>
+    }
 }
 
 @code {
@@ -40,6 +50,25 @@ else
     {
         var rituals = await RitualDomainService.GetRituals(Type);
         _rituals = rituals.ToList();
+        await ReorderEntries();
+    }
+
+    private async Task ReorderEntries()
+    {
+        var previousOrder = _rituals.Select(ritual => ritual.Order).ToArray();
+
+        _rituals.ForEach((ritual, i) => ritual.Order = i);
+        var currentOrder = _rituals.Select(ritual => ritual.Order).ToArray();
+
+        _rituals.ForEach(Console.WriteLine);
+
+        if (!previousOrder.SequenceEqual(currentOrder))
+        {
+            Console.WriteLine("Order differs, updating");
+            var ritualOrders = _rituals
+                .Select((ritual, i) => new KeyValuePair<Ritual, int>(ritual, i));
+            await RitualDomainService.UpdateOrders(ritualOrders);
+        }
     }
 
     private async Task UpdateEntry(Ritual ritual, string newTitle)
@@ -62,6 +91,7 @@ else
     {
         await RitualDomainService.RemoveRitual(ritual);
         _rituals.Remove(ritual);
+        await ReorderEntries();
 
         NotificationService.Success($"Removed {ritual.Type} ritual ({ritual.Title})");
     }
@@ -84,10 +114,29 @@ else
         {
             Title = title,
             Type = Type,
+            Order = _rituals.Count,
         });
         _rituals.Add(ritual);
 
         NotificationService.Success($"Added new {ritual.Type} ritual");
+    }
+
+    private async void OnDragEnd(Ritual _)
+    {
+        Console.WriteLine($"Drag End {DateTime.Now}");
+        await ReorderEntries();
+    }
+
+    private async Task SeedEntry()
+    {
+        var faker = new Bogus.DataSets.Name("pl");
+        var ritual = await RitualDomainService.AddRitual(new()
+        {
+            Title = faker.FullName(),
+            Type = Type,
+            Order = _rituals.Count,
+        });
+        _rituals.Add(ritual);
     }
 
 }

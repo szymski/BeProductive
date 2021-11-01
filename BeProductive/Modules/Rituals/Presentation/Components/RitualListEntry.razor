@@ -1,6 +1,12 @@
 ﻿<Card Class="card" Bordered="true" Size="small" Hoverable>
     <Space Style="width: 100%">
         <SpaceItem>
+            @if (Number is not null)
+            {
+                <RenderFragment>
+                    <Text Style="color: #aaa; font-size: 16px; margin-right: 4px">@Number.</Text>
+                </RenderFragment>
+            }
             <EditableText
                 Editing="@Adding"
                 Strong Style="font-size: 16px"
@@ -34,6 +40,9 @@
     public string Title { get; set; }
 
     [Parameter]
+    public int? Number { get; set; }
+
+    [Parameter]
     public bool Adding { get; set; }
 
     [Parameter]
@@ -46,6 +55,7 @@
     public EventCallback OnRemoved { get; set; }
 
     private bool _isLoadingRemove = false;
+
 
     private async Task OnTitleEdited(string newValue)
     {
