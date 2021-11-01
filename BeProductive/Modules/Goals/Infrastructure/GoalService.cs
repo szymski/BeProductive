@@ -13,9 +13,11 @@ public class GoalService
         _context = context;
     }
 
-    public async Task<IReadOnlyList<Goal>> GetGoals()
+    public async Task<List<Goal>> GetGoals()
     {
-        return await _context.Goals.ToListAsync();
+        return await _context.Goals
+            .OrderBy(goal => goal.Order)
+            .ToListAsync();
     }
 
     public async Task<Goal?> GetGoal(int id)
@@ -32,6 +34,8 @@ public class GoalService
 
     public async Task<Goal> AddGoal(Goal goal)
     {
+        var count = await _context.Goals.CountAsync();
+        goal.Order = count;
         await _context.Goals.AddAsync(goal);
         await _context.SaveChangesAsync();
         return goal;
@@ -61,5 +65,22 @@ public class GoalService
             .Query()
             .OrderByDescending(goal => goal.Day)
             .FirstOrDefaultAsync();
+    }
+
+    public async Task UpdateOrders(IEnumerable<KeyValuePair<Goal, int>> goalOrders)
+    {
+        var goalIds = goalOrders.Select(x => x.Key);
+
+        var goals = await _context.Goals
+            .Where(goal => goalIds.Contains(goal))
+            .ToArrayAsync();
+
+        foreach (var (goal, order) in goalOrders)
+        {
+            var entity = goals.Single(r => r.Id == goal.Id);
+            entity.Order = order;
+        }
+
+        await _context.SaveChangesAsync();
     }
 }
