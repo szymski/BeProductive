@@ -18,6 +18,7 @@ else
         Style="width: 500px"
         Placeholder="Enter title"
         @bind-Value="@_editText"
+        autofocus
         @onkeyup="OnInputKeyPress"/>
     <Button
         Shape="@ButtonShape.CircleOutline"
@@ -80,10 +81,10 @@ else
             Editing = false;
             return;
         }
-        
+
         Loading = true;
         Text = _editText;
-        
+
         try
         {
             await TextChanged.InvokeAsync(_editText);
