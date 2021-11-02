@@ -1,0 +1,19 @@
+﻿@using Markdig
+
+@_markup
+
+@code {
+
+    [Parameter]
+    public string Value { get; set; } = "";
+    
+    private MarkdownPipeline _pipeline = new MarkdownPipelineBuilder().UseEmojiAndSmiley().UseAdvancedExtensions().Build();
+
+    private MarkupString _markup;
+
+    protected override void OnParametersSet()
+    {
+        _markup = new (Markdig.Markdown.ToHtml(Value, _pipeline));
+    }
+
+}

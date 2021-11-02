@@ -12,6 +12,7 @@
       <PackageReference Include="blazor-dragdrop" Version="2.3.0" />
       <PackageReference Include="bogus" Version="33.1.1" />
       <PackageReference Include="LibSassBuilder" Version="1.6.4" />
+      <PackageReference Include="Markdig" Version="0.26.0" />
       <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="6.0.0-rc.2.21480.5" />
     </ItemGroup>
 

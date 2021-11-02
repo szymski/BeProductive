@@ -1,0 +1,17 @@
+﻿@page "/todo"
+@{
+    Layout.Title = "TODO List";
+}
+
+<Card>
+    <Body>
+        <Markdown Value="@_markdown"/>
+    </Body>
+</Card>
+
+
+@code {
+
+    private string _markdown = File.ReadAllText("TODO.md");
+
+}
