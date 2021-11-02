@@ -1,0 +1,9 @@
+﻿.sidebar {
+    background: white;
+    border-right: 1px solid #ececec;
+    height: 100%;
+}
+
+::deep .menu  {
+    margin-top: -4px
+}
