@@ -61,8 +61,6 @@ else
         _rituals.ForEach((ritual, i) => ritual.Order = i);
         var currentOrder = _rituals.Select(ritual => ritual.Order).ToArray();
 
-        _rituals.ForEach(Console.WriteLine);
-
         if (!previousOrder.SequenceEqual(currentOrder))
         {
             Console.WriteLine("Order differs, updating");

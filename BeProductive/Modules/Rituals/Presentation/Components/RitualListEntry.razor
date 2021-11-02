@@ -1,4 +1,4 @@
-﻿<Card Class="card" Bordered="true" Size="small" Hoverable>
+﻿<Card Class="ritual-entry" Bordered="true" Size="small" Hoverable>
     <Space Style="width: 100%">
         <SpaceItem>
             @if (Number is not null)
@@ -9,7 +9,8 @@
             }
             <EditableText
                 Editing="@Adding"
-                Strong Style="font-size: 16px"
+                Strong
+                Style="font-size: 16px"
                 MinLength="3"
                 MaxLength="255"
                 Text="@Title"
@@ -32,6 +33,16 @@
         }
     </Space>
 </Card>
+
+<style>
+    .ritual-entry .editable-text-button {
+        opacity: 0;
+    }
+    
+    .ritual-entry:hover .editable-text-button {
+            opacity: 1;
+        }
+</style>
 
 @code {
 
