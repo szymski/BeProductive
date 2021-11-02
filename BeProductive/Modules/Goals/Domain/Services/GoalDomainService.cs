@@ -5,14 +5,18 @@ namespace BeProductive.Modules.Goals.Domain.Services;
 public class GoalDomainService
 {
     private readonly AppContext _context;
+    private readonly ILogger<GoalDomainService> _logger;
 
-    public GoalDomainService(AppContext context)
+    public GoalDomainService(AppContext context, ILogger<GoalDomainService> logger)
     {
         _context = context;
+        _logger = logger;
     }
 
     public async Task<bool> SetStateForDay(Goal goal, DateOnly day, GoalState state)
     {
+        _logger.LogInformation("Setting goal {@Goal} state for day {Day} to {State}", goal, day, state);
+        
         var entry = await _context.Entry(goal)
             .Collection(goal => goal.GoalDayStates)
             .Query()

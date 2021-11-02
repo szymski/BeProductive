@@ -6,10 +6,12 @@ namespace BeProductive.Modules.Rituals.Infrastructure;
 public class RitualDomainService
 {
     private readonly AppContext _context;
+    private readonly ILogger<RitualDomainService> _logger;
 
-    public RitualDomainService(AppContext context)
+    public RitualDomainService(AppContext context, ILogger<RitualDomainService> logger)
     {
         _context = context;
+        _logger = logger;
     }
 
     public async Task<IReadOnlyList<Ritual>> GetRituals(RitualType type)
@@ -24,11 +26,13 @@ public class RitualDomainService
     {
         await _context.Rituals.AddAsync(ritual);
         await _context.SaveChangesAsync();
+        _logger.LogInformation("Added ritual {@Ritual}", ritual);
         return ritual;
     }
 
     public async Task<Ritual> UpdateRitual(Ritual ritual)
     {
+        _logger.LogInformation("Updating ritual {@Ritual}", ritual);
         _context.Rituals.Update(ritual);
         await _context.SaveChangesAsync();
         return ritual;
@@ -42,8 +46,12 @@ public class RitualDomainService
 
     public async Task UpdateOrders(IEnumerable<KeyValuePair<Ritual, int>> ritualOrders)
     {
+        _logger.LogDebug("Updating ritual orders for {@Rituals} to {@Orders}",
+            ritualOrders.Select(x => x.Key),
+            ritualOrders.Select(x => x.Value));
+
         var ritualIds = ritualOrders.Select(x => x.Key);
-        
+
         var rituals = await _context.Rituals
             .Where(ritual => ritualIds.Contains(ritual))
             .ToArrayAsync();

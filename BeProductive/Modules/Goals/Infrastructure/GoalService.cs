@@ -7,10 +7,12 @@ namespace BeProductive.Modules.Goals.Infrastructure;
 public class GoalService
 {
     private readonly AppContext _context;
+    private readonly ILogger<GoalService> _logger;
 
-    public GoalService(AppContext context)
+    public GoalService(AppContext context, ILogger<GoalService> logger)
     {
         _context = context;
+        _logger = logger;
     }
 
     public async Task<List<Goal>> GetGoals()
@@ -25,8 +27,9 @@ public class GoalService
         return await _context.Goals.FindAsync(id);
     }
 
-    public async Task<Goal> SaveGoal(Goal goal)
+    public async Task<Goal> UpdateGoal(Goal goal)
     {
+        _logger.LogInformation("Updating goal {@Goal}", goal);
         _context.Goals.Update(goal);
         await _context.SaveChangesAsync();
         return goal;
@@ -38,11 +41,13 @@ public class GoalService
         goal.Order = count;
         await _context.Goals.AddAsync(goal);
         await _context.SaveChangesAsync();
+        _logger.LogInformation("Added new goal {@Goal}", goal);
         return goal;
     }
 
     public async Task DeleteGoal(Goal goal)
     {
+        _logger.LogInformation("Deleting goal {@Goal}", goal);
         _context.Goals.Remove(goal);
         await _context.SaveChangesAsync();
     }

@@ -31,7 +31,7 @@
     private async Task OnFinished()
     {
         var goal = _model.ApplyToGoal(_goal);
-        await GoalService.SaveGoal(goal);
+        await GoalService.UpdateGoal(goal);
         
         NotificationService.Success("The goal has been updated");
 

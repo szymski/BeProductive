@@ -1,25 +1,28 @@
 ﻿using System.Diagnostics;
 using BeProductive.Modules.Goals.Domain;
 using BeProductive.Modules.Rituals.Domain;
+using BeProductive.Modules.Users.Domain;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
 namespace BeProductive.Modules.Common.Persistence;
 
 public static class DbUtils
 {
-    public static async Task InitializeDb(AppContext context)
+    public static async Task InitializeDb(AppContext context, UserManager<User> userManager)
     {
         // var builder = new DbContextOptionsBuilder<AppContext>(options);
         // await using var context = new AppContext(builder.Options);
 
         await context.Database.EnsureCreatedAsync();
-        SeedDb(context);
+        SeedDb(context, userManager);
     }
 
-    private static void SeedDb(AppContext context)
+    private static void SeedDb(AppContext context, UserManager<User> userManager)
     {
         SeedGoals(context);
         SeedRituals(context);
+        SeedUsers(context, userManager);
 
         context.SaveChanges();
     }
@@ -55,5 +58,32 @@ public static class DbUtils
             new() { Type = RitualType.Evening, Title = "Zgasić światła", Order = 1 },
             new() { Type = RitualType.Evening, Title = "Pożegnać Natalkę", Order = 2 },
         });
+    }
+
+    private static void SeedUsers(AppContext context, UserManager<User> userManager)
+    {
+        if(context.Users.Any()) return;
+
+        Console.WriteLine("Seeding users");
+        
+        var task = userManager.CreateAsync(new ()
+        {
+            UserName = "user",
+            FullName = "Test User",
+
+        }, "pwd123");
+        task.Wait();
+
+        var result = task.Result;
+
+        if (result.Succeeded)
+        {
+            Console.WriteLine("Seeding user succeeded");
+        }
+        else
+        {
+            Console.Error.WriteLine("Seeding user failed");
+            Console.Error.WriteLine(result.Errors.Aggregate("", (acc, err) => acc + err.Description + "\n"));
+        }
     }
 }

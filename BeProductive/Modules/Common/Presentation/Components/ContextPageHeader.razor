@@ -7,6 +7,9 @@
 
 @code {
 
+    [CascadingParameter]
+    public AuthenticationState AuthenticationState { get; set; }
+    
     protected override void OnInitialized()
     {
         Layout.OnUpdate += OnUpdate;
