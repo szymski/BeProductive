@@ -2,7 +2,7 @@
 @using Microsoft.AspNetCore.Mvc.Razor
 
 <div>
-    <Popover @ref="_popover" Trigger=@(new Trigger[] { Trigger.Hover, Trigger.Focus }) Placement="Placement.Left">
+    <Popover @ref="_popover" Trigger=@(new Trigger[] { Trigger.Click }) Placement="Placement.Left">
         <ChildContent>
             <Button Class=@($"goal-state-selector {StateToClass(State)}") Type="@ButtonType.Default">@Text</Button>
         </ChildContent>

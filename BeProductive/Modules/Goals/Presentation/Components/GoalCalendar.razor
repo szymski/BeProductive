@@ -1,5 +1,6 @@
 ﻿@using BeProductive.Modules.Goals.Domain
 @using BeProductive.Modules.Goals.Presentation.Models
+@using Serilog
 
 <div style="text-align: center; background: white">
     <Calendar
@@ -57,7 +58,7 @@
 
     [Parameter]
     public IEnumerable<DayState> DayStates { get; set; } = Enumerable.Empty<DayState>();
-    
+
     [Parameter]
     public DateTime Date { get; set; } = DateTime.Today;
 
@@ -68,6 +69,8 @@
     public EventCallback<(DateTime date, GoalState state)> OnGoalStateChanged { get; set; }
 
     private Calendar _calendar;
+    
+    private Dictionary<DateTime, Popover> _popoversByDate = new();
 
     private RenderFragment DateCellRender(DateTime datetime)
     {
@@ -80,9 +83,17 @@
 
         var dayState = DayStates.SingleOrDefault(dayState => dayState.Day == date);
 
+        Task OnStateButtonClick(GoalState state)
+        {
+            _popoversByDate[datetime].Close();
+            return OnGoalStateChanged.InvokeAsync((datetime, state));
+        }
+
         return (
             @<Popover
-                 Trigger=@(new Trigger[] { Trigger.Focus, Trigger.Hover })
+                 @ref="@_popoversByDate[datetime]"
+                 @key="datetime"
+                 Trigger=@(new Trigger[] { Trigger.Click })
                  Placement="Placement.Bottom"
                  Style="position: absolute; inset: 0">
                 <ChildContent>
@@ -94,7 +105,7 @@
                     <GoalStatePopoverContent
                         Date="@datetime"
                         State="@(dayState?.State ?? GoalState.Unknown)"
-                        OnStateButtonClick="state => OnGoalStateChanged.InvokeAsync((datetime, state))"/>
+                        OnStateButtonClick="OnStateButtonClick"/>
                 </ContentTemplate>
             </Popover>
             );
