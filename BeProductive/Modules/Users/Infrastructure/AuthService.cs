@@ -1,4 +1,5 @@
 ﻿using System.Security.Claims;
+using System.Security.Principal;
 using BeProductive.Modules.Users.Domain;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
@@ -31,6 +32,18 @@ public class AuthService
         _jsRuntime = jsRuntime;
         _logger = logger;
         _authenticationStateProvider = authenticationStateProvider;
+    }
+    
+    public async Task<bool> IsLoggedIn() 
+    {
+        var state = await _authenticationStateProvider.GetAuthenticationStateAsync();
+        return state.User.Identity?.IsAuthenticated ?? false;
+    }
+
+    public async Task<IIdentity?> GetAuthState()
+    {
+        var state = await _authenticationStateProvider.GetAuthenticationStateAsync();
+        return state.User.Identity?.IsAuthenticated == true ? state.User.Identity : null;   
     }
 
     public async Task<bool> SignIn(string username, string password)

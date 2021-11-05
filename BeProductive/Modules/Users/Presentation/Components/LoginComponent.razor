@@ -1,0 +1,81 @@
+﻿@using System.ComponentModel.DataAnnotations
+@using System.ComponentModel
+@inject AuthService AuthService
+@inject ILogger<LoginComponent> Logger
+
+<Card>
+    <TitleTemplate>
+        Please login
+    </TitleTemplate>
+    <Body>
+        @if (_isError)
+        {
+            <Alert Type="@AlertType.Error"
+                   Message="Invalid username or password"
+                   ShowIcon="true"
+                   Banner="true"
+                   Style="margin-bottom: 1rem"/>
+        }
+        <Form Model="@_model" Loading="@_loading" OnFinish="OnLogin">
+            <FormItem>
+                <Input placeholder="Username" @bind-Value="@context.Username"/>
+            </FormItem>
+            <FormItem>
+                <InputPassword placeholder="Password" @bind-Value="@context.Password"/>
+            </FormItem>
+            <FormItem Style="margin-bottom: 0">
+                <Button Block Type="@ButtonType.Primary" HtmlType="submit">
+                    Sign in
+                </Button>
+            </FormItem>
+        </Form>
+    </Body>
+</Card>
+
+@code {
+
+    private bool _isError;
+    private bool _loading;
+
+    class Model
+    {
+        [Required]
+        public string Username { get; set; }
+
+        [Required]
+        public string Password { get; set; }
+    }
+
+    private Model _model = new();
+
+
+    private async Task OnLogin(EditContext arg)
+    {
+        try
+        {
+            _isError = false;
+            _loading = true;
+
+            var loginTask = AuthService.SignIn(_model.Username, _model.Password);
+            await Task.WhenAll(Task.Delay(500), loginTask);
+
+            var loginSuccess = await loginTask;
+            if (!loginSuccess)
+            {
+                throw new("Invalid credentials");
+            }
+
+            Logger.LogInformation("Login succeeded for username {Username}", _model.Username);
+        }
+        catch (Exception e)
+        {
+            _isError = true;
+            Logger.LogWarning(e, "Login failed for username {Username}", _model.Username);
+        }
+        finally
+        {
+            _loading = false;
+        }
+    }
+
+}

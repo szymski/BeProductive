@@ -9,7 +9,6 @@
 @using Microsoft.Extensions.Options
 @inject SignInManager<User> SignInManager
 @inject UserManager<User> UserManager
-@inject AuthenticationStateProvider AuthenticationStateProvider
 @inject IHostEnvironmentAuthenticationStateProvider HostAuthentication
 @inject IOptionsMonitor<CookieAuthenticationOptions> CookieAuthenticationOptionsMonitor
 @inject IJSRuntime JSRuntime
@@ -43,17 +42,21 @@
         public string Password { get; set; } = "";
     }
 
-    [CascadingParameter]
-    public Task<AuthenticationState> AuthenticationState { get; set; }
-
     private string _status = "Loading...";
 
     private LoginFormModel _loginFormModel = new();
 
     protected override async Task OnParametersSetAsync()
     {
-        var state = await AuthenticationState;
-        _status = JsonSerializer.Serialize(state.User.Identity, new JsonSerializerOptions { WriteIndented = true });
+        var isLoggedIn = await AuthService.IsLoggedIn();
+        if(!isLoggedIn)
+        {
+            _status = "Not logged in";
+            return;
+        }
+        
+        var state = await AuthService.GetAuthState();
+        _status = JsonSerializer.Serialize(state, new JsonSerializerOptions { WriteIndented = true });
     }
 
     private async Task OnLoginClick()

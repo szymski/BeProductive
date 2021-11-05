@@ -11,7 +11,6 @@ using Microsoft.AspNetCore.Identity;
 using Plk.Blazor.DragDrop;
 using Serilog;
 using Serilog.Events;
-using Serilog.Sinks.SystemConsole.Themes;
 
 Log.Logger = new LoggerConfiguration()
     .MinimumLevel.Override("BeProductive", LogEventLevel.Debug)

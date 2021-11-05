@@ -1,6 +1,8 @@
-﻿@implements IDisposable
+﻿@using System.Security.Principal
+@inject AuthService AuthService
+@implements IDisposable
 
-<Sider Width="200">
+<Sider Width="200" Style="overflow: auto; height: 100vh; position: fixed; left: 0">
     <div class="sidebar">
         <div style="background: white; display: flex; flex-direction: column; justify-content: center; align-items: center; height: 72px; padding: 16px 0; font-size: 16px">
             <h1 style="border-bottom: 3px solid #1890ff; margin-bottom: -3px">beProductive</h1>
@@ -11,10 +13,35 @@
                 <MenuItem RouterLink="@route" RouterMatch="NavLinkMatch.Prefix" Title="@name"/>
             }
         </Menu>
+        <div class="footer">
+            <div>
+                @if (_userIdentity is not null)
+                {
+                    <Popover Trigger="new[] { Trigger.Click }">
+                        <ContentTemplate>
+                            <Button OnClick="OnLogoutClick">Logout</Button>
+                        </ContentTemplate>
+                        <ChildContent>
+                            <a style="display: flex; align-items: center; justify-content: center; padding: 0.2rem;">
+                                <Avatar Style="background: #278dff" Icon="user" Size="small"/>
+                                <Text Strong Style="margin-left: 5px; font-size: 16px; margin-bottom: 2px">@_userIdentity.Name</Text>
+                            </a>
+                        </ChildContent>
+                    </Popover>
+                }
+                else
+                {
+                    <Text>Not logged in</Text>
+                }
+            </div>
+            <Text Type="@TextElementType.Secondary">@_version</Text>
+        </div>
     </div>
 </Sider>
 
 @code {
+
+    private string _version = "";
 
     record MenuItem(string Name, string Route);
 
@@ -27,9 +54,14 @@
         new("Components", "/components"),
     };
 
-    protected override void OnInitialized()
+    private IIdentity? _userIdentity;
+
+    protected override async Task OnInitializedAsync()
     {
         NavigationManager.LocationChanged += OnLocationChanged;
+        _version = $"v{ThisAssembly.Info.Version} ({ThisAssembly.Info.Configuration})";
+
+        _userIdentity = await AuthService.GetAuthState();
     }
 
     public void Dispose()
@@ -40,6 +72,11 @@
     private void OnLocationChanged(object? sender, LocationChangedEventArgs args)
     {
         InvokeAsync(StateHasChanged);
+    }
+
+    private async Task OnLogoutClick()
+    {
+        await AuthService.Logout();
     }
 
 }
