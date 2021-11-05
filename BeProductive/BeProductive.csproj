@@ -28,4 +28,8 @@
     <ItemGroup>
         <Folder Include="Modules\Common\Presentation\Layout" />
     </ItemGroup>
+    
+    <ItemGroup>
+        <Content Include="TODO.md" CopyToPublishDirectory="PreserveNewest" />
+    </ItemGroup>
 </Project>
