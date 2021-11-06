@@ -12,6 +12,8 @@ using Plk.Blazor.DragDrop;
 using Serilog;
 using Serilog.Events;
 
+#region Logging
+
 Log.Logger = new LoggerConfiguration()
     .MinimumLevel.Override("BeProductive", LogEventLevel.Debug)
     .MinimumLevel.Override("Microsoft.AspNetCore", LogEventLevel.Warning)
@@ -28,6 +30,8 @@ Log.Logger = new LoggerConfiguration()
         outputTemplate: "[{Timestamp:HH:mm:ss} {Level:u4}] {SourceContext:l}: {Message:lj}{NewLine}{Exception}")
     .CreateLogger();
 
+#endregion
+
 var builder = WebApplication.CreateBuilder(args);
 builder.WebHost.UseSerilog();
 
@@ -37,7 +41,11 @@ builder.Services.AddServerSideBlazor();
 builder.Services.AddAntDesign();
 builder.Services.AddBlazorDragDrop();
 
-builder.Services.AddCommonModule(options => { options.DbFile = "database.db"; });
+builder.Services.AddCommonModule(options =>
+{
+    options.Database = builder.Configuration.GetRequiredSection("Database")
+        .Get<CommonModuleExtensions.DbOptions>();
+});
 builder.Services.AddUsersModule();
 builder.Services.AddGoalsModule();
 builder.Services.AddRitualsModule();
