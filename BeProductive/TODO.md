@@ -27,5 +27,5 @@
 - ✔ ~~User entity~~
 - ✔ ~~Login form~~
 - ✔ ~~State preservation~~
-- Add user to Goal, GoalDayState and Ritual entities
+- ✔ ~~Add user to Goal, GoalDayState and Ritual entities~~
 - Account edit page
