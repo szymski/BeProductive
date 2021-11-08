@@ -34,6 +34,12 @@ public class GoalDomainService
         }
         else
         {
+            if (day.ToDateTime(TimeOnly.MinValue) >= DateTime.Today.AddDays(1))
+            {
+                _logger.LogWarning("Attempted to change state to future date ({Date}) for goal {@Goal}", day, goal);
+                throw new ArgumentException("Cannot set state for future days");
+            }
+            
             if (entry?.State == state)
             {
                 return false;

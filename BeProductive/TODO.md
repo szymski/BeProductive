@@ -14,7 +14,7 @@
 
 ### Rituals
 - Automatic adding of ritual goals
-- 
+
 ### UI Improvements:
 - ✔ ~~Goal state selector animation when waiting for states~~
 
@@ -24,8 +24,8 @@
 - UI smiles for long streaks and sad faces for fails 
 
 ### Users:
-- User entity
-- Login form
-- State preservation
+- ✔ ~~User entity~~
+- ✔ ~~Login form~~
+- ✔ ~~State preservation~~
 - Add user to Goal, GoalDayState and Ritual entities
 - Account edit page

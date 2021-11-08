@@ -74,7 +74,8 @@
 
     private RenderFragment DateCellRender(DateTime datetime)
     {
-        if (!DateHelper.IsSameMonth(datetime, Date))
+        if (!DateHelper.IsSameMonth(datetime, Date)
+            || datetime >= DateTime.Today.AddDays(1))
         {
             return @<RenderFragment/>;
         }

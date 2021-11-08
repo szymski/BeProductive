@@ -66,7 +66,9 @@
         if (afterToday)
         {
             _day = DateOnly.FromDateTime(DateTime.Today);
-            State = lastState.State;
+
+            var isSameDay = DateHelper.IsSameDay(DateTime.Today, lastState.Day.ToDateTime(TimeOnly.MinValue));
+            State = isSameDay ? lastState.State : GoalState.Unknown;
         }
         else
         {

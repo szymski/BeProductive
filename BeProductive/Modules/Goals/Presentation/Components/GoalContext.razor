@@ -20,11 +20,18 @@
 
     public async Task SetGoalState(DateOnly date, GoalState state)
     {
-        var wasChanged = await GoalDomainService.SetStateForDay(Goal, date, state);
-        if (wasChanged)
+        try
         {
-            NotificationService.Success($"State changed to {state} for {date}");
-            GoalStateChanged?.Invoke(this, (date, state));
+            var wasChanged = await GoalDomainService.SetStateForDay(Goal, date, state);
+            if (wasChanged)
+            {
+                NotificationService.Success($"State changed to {state} for {date}");
+                GoalStateChanged?.Invoke(this, (date, state));
+            }
+        }
+        catch(Exception e)
+        {
+            NotificationService.Error($"Failed to change state to {state} for {date}");
         }
     }
 
