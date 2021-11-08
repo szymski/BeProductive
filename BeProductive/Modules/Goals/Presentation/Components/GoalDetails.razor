@@ -2,6 +2,7 @@
 @using BeProductive.Modules.Goals.Domain
 @using BeProductive.Modules.Goals.Domain.Services
 @using Microsoft.EntityFrameworkCore
+@using BeProductive.Modules.GoalExtensions.EmergencyGoal.Infrastructure
 @inject GoalService GoalService
 
 <Card Title="@Goal.Name">
@@ -9,15 +10,28 @@
         <a @onclick="NavigateToEditGoalPage">Edit</a>
     </Extra>
     <Body>
-    <GoalCalendar
-        DayStates="_dayStates"
-        OnMonthChanged="OnMonthChanged"
-        OnGoalStateChanged="GoalStateChanged"/>
+        <GoalCalendar
+            DayStates="_dayStates"
+            HasEmergencyGoal="@Goal.HasEmergencyGoal()"
+            OnMonthChanged="OnMonthChanged"
+            OnGoalStateChanged="GoalStateChanged"/>
+        
+        <Divider/>
+        
+        @if (Goal.EmergencyGoal is not null)
+        {
+            <h4>Emergency goal</h4>
+            @Goal.EmergencyGoal.Title
+        }
+        else
+        {
+            <RenderFragment>Emergency goal not defined</RenderFragment>
+        }
     </Body>
 </Card>
 
 @code {
-    
+
     private int _lastGoalId = 0;
 
     [CascadingParameter]
@@ -43,9 +57,9 @@
     private DateTime _date = DateTime.Today;
 
     private IEnumerable<DayState> _dayStates;
-    
+
     private bool _isUpdatingStates;
-    
+
     protected override async Task OnParametersSetAsync()
     {
         if (Goal.Id != _lastGoalId)
@@ -58,7 +72,7 @@
 
     public async Task UpdateStates()
     {
-        if(_isUpdatingStates) return;
+        if (_isUpdatingStates) return;
 
         _isUpdatingStates = true;
 
@@ -92,9 +106,9 @@
     {
         var (date, state) = args;
         await GoalContext.SetGoalState(DateOnly.FromDateTime(date), state);
-        // await GoalDomainService.SetStateForDay(Goal, DateOnly.FromDateTime(date), state);
-        // await UpdateStates();
-        // OnGoalStateChanged?.Invoke(this, args);
+    // await GoalDomainService.SetStateForDay(Goal, DateOnly.FromDateTime(date), state);
+    // await UpdateStates();
+    // OnGoalStateChanged?.Invoke(this, args);
     }
 
     private void OnGoalStateChangedExternally(object? sender, (DateOnly date, GoalState state) e)
@@ -102,7 +116,7 @@
         Console.ForegroundColor = ConsoleColor.Yellow;
         Console.WriteLine($"OnGoalStateChangedExternally ({GoalContext.Goal.Id}): {GoalContext}");
         Console.ResetColor();
-        
+
         InvokeAsync(UpdateStates);
     }
 

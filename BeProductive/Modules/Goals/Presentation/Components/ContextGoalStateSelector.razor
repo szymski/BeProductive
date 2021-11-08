@@ -1,5 +1,6 @@
 ﻿@using BeProductive.Modules.Goals.Domain
 @using BeProductive.Modules.Goals.Domain.Services
+@using BeProductive.Modules.GoalExtensions.EmergencyGoal.Infrastructure
 @inject GoalDomainService GoalDomainService
 
 <GoalStateSelector
@@ -7,6 +8,7 @@
     Text="@_day.DayOfWeek.ToString()[..3].ToUpper()"
     Date="@_day.ToDateTime(TimeOnly.MinValue)"
     IsToday="@_isToday"
+    HasEmergencyGoal="@Goal.HasEmergencyGoal()"
     StateChanged="OnGoalStateChanged"/>
 
 @code {

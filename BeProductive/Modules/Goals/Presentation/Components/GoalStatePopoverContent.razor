@@ -6,7 +6,10 @@
     </SpaceItem>
     @StateButton(GoalState.Success, "Success", Color.Green7)
     @StateButton(GoalState.Failure, "Failed", Color.Red6)
-    @StateButton(GoalState.Emergency, "Emergency", Color.Orange5)
+    @if (HasEmergencyGoal)
+    {
+        @StateButton(GoalState.Emergency, "Emergency", Color.Orange5)
+    }
     @if (State != GoalState.Unknown)
     {
         @StateButton(GoalState.Unknown, "Uncheck", Color.None, ButtonType.Default)
@@ -26,9 +29,12 @@
 
     [Parameter]
     public DateTime Date { get; set; } = DateTime.Today;
-    
+
     [Parameter]
     public GoalState State { get; set; }
+
+    [Parameter]
+    public bool HasEmergencyGoal { get; set; } = true;
 
     [Parameter]
     public EventCallback<GoalState> OnStateButtonClick { get; set; }

@@ -7,7 +7,7 @@
             <Button Class=@($"goal-state-selector {StateToClass(State)} {(IsToday ? "" : "waiting")}") Type="@ButtonType.Default">@Text</Button>
         </ChildContent>
         <ContentTemplate>
-            <GoalStatePopoverContent Date="@Date" State="@State" OnStateButtonClick="OnStateButtonClick"/>
+            <GoalStatePopoverContent Date="@Date" State="@State" HasEmergencyGoal="@HasEmergencyGoal" OnStateButtonClick="OnStateButtonClick"/>
         </ContentTemplate>
     </Popover>
 </div>
@@ -36,9 +36,12 @@
 
     [Parameter]
     public string Text { get; set; } = "MON";
-    
+
     [Parameter]
     public bool IsToday { get; set; } = true;
+
+    [Parameter]
+    public bool HasEmergencyGoal { get; set; }
 
     private void OnStateButtonClick(GoalState state)
     {

@@ -61,6 +61,9 @@
 
     [Parameter]
     public DateTime Date { get; set; } = DateTime.Today;
+    
+    [Parameter]
+    public bool HasEmergencyGoal { get; set; }
 
     [Parameter]
     public EventCallback<DateTime> OnMonthChanged { get; set; }
@@ -106,6 +109,7 @@
                     <GoalStatePopoverContent
                         Date="@datetime"
                         State="@(dayState?.State ?? GoalState.Unknown)"
+                        HasEmergencyGoal="HasEmergencyGoal"
                         OnStateButtonClick="OnStateButtonClick"/>
                 </ContentTemplate>
             </Popover>
