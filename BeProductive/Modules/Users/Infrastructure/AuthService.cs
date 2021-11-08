@@ -1,6 +1,7 @@
 ﻿using System.Security.Claims;
 using System.Security.Principal;
 using BeProductive.Modules.Users.Domain;
+using BeProductive.Modules.Users.Infrastructure.Data;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Components.Authorization;
@@ -19,12 +20,15 @@ public class AuthService
     private AuthenticationStateProvider _authenticationStateProvider;
     private ILogger<AuthService> _logger;
 
+    private AuthData? _currentAuthData;
+
     public AuthService(
         IOptionsMonitor<CookieAuthenticationOptions> cookieOptionsMonitor,
         IHostEnvironmentAuthenticationStateProvider hostAuthentication,
         SignInManager<User> signInManager,
         IJSRuntime jsRuntime,
-        ILogger<AuthService> logger, AuthenticationStateProvider authenticationStateProvider)
+        ILogger<AuthService> logger,
+        AuthenticationStateProvider authenticationStateProvider)
     {
         _cookieOptionsMonitor = cookieOptionsMonitor;
         _hostAuthentication = hostAuthentication;
@@ -32,9 +36,28 @@ public class AuthService
         _jsRuntime = jsRuntime;
         _logger = logger;
         _authenticationStateProvider = authenticationStateProvider;
+
+        authenticationStateProvider.AuthenticationStateChanged += OnAuthenticationStateProviderOnAuthenticationStateChanged;
+
+        OnAuthenticationStateProviderOnAuthenticationStateChanged(authenticationStateProvider.GetAuthenticationStateAsync());
     }
     
-    public async Task<bool> IsLoggedIn() 
+    private async void OnAuthenticationStateProviderOnAuthenticationStateChanged(Task<AuthenticationState> task)
+    {
+        var state = await task;
+        if (state.User.Identity?.IsAuthenticated != true)
+        {
+            _currentAuthData = null;
+            return;
+        }
+
+        var userId = int.Parse(state.User.FindFirst(ClaimTypes.NameIdentifier)!.Value);
+        var username = state.User.FindFirst(ClaimTypes.Name)!.Value;
+
+        _currentAuthData = new(userId, username);
+    }
+
+    public async Task<bool> IsLoggedIn()
     {
         var state = await _authenticationStateProvider.GetAuthenticationStateAsync();
         return state.User.Identity?.IsAuthenticated ?? false;
@@ -43,7 +66,29 @@ public class AuthService
     public async Task<IIdentity?> GetAuthState()
     {
         var state = await _authenticationStateProvider.GetAuthenticationStateAsync();
-        return state.User.Identity?.IsAuthenticated == true ? state.User.Identity : null;   
+        return state.User.Identity?.IsAuthenticated == true ? state.User.Identity : null;
+    }
+
+    public async Task<IEnumerable<Claim>?> GetAuthClaims()
+    {
+        var state = await _authenticationStateProvider.GetAuthenticationStateAsync();
+        return state.User.Identity?.IsAuthenticated == true ? state.User.Claims : null;
+    }
+
+    public async Task<AuthData?> GetAuthDataAsync()
+    {
+        var state = await _authenticationStateProvider.GetAuthenticationStateAsync();
+        if (state.User.Identity?.IsAuthenticated != true) return null;
+
+        var userId = int.Parse(state.User.FindFirst(ClaimTypes.NameIdentifier)!.Value);
+        var username = state.User.FindFirst(ClaimTypes.Name)!.Value;
+
+        return new(userId, username);
+    }
+
+    public AuthData? GetAuthData()
+    {
+        return _currentAuthData;
     }
 
     public async Task<bool> SignIn(string username, string password)
@@ -92,6 +137,8 @@ public class AuthService
             value,
             cookieOptions.ExpireTimeSpan.TotalDays
         );
+
+        _currentAuthData = new AuthData(user.Id, user.UserName);
     }
 
     public async Task Logout()
@@ -106,5 +153,7 @@ public class AuthService
         _signInManager.Context.User = claimsPrincipal;
         _hostAuthentication.SetAuthenticationState(Task.FromResult(new AuthenticationState(claimsPrincipal)));
         await _jsRuntime.InvokeVoidAsync("blazorExtensions.DeleteCookie", cookieOptions.Cookie.Name);
+
+        _currentAuthData = null;
     }
 }

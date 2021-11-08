@@ -1,4 +1,5 @@
 ﻿using BeProductive.Modules.Rituals.Domain;
+using BeProductive.Modules.Users.Infrastructure;
 using Microsoft.EntityFrameworkCore;
 
 namespace BeProductive.Modules.Rituals.Infrastructure;
@@ -6,17 +7,25 @@ namespace BeProductive.Modules.Rituals.Infrastructure;
 public class RitualDomainService
 {
     private readonly AppContext _context;
+    private readonly AuthService _authService;
     private readonly ILogger<RitualDomainService> _logger;
 
-    public RitualDomainService(AppContext context, ILogger<RitualDomainService> logger)
+    protected int UserId => _authService.GetAuthData()!.UserId;
+    
+    public RitualDomainService(
+        AppContext context,
+        ILogger<RitualDomainService> logger,
+        AuthService authService)
     {
         _context = context;
         _logger = logger;
+        _authService = authService;
     }
 
     public async Task<IReadOnlyList<Ritual>> GetRituals(RitualType type)
     {
         return await _context.Rituals
+            .Where(ritual => ritual.UserId == UserId)
             .Where(ritual => ritual.Type == type)
             .OrderBy(ritual => ritual.Order)
             .ToListAsync();
@@ -24,6 +33,8 @@ public class RitualDomainService
 
     public async Task<Ritual> AddRitual(Ritual ritual)
     {
+        ritual.UserId = UserId;
+        
         await _context.Rituals.AddAsync(ritual);
         await _context.SaveChangesAsync();
         _logger.LogInformation("Added ritual {@Ritual}", ritual);

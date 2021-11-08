@@ -1,4 +1,5 @@
 ﻿using BeProductive.Modules.Common.Helpers;
+using BeProductive.Modules.Users.Infrastructure;
 using Microsoft.EntityFrameworkCore;
 
 namespace BeProductive.Modules.Goals.Infrastructure;
@@ -7,18 +8,28 @@ public class GoalService
 {
     private readonly IDbContextFactory<AppContext> _contextFactory;
     private readonly ILogger<GoalService> _logger;
+    private readonly AuthService _authService;
 
-    public GoalService(ILogger<GoalService> logger, IDbContextFactory<AppContext> contextFactory)
+    protected int UserId => _authService.GetAuthData()!.UserId;
+    
+    public GoalService(
+        ILogger<GoalService> logger,
+        IDbContextFactory<AppContext> contextFactory,
+        AuthService authService)
     {
         _logger = logger;
         _contextFactory = contextFactory;
+        _authService = authService;
     }
 
     public async Task<List<Goal>> GetGoals()
     {
         await using var context = await _contextFactory.CreateDbContextAsync();
 
+        _logger.LogInformation("User id {Id}", UserId);
+        
         return await context.Goals
+            .Where(goal => goal.UserId == UserId)
             .OrderBy(goal => goal.Order)
             .ToListAsync();
     }
@@ -27,7 +38,9 @@ public class GoalService
     {
         await using var context = await _contextFactory.CreateDbContextAsync();
 
-        return await context.Goals.FindAsync(id);
+        return await context.Goals
+            .Where(x => x.UserId == UserId)
+            .SingleOrDefaultAsync(x => x.Id == id);
     }
 
     public async Task<Goal> UpdateGoal(Goal goal)
@@ -42,14 +55,18 @@ public class GoalService
 
     public async Task<Goal> AddGoal(Goal goal)
     {
+        goal.UserId = UserId;
+
         await using var context = await _contextFactory.CreateDbContextAsync();
 
-        var count = await context.Goals.CountAsync();
+        var count = await context.Goals
+            .Where(x => x.UserId == UserId)
+            .CountAsync();
         goal.Order = count;
         await context.Goals.AddAsync(goal);
         await context.SaveChangesAsync();
         _logger.LogInformation("Added new goal {@Goal}", goal);
-        
+
         return goal;
     }
 
@@ -66,8 +83,10 @@ public class GoalService
     {
         await using var context = await _contextFactory.CreateDbContextAsync();
 
-        var entry = await context.Goals.FindAsync(goal.Id);
-        
+        var entry = await context.Goals
+            .Where(x => x.UserId == UserId)
+            .SingleAsync(x => x.Id == goal.Id);
+
         var (firstDay, lastDate) = DateHelper.FirstAndLastDayOfMonth(DateOnly.FromDateTime(date));
 
         return await context.Entry(entry)
@@ -81,7 +100,10 @@ public class GoalService
     {
         await using var context = await _contextFactory.CreateDbContextAsync();
 
-        var entry = await context.Goals.FindAsync(goal.Id);
+        var entry = await context.Goals
+            .Where(x => x.UserId == UserId)
+            .SingleAsync(x => x.Id == goal.Id);
+        
         return await context.Entry(entry)
             .Collection(goal => goal.GoalDayStates)
             .Query()
@@ -96,7 +118,8 @@ public class GoalService
         var goalIds = goalOrders.Select(x => x.Key);
 
         var goals = await context.Goals
-            .Where(goal => goalIds.Contains(goal))
+            .Where(x => x.UserId == UserId)
+            .Where(x => goalIds.Contains(x))
             .ToArrayAsync();
 
         foreach (var (goal, order) in goalOrders)

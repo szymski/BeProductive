@@ -2,7 +2,7 @@
 
 namespace BeProductive.Modules.Rituals.Domain;
 
-public class Ritual : BaseEntity
+public class Ritual : BaseOwnedEntity
 {
     public string Title { get; set; }
     public RitualType Type { get; set; }
@@ -10,6 +10,6 @@ public class Ritual : BaseEntity
 
     public override string ToString()
     {
-        return $"Ritual {{ Id = {Id}, Type = {Type}, Order = {Order}, Title = {Title} }}";
+        return $"Ritual {{ Id = {Id}, UserId = {UserId}, Type = {Type}, Order = {Order}, Title = {Title} }}";
     }
 }

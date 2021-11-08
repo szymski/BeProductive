@@ -20,9 +20,9 @@ public static class DbUtils
 
     private static void SeedDb(AppContext context, UserManager<User> userManager)
     {
+        SeedUsers(context, userManager);
         SeedGoals(context);
         SeedRituals(context);
-        SeedUsers(context, userManager);
 
         context.SaveChanges();
     }
@@ -33,13 +33,15 @@ public static class DbUtils
 
         Console.WriteLine("Seeding Goals");
 
+        var user = context.Users.First();
+
         context.Goals.AddRange(new Goal[]
         {
-            new() { Name = "I am from database!", Color = "#ff22ff", Icon = "windows" },
-            new() { Name = "Zwalić gruchę raz dziennie", Color = GoalColors.Colors[2], Icon = GoalIcons.Icons[2] },
-            new() { Name = "Wykonać poranny rytuał", Color = GoalColors.Colors[3] },
-            new() { Name = "Obrazić kogoś", Color = GoalColors.Colors[4], Icon = GoalIcons.Icons[8] },
-            new() { Name = "Dupa", Color = GoalColors.Colors[5] },
+            new() { User = user, Name = "I am from database!", Color = "#ff22ff", Icon = "windows" },
+            new() { User = user, Name = "Zwalić gruchę raz dziennie", Color = GoalColors.Colors[2], Icon = GoalIcons.Icons[2] },
+            new() { User = user, Name = "Wykonać poranny rytuał", Color = GoalColors.Colors[3] },
+            new() { User = user, Name = "Obrazić kogoś", Color = GoalColors.Colors[4], Icon = GoalIcons.Icons[8] },
+            new() { User = user, Name = "Dupa", Color = GoalColors.Colors[5] },
         });
     }
 
@@ -48,15 +50,17 @@ public static class DbUtils
         if (context.Rituals.Any()) return;
 
         Console.WriteLine("Seeding rituals");
+        
+        var user = context.Users.First();
 
         context.Rituals.AddRange(new Ritual[]
         {
-            new() { Type = RitualType.Morning, Title = "Zrobić 15 przysiadów", Order = 0 },
-            new() { Type = RitualType.Morning, Title = "Umyć zęby", Order = 1 },
-            new() { Type = RitualType.Morning, Title = "Zagrać w Beat Saber", Order = 2 },
-            new() { Type = RitualType.Evening, Title = "Wyłączyć komputer", Order = 0 },
-            new() { Type = RitualType.Evening, Title = "Zgasić światła", Order = 1 },
-            new() { Type = RitualType.Evening, Title = "Pożegnać Natalkę", Order = 2 },
+            new() { UserId = user.Id, Type = RitualType.Morning, Title = "Zrobić 15 przysiadów", Order = 0 },
+            new() { UserId = user.Id, Type = RitualType.Morning, Title = "Umyć zęby", Order = 1 },
+            new() { UserId = user.Id, Type = RitualType.Morning, Title = "Zagrać w Beat Saber", Order = 2 },
+            new() { UserId = user.Id, Type = RitualType.Evening, Title = "Wyłączyć komputer", Order = 0 },
+            new() { UserId = user.Id, Type = RitualType.Evening, Title = "Zgasić światła", Order = 1 },
+            new() { UserId = user.Id, Type = RitualType.Evening, Title = "Pożegnać Natalkę", Order = 2 },
         });
     }
 
@@ -65,25 +69,49 @@ public static class DbUtils
         if(context.Users.Any()) return;
 
         Console.WriteLine("Seeding users");
-        
-        var task = userManager.CreateAsync(new ()
+
         {
-            UserName = "user",
-            FullName = "Test User",
+            var task = userManager.CreateAsync(new()
+            {
+                UserName = "user",
+                FullName = "Test User",
 
-        }, "pwd123");
-        task.Wait();
+            }, "pwd123");
+            task.Wait();
 
-        var result = task.Result;
+            var result = task.Result;
 
-        if (result.Succeeded)
-        {
-            Console.WriteLine("Seeding user succeeded");
+            if (result.Succeeded)
+            {
+                Console.WriteLine("Seeding user succeeded");
+            }
+            else
+            {
+                Console.Error.WriteLine("Seeding user failed");
+                Console.Error.WriteLine(result.Errors.Aggregate("", (acc, err) => acc + err.Description + "\n"));
+            }
         }
-        else
+        
         {
-            Console.Error.WriteLine("Seeding user failed");
-            Console.Error.WriteLine(result.Errors.Aggregate("", (acc, err) => acc + err.Description + "\n"));
+            var task = userManager.CreateAsync(new()
+            {
+                UserName = "user2",
+                FullName = "Test user 2",
+
+            }, "1234");
+            task.Wait();
+
+            var result = task.Result;
+
+            if (result.Succeeded)
+            {
+                Console.WriteLine("Seeding user 2 succeeded");
+            }
+            else
+            {
+                Console.Error.WriteLine("Seeding user 2 failed");
+                Console.Error.WriteLine(result.Errors.Aggregate("", (acc, err) => acc + err.Description + "\n"));
+            }
         }
     }
 }

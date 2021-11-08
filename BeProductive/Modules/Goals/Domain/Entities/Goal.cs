@@ -3,7 +3,7 @@ using BeProductive.Modules.GoalExtensions.Description.Domain;
 using BeProductive.Modules.GoalExtensions.EmergencyGoal.Domain;
 using BeProductive.Modules.Goals.Domain.Entities;
 
-public class Goal : BaseEntity
+public class Goal : BaseOwnedEntity
 {
     public string Name { get; set; }
     public string Color { get; set; }

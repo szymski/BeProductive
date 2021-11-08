@@ -9,7 +9,7 @@
 - Disallow changing goal state for future dates
 
 ### Goal extensions:
-- Goal description/notes
+- ✔ ~~Goal description/notes~~
 - ✔ ~~Emergency goal~~
 
 ### Rituals

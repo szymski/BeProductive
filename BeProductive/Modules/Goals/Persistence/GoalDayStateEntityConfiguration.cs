@@ -5,8 +5,9 @@ public class GoalDayStateEntityConfiguration : IEntityTypeConfiguration<GoalDayS
 {
     public void Configure(EntityTypeBuilder<GoalDayState> builder)
     {
-        builder.HasOne<Goal>(goalDayState => goalDayState.Goal)
+        builder.HasOne(goalDayState => goalDayState.Goal)
             .WithMany(goal => goal.GoalDayStates)
+            .HasForeignKey(goalDayState => goalDayState.GoalId)
             .OnDelete(DeleteBehavior.Cascade);
     }
 }

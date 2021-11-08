@@ -17,7 +17,7 @@
     Layout.Title = "Login";
 }
 
-<Text Strong>@_status</Text>
+<Text Code Strong>@_status</Text>
 <br>
 <Button OnClick="OnLoginClick">Login</Button>
 <Button OnClick="OnLogoutClick">Logout</Button>
@@ -54,9 +54,9 @@
             _status = "Not logged in";
             return;
         }
-        
-        var state = await AuthService.GetAuthState();
-        _status = JsonSerializer.Serialize(state, new JsonSerializerOptions { WriteIndented = true });
+
+        var data = await AuthService.GetAuthDataAsync();
+        _status = JsonSerializer.Serialize(data, new JsonSerializerOptions { WriteIndented = true });
     }
 
     private async Task OnLoginClick()
