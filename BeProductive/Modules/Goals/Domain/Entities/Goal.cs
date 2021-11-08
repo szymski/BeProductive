@@ -1,4 +1,5 @@
 ﻿using BeProductive.Modules.Common.Domain;
+using BeProductive.Modules.GoalExtensions.Description.Domain;
 using BeProductive.Modules.GoalExtensions.EmergencyGoal.Domain;
 using BeProductive.Modules.Goals.Domain.Entities;
 
@@ -12,6 +13,7 @@ public class Goal : BaseEntity
     public List<GoalDayState> GoalDayStates { get; set; }
     
     public EmergencyGoal? EmergencyGoal { get; set; }
+    public GoalDescription? GoalDescription { get; set; }
 
     public override string ToString()
     {

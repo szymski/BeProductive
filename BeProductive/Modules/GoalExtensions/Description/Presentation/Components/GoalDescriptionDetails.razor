@@ -1,0 +1,105 @@
+﻿@using BeProductive.Modules.GoalExtensions.Description.Infrastructure
+@using BeProductive.Modules.GoalExtensions.EmergencyGoal.Infrastructure
+@inject GoalDescriptionService GoalDescriptionService
+
+<Divider >
+    Description
+</Divider>
+
+<div style="padding: 0 24px; text-align: center">
+    @if (Goal.HasDescription())
+    {
+        <div class="goal-description">
+            <EditableText
+                WrapperStyle="width: 100%"
+                Placeholder="Description"
+                Text="@Goal.GoalDescription.Description"
+                EditButtonStyle="position: absolute"
+                ShowDeleteButton
+                Loading="@_isLoading"
+                TextChanged="UpdateDescription"
+                OnDelete="@(() => UpdateDescription(null))"/>
+        </div>
+    }
+    else
+    {
+        @if (!_isEditing)
+        {
+            <RenderFragment>
+                <Text Disabled>
+                    No description. Click <a @onclick="OnAddClick">here</a> to add.
+                </Text>
+            </RenderFragment>
+        }
+        else
+        {
+            <EditableText
+                WrapperStyle="width: 100%"
+                Editing
+                MinLength="1"
+                Placeholder="Description"
+                Loading="@_isLoading"
+                TextChanged="UpdateDescription"
+                OnCancelled="CancelAdding"/>
+        }
+    }
+</div>
+
+<style>
+    .goal-description .editable-text-button {
+        opacity: 0;
+    }
+    
+    .goal-description:hover .editable-text-button {
+        opacity: 1;
+    }
+</style>
+
+@code {
+
+    [CascadingParameter]
+    public Goal Goal { get; set; }
+
+    private bool _isLoading = false;
+
+    private bool _isEditing = false;
+
+    private void OnAddClick()
+    {
+        _isEditing = true;
+    }
+
+    private void CancelAdding()
+    {
+        _isEditing = false;
+    }
+
+    private async Task UpdateDescription(string? value)
+    {
+        if (string.IsNullOrWhiteSpace(value))
+        {
+            value = null;
+        }
+
+        try
+        {
+            _isLoading = true;
+            var descriptionEntity = await GoalDescriptionService.UpdateDescription(Goal, value);
+            await Task.Delay(500);
+    // TODO: Rethink this
+            Goal.GoalDescription = descriptionEntity;
+            NotificationService.Success("The description has been updated");
+        }
+        catch (Exception e)
+        {
+            NotificationService.Error("Failed to update description");
+            throw e;
+        }
+        finally
+        {
+            _isLoading = false;
+            _isEditing = false;
+        }
+    }
+
+}

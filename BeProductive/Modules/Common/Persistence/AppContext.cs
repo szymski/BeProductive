@@ -1,4 +1,5 @@
 ﻿using System.Reflection;
+using BeProductive.Modules.GoalExtensions.Description.Domain;
 using BeProductive.Modules.GoalExtensions.EmergencyGoal.Domain;
 using BeProductive.Modules.Goals.Domain.Entities;
 using BeProductive.Modules.Rituals.Domain;
@@ -14,6 +15,7 @@ public class AppContext : IdentityDbContext<User, IdentityRole<int>, int>
     public DbSet<Goal> Goals { get; set; }
     public DbSet<GoalDayState> GoalDayStates { get; set; }
     public DbSet<EmergencyGoal> EmergencyGoals { get; set; }
+    public DbSet<GoalDescription> GoalDescriptions { get; set; }
 
     public DbSet<Ritual> Rituals { get; set; }
 
