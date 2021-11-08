@@ -10,7 +10,7 @@
 
 ### Goal extensions:
 - Goal description/notes
-- Emergency goal
+- ✔ ~~Emergency goal~~
 
 ### Rituals
 - Automatic adding of ritual goals

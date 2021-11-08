@@ -26,7 +26,7 @@
             if (wasChanged)
             {
                 NotificationService.Success($"State changed to {state} for {date}");
-                GoalStateChanged?.Invoke(this, (date, state));
+                NotifyGoalStateChanged(date, state);
             }
         }
         catch(Exception e)
@@ -34,5 +34,10 @@
             NotificationService.Error($"Failed to change state to {state} for {date}");
         }
     }
-
+    
+    public void NotifyGoalStateChanged(DateOnly date, GoalState state)
+    {
+        GoalStateChanged?.Invoke(this, (date, state));
+    }
+    
 }

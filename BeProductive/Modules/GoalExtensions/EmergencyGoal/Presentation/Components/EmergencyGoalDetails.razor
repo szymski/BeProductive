@@ -1,0 +1,123 @@
+﻿@using BeProductive.Modules.GoalExtensions.EmergencyGoal.Infrastructure
+@inject EmergencyGoalService EmergencyGoalService
+
+<Divider >
+    Emergency goal
+</Divider>
+
+<div style="padding: 0 24px; text-align: center">
+    @if (Goal.HasEmergencyGoal())
+    {
+        <div class="emergency-goal">
+            <EditableText
+                WrapperStyle="width: 100%"
+                Placeholder="Emergency goal"
+                Text="@Goal.EmergencyGoal.Title"
+                EditButtonStyle="position: absolute"
+                ShowDeleteButton
+                Loading="@_isLoading"
+                TextChanged="UpdateEmergencyGoal"
+                OnDelete="DeleteEmergencyGoal"/>
+        </div>
+    }
+    else
+    {
+        @if (!_isEditing)
+        {
+            <RenderFragment>
+                <Text Disabled>
+                    You don't have an emergency goal specified.
+                    <br/>
+                    Click <a @onclick="OnAddClick">here</a> to add one.
+                </Text>
+            </RenderFragment>
+        }
+        else
+        {
+            <EditableText
+                WrapperStyle="width: 100%"
+                Editing
+                MinLength="1"
+                Placeholder="Emergency goal"
+                Loading="@_isLoading"
+                TextChanged="UpdateEmergencyGoal"
+                OnCancelled="CancelAdding"/>
+        }
+    }
+</div>
+
+<style>
+    .emergency-goal .editable-text-button {
+        opacity: 0;
+    }
+    
+    .emergency-goal:hover .editable-text-button {
+        opacity: 1;
+    }
+</style>
+
+@code {
+
+    [CascadingParameter]
+    public Goal Goal { get; set; }
+
+    private bool _isLoading = false;
+
+    private bool _isEditing = false;
+
+    private void OnAddClick()
+    {
+        _isEditing = true;
+    }
+
+    private void CancelAdding()
+    {
+        _isEditing = false;
+    }
+
+    private async Task UpdateEmergencyGoal(string title)
+    {
+        try
+        {
+            _isLoading = true;
+            var emergencyGoal = await EmergencyGoalService.UpdateEmergencyGoal(Goal, title);
+            await Task.Delay(500);
+    // TODO: Rethink this
+            Goal.EmergencyGoal = emergencyGoal;
+            NotificationService.Success("The emergency goal has been updated");
+        }
+        catch (Exception e)
+        {
+            NotificationService.Error("Failed to add emergency goal");
+            throw e;
+        }
+        finally
+        {
+            _isLoading = false;
+            _isEditing = false;
+        }
+    }
+
+    private async Task DeleteEmergencyGoal()
+    {
+        try
+        {
+            _isLoading = true;
+            await EmergencyGoalService.DeleteEmergencyGoal(Goal);
+            await Task.Delay(500);
+    // TODO: Rethink this
+            Goal.EmergencyGoal = null;
+            NotificationService.Info("The emergency goal has been deleted");
+        }
+        catch (Exception e)
+        {
+            NotificationService.Error("Failed to remove the emergency goal");
+            throw e;
+        }
+        finally
+        {
+            _isLoading = false;
+        }
+    }
+
+}

@@ -3,32 +3,63 @@
 @using BeProductive.Modules.Goals.Domain.Services
 @using Microsoft.EntityFrameworkCore
 @using BeProductive.Modules.GoalExtensions.EmergencyGoal.Infrastructure
+@using BeProductive.Modules.GoalExtensions.EmergencyGoal.Presentation.Components
 @inject GoalService GoalService
 
-<Card Title="@Goal.Name">
+<Card Title="@Goal.Name" BodyStyle="padding: 0" Style="min-height: 100%">
     <Extra>
         <a @onclick="NavigateToEditGoalPage">Edit</a>
     </Extra>
     <Body>
-        <GoalCalendar
-            DayStates="_dayStates"
-            HasEmergencyGoal="@Goal.HasEmergencyGoal()"
-            OnMonthChanged="OnMonthChanged"
-            OnGoalStateChanged="GoalStateChanged"/>
+        <Card Size="@AntSizeLDSType.Small" Style="border-bottom: none">
+            <GoalCalendar
+                DayStates="_dayStates"
+                HasEmergencyGoal="@Goal.HasEmergencyGoal()"
+                OnMonthChanged="OnMonthChanged"
+                OnGoalStateChanged="GoalStateChanged"/>
+        </Card>
+
+        @* <Collapse Class="collapse" Style="margin: 1px"> *@
+        @*     <ChildContent> *@
+        @*         <Panel Header="Emergency goal" Key="1"> *@
+        @*             This is the emergency goal for this goal. *@
+        @*         </Panel> *@
+        @*         <Panel Key="2"> *@
+        @*             <HeaderTemplate> *@
+        @*                 This is panel header 2 *@
+        @*             </HeaderTemplate> *@
+        @*             <ChildContent> *@
+        @*                 <p>asd</p> *@
+        @*             </ChildContent> *@
+        @*         </Panel> *@
+        @*         <Panel Header="This is panel header 3" Key="3"> *@
+        @*             <p>test</p> *@
+        @*         </Panel> *@
+        @*     </ChildContent> *@
+        @* </Collapse> *@
+
         
-        <Divider/>
-        
-        @if (Goal.EmergencyGoal is not null)
-        {
-            <h4>Emergency goal</h4>
-            @Goal.EmergencyGoal.Title
-        }
-        else
-        {
-            <RenderFragment>Emergency goal not defined</RenderFragment>
-        }
+
+        <EmergencyGoalDetails/>
+
+        @* @if (Goal.EmergencyGoal is not null) *@
+        @* { *@
+        @*     <h4>Emergency goal</h4> *@
+        @*     @Goal.EmergencyGoal.Title *@
+        @* } *@
+        @* else *@
+        @* { *@
+        @*     <RenderFragment>Emergency goal not defined</RenderFragment> *@
+        @* } *@
     </Body>
 </Card>
+
+<style>
+    .collapse {
+        background: transparent;
+        border: none;
+    }
+</style>
 
 @code {
 

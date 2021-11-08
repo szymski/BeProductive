@@ -10,31 +10,53 @@
             Icon="@IconType.Outline.Edit"
             Size="@AntSizeLDSType.Small"
             Type="@ButtonType.Link"
+            Style="@EditButtonStyle"
             @onclick="StartEditing"/>
     </RenderFragment>
 }
 else
 {
-    <Input
-        Style="width: 500px"
-        Placeholder="Enter title"
-        Disabled="@Loading"
-        @bind-Value="@_editText"
-        autofocus
-        @onkeyup="OnInputKeyPress"/>
-    <Button
-        Shape="@ButtonShape.CircleOutline"
-        Icon="@IconType.Outline.Check"
-        Type="@ButtonType.Primary"
-        Disabled="@(!IsValid)"
-        Loading="@Loading"
-        @onclick="Save"/>
-    <Button
-        Shape="@ButtonShape.CircleOutline"
-        Icon="@IconType.Outline.Close"
-        Type="@ButtonType.Default"
-        disabled="@Loading"
-        @onclick="Cancel"/>
+    <Space Style="@WrapperStyle" Size="@AntSizeLDSType.Small">
+        <SpaceItem Style="flex: 1">
+            <Input
+                Style="@InputStyle"
+                Placeholder="@Placeholder"
+                Disabled="@Loading"
+                @bind-Value="@_editText"
+                autofocus
+                @onkeyup="OnInputKeyPress"/>
+        </SpaceItem>
+        <SpaceItem>
+            <Button
+                Shape="@ButtonShape.CircleOutline"
+                Icon="@IconType.Outline.Check"
+                Type="@ButtonType.Primary"
+                Disabled="@(!IsValid)"
+                Loading="@Loading"
+                @onclick="Save"/>
+        </SpaceItem>
+        @if (ShowDeleteButton)
+        {
+            <SpaceItem>
+                <Button
+                    Shape="@ButtonShape.CircleOutline"
+                    Icon="@IconType.Outline.Delete"
+                    Type="@ButtonType.Default"
+                    disabled="@Loading"
+                    Danger
+                    Style="@DeleteButtonStyle"
+                    @onclick="Delete"/>
+            </SpaceItem>
+        }
+        <SpaceItem>
+            <Button
+                Shape="@ButtonShape.CircleOutline"
+                Icon="@IconType.Outline.Close"
+                Type="@ButtonType.Default"
+                disabled="@Loading"
+                @onclick="Cancel"/>
+        </SpaceItem>
+    </Space>
 }
 
 @code {
@@ -49,13 +71,16 @@ else
     public EventCallback OnCancelled { get; set; }
 
     [Parameter]
-    public bool Loading { get; set; }
+    public EventCallback OnDelete { get; set; }
 
-    [Parameter(CaptureUnmatchedValues = true)]
-    public Dictionary<string, object> Attributes { get; set; }
+    [Parameter]
+    public bool Loading { get; set; }
 
     [Parameter]
     public bool Editing { get; set; }
+
+    [Parameter]
+    public bool ShowDeleteButton { get; set; }
 
     [Parameter]
     public int MinLength { get; set; } = 0;
@@ -63,11 +88,29 @@ else
     [Parameter]
     public int MaxLength { get; set; } = int.MaxValue;
 
+    [Parameter]
+    public string Placeholder { get; set; } = "Enter title";
+
+    [Parameter]
+    public string InputStyle { get; set; } = "";
+
+    [Parameter]
+    public string WrapperStyle { get; set; } = "";
+
+    [Parameter]
+    public string EditButtonStyle { get; set; } = "";
+
+    [Parameter]
+    public string DeleteButtonStyle { get; set; } = "";
+
+    [Parameter(CaptureUnmatchedValues = true)]
+    public Dictionary<string, object> Attributes { get; set; }
+
     private string? _editText = "";
 
     private bool IsValid
         => _editText is not null &&
-            _editText.Length >= MinLength && _editText.Length <= MaxLength;
+           _editText.Length >= MinLength && _editText.Length <= MaxLength;
 
     private async Task OnInputKeyPress(KeyboardEventArgs args)
     {
@@ -117,6 +160,13 @@ else
         if (Loading) return;
         Editing = false;
         await OnCancelled.InvokeAsync();
+    }
+
+    private async Task Delete()
+    {
+        if (Loading) return;
+        await OnDelete.InvokeAsync();
+        Editing = false;
     }
 
 }
