@@ -1,62 +1,76 @@
 ﻿using BeProductive.Modules.Common.Helpers;
-using BeProductive.Modules.Goals.Domain;
 using Microsoft.EntityFrameworkCore;
 
 namespace BeProductive.Modules.Goals.Infrastructure;
 
 public class GoalService
 {
-    private readonly AppContext _context;
+    private readonly IDbContextFactory<AppContext> _contextFactory;
     private readonly ILogger<GoalService> _logger;
 
-    public GoalService(AppContext context, ILogger<GoalService> logger)
+    public GoalService(ILogger<GoalService> logger, IDbContextFactory<AppContext> contextFactory)
     {
-        _context = context;
         _logger = logger;
+        _contextFactory = contextFactory;
     }
 
     public async Task<List<Goal>> GetGoals()
     {
-        return await _context.Goals
+        await using var context = await _contextFactory.CreateDbContextAsync();
+
+        return await context.Goals
             .OrderBy(goal => goal.Order)
             .ToListAsync();
     }
 
     public async Task<Goal?> GetGoal(int id)
     {
-        return await _context.Goals.FindAsync(id);
+        await using var context = await _contextFactory.CreateDbContextAsync();
+
+        return await context.Goals.FindAsync(id);
     }
 
     public async Task<Goal> UpdateGoal(Goal goal)
     {
+        await using var context = await _contextFactory.CreateDbContextAsync();
+
         _logger.LogInformation("Updating goal {@Goal}", goal);
-        _context.Goals.Update(goal);
-        await _context.SaveChangesAsync();
+        context.Goals.Update(goal);
+        await context.SaveChangesAsync();
         return goal;
     }
 
     public async Task<Goal> AddGoal(Goal goal)
     {
-        var count = await _context.Goals.CountAsync();
+        await using var context = await _contextFactory.CreateDbContextAsync();
+
+        var count = await context.Goals.CountAsync();
         goal.Order = count;
-        await _context.Goals.AddAsync(goal);
-        await _context.SaveChangesAsync();
+        await context.Goals.AddAsync(goal);
+        await context.SaveChangesAsync();
         _logger.LogInformation("Added new goal {@Goal}", goal);
+        
         return goal;
     }
 
     public async Task DeleteGoal(Goal goal)
     {
+        await using var context = await _contextFactory.CreateDbContextAsync();
+
         _logger.LogInformation("Deleting goal {@Goal}", goal);
-        _context.Goals.Remove(goal);
-        await _context.SaveChangesAsync();
+        context.Goals.Remove(goal);
+        await context.SaveChangesAsync();
     }
 
     public async Task<IReadOnlyList<GoalDayState>> GetStatesForMonth(Goal goal, DateTime date)
     {
+        await using var context = await _contextFactory.CreateDbContextAsync();
+
+        var entry = await context.Goals.FindAsync(goal.Id);
+        
         var (firstDay, lastDate) = DateHelper.FirstAndLastDayOfMonth(DateOnly.FromDateTime(date));
 
-        return await _context.Entry(goal)
+        return await context.Entry(entry)
             .Collection(goal => goal.GoalDayStates)
             .Query()
             .Where(state => state.Day >= firstDay && state.Day <= lastDate)
@@ -65,7 +79,10 @@ public class GoalService
 
     public async Task<GoalDayState?> GetLastDayState(Goal goal)
     {
-        return await _context.Entry(goal)
+        await using var context = await _contextFactory.CreateDbContextAsync();
+
+        var entry = await context.Goals.FindAsync(goal.Id);
+        return await context.Entry(entry)
             .Collection(goal => goal.GoalDayStates)
             .Query()
             .OrderByDescending(goal => goal.Day)
@@ -74,9 +91,11 @@ public class GoalService
 
     public async Task UpdateOrders(IEnumerable<KeyValuePair<Goal, int>> goalOrders)
     {
+        await using var context = await _contextFactory.CreateDbContextAsync();
+
         var goalIds = goalOrders.Select(x => x.Key);
 
-        var goals = await _context.Goals
+        var goals = await context.Goals
             .Where(goal => goalIds.Contains(goal))
             .ToArrayAsync();
 
@@ -86,6 +105,6 @@ public class GoalService
             entity.Order = order;
         }
 
-        await _context.SaveChangesAsync();
+        await context.SaveChangesAsync();
     }
 }

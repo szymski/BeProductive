@@ -4,20 +4,24 @@ namespace BeProductive.Modules.Goals.Domain.Services;
 
 public class GoalDomainService
 {
-    private readonly AppContext _context;
+    private readonly IDbContextFactory<AppContext> _contextFactory;
     private readonly ILogger<GoalDomainService> _logger;
 
-    public GoalDomainService(AppContext context, ILogger<GoalDomainService> logger)
+    public GoalDomainService(ILogger<GoalDomainService> logger, IDbContextFactory<AppContext> contextFactory)
     {
-        _context = context;
         _logger = logger;
+        _contextFactory = contextFactory;
     }
 
     public async Task<bool> SetStateForDay(Goal goal, DateOnly day, GoalState state)
     {
+        await using var context = await _contextFactory.CreateDbContextAsync();
+        
+        var goalEntry = await context.Goals.FindAsync(goal.Id);
+        
         _logger.LogInformation("Setting goal {@Goal} state for day {Day} to {State}", goal, day, state);
         
-        var entry = await _context.Entry(goal)
+        var entry = await context.Entry(goalEntry)
             .Collection(goal => goal.GoalDayStates)
             .Query()
             .SingleOrDefaultAsync(goal => goal.Day == day);
@@ -26,7 +30,7 @@ public class GoalDomainService
         {
             if (entry is null) return false;
             
-            _context.GoalDayStates.Remove(entry);
+            context.GoalDayStates.Remove(entry);
         }
         else
         {
@@ -35,19 +39,19 @@ public class GoalDomainService
                 return false;
             }
             
-            entry ??= new GoalDayState()
+            entry ??= new()
             {
-                Goal = goal,
+                Goal = goalEntry,
                 Day = day,
-                State = state,
+                State = state, 
             };
 
             entry.State = state;
 
-            _context.GoalDayStates.Update(entry);
+            context.GoalDayStates.Update(entry);
         }
         
-        await _context.SaveChangesAsync();
+        await context.SaveChangesAsync();
 
         return true;
     }

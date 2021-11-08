@@ -1,7 +1,8 @@
 ﻿@using BeProductive.Modules.Goals.Presentation.Models
 @using BeProductive.Modules.Goals.Domain
 @using BeProductive.Modules.Goals.Domain.Services
-@inject GoalDomainService GoalDomainService
+@using Microsoft.EntityFrameworkCore
+@inject GoalService GoalService
 
 <Card Title="@Goal.Name">
     <Extra>
@@ -16,7 +17,7 @@
 </Card>
 
 @code {
-
+    
     private int _lastGoalId = 0;
 
     [CascadingParameter]
@@ -42,7 +43,9 @@
     private DateTime _date = DateTime.Today;
 
     private IEnumerable<DayState> _dayStates;
-
+    
+    private bool _isUpdatingStates;
+    
     protected override async Task OnParametersSetAsync()
     {
         if (Goal.Id != _lastGoalId)
@@ -55,12 +58,23 @@
 
     public async Task UpdateStates()
     {
-        var domainStates = await GoalService.GetStatesForMonth(Goal, _date);
-        var states = domainStates.Select(DayState.FromDomain).ToArray();
+        if(_isUpdatingStates) return;
 
-        _dayStates = states;
+        _isUpdatingStates = true;
 
-        StateHasChanged();
+        try
+        {
+            var domainStates = await GoalService.GetStatesForMonth(Goal, _date);
+            var states = domainStates.Select(DayState.FromDomain).ToArray();
+
+            _dayStates = states;
+
+            StateHasChanged();
+        }
+        finally
+        {
+            _isUpdatingStates = false;
+        }
     }
 
     private void NavigateToEditGoalPage()

@@ -6,6 +6,7 @@
     State="@State"
     Text="@_day.DayOfWeek.ToString()[..3].ToUpper()"
     Date="@_day.ToDateTime(TimeOnly.MinValue)"
+    IsToday="@_isToday"
     StateChanged="OnGoalStateChanged"/>
 
 @code {
@@ -20,6 +21,8 @@
 
     private DateOnly _day = DateOnly.FromDateTime(DateTime.Today);
 
+    private bool _isToday = true;
+
     protected override async Task OnInitializedAsync()
     {
         GoalContext.GoalStateChanged += OnGoalStateChangedExternally;
@@ -28,7 +31,6 @@
 
     private void OnGoalStateChangedExternally(object? sender, (DateOnly date, GoalState state) args)
     {
-        
         var (date, state) = args;
 
         if (date != _day || state != State)
@@ -53,6 +55,8 @@
         {
             State = GoalState.Unknown;
         }
+
+        _isToday = DateHelper.IsSameDay(DateTime.Now, _day.ToDateTime(TimeOnly.MinValue));
     }
 
     private void UpdateDayUsingLastDay(GoalDayState lastState)

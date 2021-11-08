@@ -6,8 +6,8 @@ public static class GoalsModuleExtensions
 {
     public static IServiceCollection AddGoalsModule(this IServiceCollection services)
     {
-        services.AddSingleton<GoalService>();
-        services.AddSingleton<GoalDomainService>();
+        services.AddScoped<GoalService>();
+        services.AddScoped<GoalDomainService>();
         return services;
     }
 }

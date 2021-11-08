@@ -8,23 +8,70 @@
     border-radius: 2px;
 }
 
-::deep .goal-state-selector:hover {
+::deep .goal-state-selector:focus {
     color: rgba(0, 0, 0, 0.8);
-    border: 1px solid transparent;
+    border: 1px solid rgba(0, 0, 0, 0.2);
+}
+
+
+::deep .goal-state-selector.unknown:hover {
+    color: rgba(0, 0, 0, 0.8);
+    border: 1px solid rgba(0, 0, 0, 0.4);
 }
 
 ::deep .goal-state-selector.unknown {
+    --color: var(--goal-color-unknown);
     background: var(--goal-color-unknown);
 }
 
+::deep .goal-state-selector.unknown.waiting {
+    animation-name: glow;
+    animation-duration: 2s;
+    animation-iteration-count: infinite;
+    animation-direction: alternate;
+}
+
+@keyframes glow {
+    from { box-shadow: transparent 0 0 8px 1px; }
+    to { box-shadow: orange 0 0 8px 1px; }
+}
+
 ::deep .goal-state-selector.success {
+    --color: var(--goal-color-success);
     background: var(--goal-color-success);
 }
 
 ::deep .goal-state-selector.failure {
+    --color: var(--goal-color-failure);
     background: var(--goal-color-failure);
 }
 
 ::deep .goal-state-selector.emergency {
+    --color: var(--goal-color-emergency);
     background: var(--goal-color-emergency);
+}
+
+::deep .goal-state-selector:hover {
+    color: rgba(0, 0, 0, 0.8);
+    border: 1px solid var(--color);
+}
+
+::deep .goal-state-selector::after {
+    animation: none;
+    transition: 0.2s opacity, 0.2s background-color;
+    background: rgba(255, 255, 255, 1);
+    /*background: var(--color);*/
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+    content: "";
+}
+
+::deep .goal-state-selector:hover::after {
+    opacity: 20%;
+}
+
+::deep .goal-state-selector:focus::after, ::deep .goal-state-selector:active::after {
+    opacity: 10%;
+    background: rgba(0, 0, 0, 1);
 }

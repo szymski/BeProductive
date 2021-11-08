@@ -28,7 +28,7 @@ public static class CommonModuleExtensions
         var options = new Options();
         builder(options);
 
-        services.AddDbContext<AppContext>(dbOptions =>
+        services.AddDbContextFactory<AppContext>(dbOptions =>
         {
             Log.Information("Selected database provider {Provider} with connection string {ConnectionString}",
                 options.Database.Provider, options.Database.ConnectionString);
@@ -45,7 +45,7 @@ public static class CommonModuleExtensions
                     throw new ArgumentOutOfRangeException(nameof(options.Database.Provider),
                         "Invalid database provider");
             }
-        }, ServiceLifetime.Singleton);
+        });
 
         services.AddScoped<LayoutContext>();
 

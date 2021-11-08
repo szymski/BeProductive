@@ -5,7 +5,8 @@
 - Goal required on specific number of days in week/month
 - Ability to add note to GoalDayState
 - System goals which cannot be removed/edited by user (rituals for example)
-- Gamification 
+- Gamification
+- Disallow changing goal state for future dates
 
 ### Goal extensions:
 - Goal description/notes
@@ -15,7 +16,7 @@
 - Automatic adding of ritual goals
 - 
 ### UI Improvements:
-- Goal state selector animation when waiting for states
+- ✔ ~~Goal state selector animation when waiting for states~~
 
 ### Goal Gamification:
 - Current streak

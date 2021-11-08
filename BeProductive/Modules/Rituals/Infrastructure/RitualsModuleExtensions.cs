@@ -4,7 +4,7 @@ public static class RitualsModuleExtensions
 {
     public static IServiceCollection AddRitualsModule(this IServiceCollection services)
     {
-        services.AddSingleton<RitualDomainService>();
+        services.AddScoped<RitualDomainService>();
         return services;
     }
 }
