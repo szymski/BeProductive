@@ -63,6 +63,9 @@ else
 
     [Parameter]
     public string Text { get; set; } = "";
+    
+    [Parameter]
+    public string? InitialText { get; set; }
 
     [Parameter]
     public EventCallback<string> TextChanged { get; set; }
@@ -127,7 +130,7 @@ else
 
     private void StartEditing()
     {
-        _editText = Text;
+        _editText = InitialText ?? Text;
         Editing = true;
     }
 

@@ -7,42 +7,20 @@
 </Divider>
 
 <div style="padding: 0 24px; text-align: center">
-    @if (Goal.HasDescription())
-    {
         <div class="goal-description">
             <EditableText
                 WrapperStyle="width: 100%"
                 Placeholder="Description"
-                Text="@Goal.GoalDescription.Description"
+                Disabled=@(!Goal.HasDescription())
+                InitialText=@(Goal.GoalDescription?.Description ?? "")
+                Text=@(Goal.GoalDescription?.Description ?? "No description")
                 EditButtonStyle="position: absolute"
-                ShowDeleteButton
+                MinLength=@(Goal.HasDescription() ? 0 : 1)
+                ShowDeleteButton="@Goal.HasDescription()"
                 Loading="@_isLoading"
                 TextChanged="UpdateDescription"
                 OnDelete="@(() => UpdateDescription(null))"/>
         </div>
-    }
-    else
-    {
-        @if (!_isEditing)
-        {
-            <RenderFragment>
-                <Text Disabled>
-                    No description. Click <a @onclick="OnAddClick">here</a> to add.
-                </Text>
-            </RenderFragment>
-        }
-        else
-        {
-            <EditableText
-                WrapperStyle="width: 100%"
-                Editing
-                MinLength="1"
-                Placeholder="Description"
-                Loading="@_isLoading"
-                TextChanged="UpdateDescription"
-                OnCancelled="CancelAdding"/>
-        }
-    }
 </div>
 
 <style>
