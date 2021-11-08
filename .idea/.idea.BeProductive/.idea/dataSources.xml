@@ -20,5 +20,12 @@
       <jdbc-url>jdbc:postgresql://localhost:5432/beproductive</jdbc-url>
       <working-dir>$ProjectFileDir$</working-dir>
     </data-source>
+    <data-source source="LOCAL" name="PROD" uuid="1830ee70-f294-41b6-bf4d-6a3b3c1eefd0">
+      <driver-ref>postgresql</driver-ref>
+      <synchronize>true</synchronize>
+      <jdbc-driver>org.postgresql.Driver</jdbc-driver>
+      <jdbc-url>jdbc:postgresql://192.168.2.120:5432/beproductive</jdbc-url>
+      <working-dir>$ProjectFileDir$</working-dir>
+    </data-source>
   </component>
 </project>
