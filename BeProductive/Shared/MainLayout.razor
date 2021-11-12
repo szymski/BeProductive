@@ -1,6 +1,6 @@
 ﻿@inherits LayoutComponentBase
 @implements IDisposable
- 
+
 <Layout Style="min-height: 100%">
     <Sidebar/>
 
@@ -35,7 +35,7 @@
     protected override void OnInitialized()
     {
         NavigationManager.LocationChanged += OnLocationChanged;
-        
+
         NotificationService.Config(new()
         {
             Placement = NotificationPlacement.BottomLeft,

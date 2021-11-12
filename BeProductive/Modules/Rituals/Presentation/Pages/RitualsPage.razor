@@ -1,11 +1,10 @@
 ﻿@page "/rituals"
 @page "/rituals/{ActiveTab}"
-
 @{
     Layout.Title = "Rituals";
 }
 
-<Tabs Animated ActiveKey="@ActiveTab" ActiveKeyChanged="@OnTabChanged">
+<Tabs Animated ActiveKey="@ActiveTab" OnTabClick="@OnTabClick">
     <TabPane Tab="Morning ritual" Key="morning">
         <RitualsTab Type="@RitualType.Morning"/>
     </TabPane>
@@ -17,19 +16,22 @@
 @code {
 
     [Parameter]
-    public string ActiveTab { get; set; } = "morning";
+    public string? ActiveTab { get; set; }
 
-    protected override void OnInitialized()
+    protected override void OnAfterRender(bool firstRender)
     {
-        if (string.IsNullOrEmpty(ActiveTab))
+        if (firstRender && string.IsNullOrEmpty(ActiveTab))
         {
             NavigationManager.NavigateTo(GetUrlForType(RitualType.Morning), replace: true);
         }
     }
-    
-    private void OnTabChanged(string key)
+
+    private void OnTabClick(string key)
     {
-        NavigationManager.NavigateTo(GetUrlForType(key), replace: true);
+        if (key != ActiveTab)
+        {
+            NavigationManager.NavigateTo(GetUrlForType(key), replace: true);
+        }
     }
 
 }
@@ -40,10 +42,10 @@
     {
         return $"/rituals/{type.ToString().ToLower()}";
     }
-    
+
     public static string GetUrlForType(string type)
     {
-        return $"/rituals/{type.ToString().ToLower()}";
+        return $"/rituals/{type.ToLower()}";
     }
 
 }
