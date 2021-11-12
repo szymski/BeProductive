@@ -1,5 +1,6 @@
 ﻿@inherits LayoutComponentBase
-
+@implements IDisposable
+ 
 <Layout Style="min-height: 100%">
     <Sidebar/>
 
@@ -7,7 +8,18 @@
         <ContextPageHeader/>
 
         <Content Style="padding: 1rem">
-            @Body
+            @{
+                RenderFragment? body;
+            }
+            <ErrorBoundary @ref="_errorBoundary">
+                <ChildContent>
+                    @Body
+                </ChildContent>
+                <ErrorContent Context="error">
+                    <ErrorDisplay Exception="@error"/>
+                    @Body
+                </ErrorContent>
+            </ErrorBoundary>
         </Content>
 
         <Footer Style="background: white; text-align: right">
@@ -18,12 +30,26 @@
 
 @code {
 
+    private ErrorBoundary _errorBoundary;
+
     protected override void OnInitialized()
     {
+        NavigationManager.LocationChanged += OnLocationChanged;
+        
         NotificationService.Config(new()
         {
             Placement = NotificationPlacement.BottomLeft,
         });
+    }
+
+    private void OnLocationChanged(object? sender, LocationChangedEventArgs e)
+    {
+        _errorBoundary.Recover();
+    }
+
+    public void Dispose()
+    {
+        NavigationManager.LocationChanged -= OnLocationChanged;
     }
 
 }

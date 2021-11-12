@@ -32,6 +32,7 @@
         catch(Exception e)
         {
             NotificationService.Error($"Failed to change state to {state} for {date}");
+            throw e;
         }
     }
     

@@ -43,11 +43,11 @@
     [Parameter]
     public bool HasEmergencyGoal { get; set; }
 
-    private void OnStateButtonClick(GoalState state)
+    private async Task OnStateButtonClick(GoalState state)
     {
         State = state;
-        StateChanged.InvokeAsync(state);
-        _popover.Close();
+        await _popover.Close();
+        await StateChanged.InvokeAsync(state);
     }
 
     private static string StateToClass(GoalState state)

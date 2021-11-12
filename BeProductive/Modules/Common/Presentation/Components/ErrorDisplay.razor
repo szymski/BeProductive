@@ -1,0 +1,60 @@
+﻿@using System.Text.Json
+@using System.Text.Json.Serialization
+@using Microsoft.EntityFrameworkCore.ChangeTracking
+@using Serilog
+
+<Alert Type="@AlertType.Error"
+       Description="@Exception.Message"
+       Closable
+       ShowIcon="true"
+       Style="margin-bottom: 1rem">
+    <MessageTemplate>
+        Something happened. Please try again later.
+    </MessageTemplate>
+    <ChildContent>
+        @{
+            var exceptionString = Exception.ToString();
+        }
+        <Collapse DefaultActiveKey=@((new []{ HostEnvironment.IsDevelopment() ? "1" : "" })) Class="collapse" Style="background: none" Bordered="false" ExpandIconPosition="right">
+            <ExpandIconTemplate>
+                <a style="float: right">@(@context ? "Hide" : "Show details")</a>
+            </ExpandIconTemplate>
+            <ChildContent>
+                <Panel Key="1" Style="padding: 0; margin: 0" Class="details">
+                    <HeaderTemplate>
+                        <Text Strong>@Exception.Message</Text>
+                        <Text>(@Exception.GetType())</Text>
+                    </HeaderTemplate>
+                    <ChildContent>
+                        <pre
+                        style="border: none; background: rgba(0, 0, 0, 0.05); padding: 1rem; border-radius: 2px; border: 1px solid rgba(0, 0, 0, 0.1)"
+                    >@exceptionString</pre>
+                    </ChildContent>
+                </Panel>
+            </ChildContent>
+        </Collapse>
+    </ChildContent>
+</Alert>
+
+<style>
+    .collapse .ant-collapse-header {
+        margin-right: -18px;
+        padding-left: 0 !important;
+        padding-right: 0 !important;
+    }
+    
+    .collapse .ant-collapse-item-active .ant-collapse-header {
+        margin-right: 0;
+    }
+
+    .details .ant-collapse-content-box {
+        padding: 0;
+    }
+</style>
+
+@code {
+
+    [Parameter]
+    public Exception? Exception { get; set; }
+
+}
