@@ -2,12 +2,25 @@
 @using Microsoft.AspNetCore.Mvc.Razor
 
 <div>
-    <Popover @ref="_popover" Trigger=@(new Trigger[] { Trigger.Click }) Placement="Placement.Left">
+    <Popover
+        @ref="_popover"
+        Trigger=@(new Trigger[] { Trigger.Click })
+        Placement="Placement.Left">
         <ChildContent>
-            <Button Class=@($"goal-state-selector {StateToClass(State)} {(IsToday ? "" : "waiting")}") Type="@ButtonType.Default">@Text</Button>
+            <Button
+                Class=@($"goal-state-selector {StateToClass(State)} {(IsToday ? "" : "waiting")}")
+                Type="@ButtonType.Default"
+                OnClick="args => _popover.OnClickDiv(args)"
+                OnClickStopPropagation>
+                @Text
+            </Button>
         </ChildContent>
         <ContentTemplate>
-            <GoalStatePopoverContent Date="@Date" State="@State" HasEmergencyGoal="@HasEmergencyGoal" OnStateButtonClick="OnStateButtonClick"/>
+            <GoalStatePopoverContent
+                Date="@Date"
+                State="@State"
+                HasEmergencyGoal="@HasEmergencyGoal"
+                OnStateButtonClick="OnStateButtonClick"/>
         </ContentTemplate>
     </Popover>
 </div>
@@ -16,7 +29,13 @@
 
     private RenderFragment StateButton(GoalState state, string name, Color color, string type = ButtonType.Primary) =>
         @<SpaceItem>
-            <Button Block Type="@type" Color="@color" OnClick="() => OnStateButtonClick(state)">@name</Button>
+            <Button
+                Block
+                Type="@type"
+                Color="@color"
+                OnClick="() => OnStateButtonClick(state)">
+                @name
+            </Button>
         </SpaceItem>;
 
 }
@@ -27,7 +46,7 @@
 
     [Parameter]
     public DateTime Date { get; set; } = DateTime.Today;
-    
+
     [Parameter]
     public GoalState State { get; set; }
 
