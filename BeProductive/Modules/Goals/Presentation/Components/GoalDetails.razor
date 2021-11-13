@@ -19,7 +19,8 @@
                 OnMonthChanged="OnMonthChanged"
                 OnGoalStateChanged="GoalStateChanged"/>
         </Card>
-        
+
+        <GoalStatsDetails/>
         <GoalDescriptionDetails/>
         <EmergencyGoalDetails/>
     </Body>
@@ -35,7 +36,7 @@
 @code {
 
     private int _lastGoalId = 0;
-
+    
     [CascadingParameter]
     public GoalContext GoalContext
     {
@@ -50,7 +51,7 @@
             _goalContext.GoalStateChanged += OnGoalStateChangedExternally;
         }
     }
-
+    
     private GoalContext? _goalContext;
 
     [CascadingParameter]

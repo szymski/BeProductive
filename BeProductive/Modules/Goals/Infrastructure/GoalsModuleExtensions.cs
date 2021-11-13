@@ -12,6 +12,7 @@ public static class GoalsModuleExtensions
         services.AddScoped<GoalDomainService>();
         services.AddScoped<EmergencyGoalService>();
         services.AddScoped<GoalDescriptionService>();
+        services.AddScoped<GoalStatsService>();
         return services;
     }
 }

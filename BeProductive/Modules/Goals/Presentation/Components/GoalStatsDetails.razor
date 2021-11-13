@@ -1,0 +1,58 @@
+﻿@using BeProductive.Modules.Goals.Domain
+@using Serilog
+@implements IDisposable
+@inject GoalStatsService GoalStatsService
+
+<Card>
+    <Body>
+        <Text Strong Style="font-size: 16px; color: #278dff">Current streak: @_streak</Text>
+    </Body>
+</Card>
+
+@code {
+
+    [CascadingParameter]
+    public GoalContext GoalContext
+    {
+        get => _goalContext!;
+        set
+        {
+            if (_goalContext is not null)
+            {
+                _goalContext.GoalStateChanged -= OnGoalGoalStateChanged;
+            }
+            _goalContext = value;
+            _goalContext.GoalStateChanged += OnGoalGoalStateChanged;
+        }
+    }
+
+    private GoalContext? _goalContext;
+
+    private int? _streak;
+
+    protected override async Task OnParametersSetAsync()
+    {
+        await UpdateStats();
+    }
+
+    private void OnGoalGoalStateChanged(object? sender, (DateOnly date, GoalState state) args)
+    {
+        Log.Information("Dupa {@Goal}", sender);
+        InvokeAsync(async () =>
+        {
+            await UpdateStats();
+            StateHasChanged();
+        });
+    }
+
+    private async Task UpdateStats()
+    {
+        _streak = await GoalStatsService.GetCurrentStreak(GoalContext.Goal);
+    }
+
+    public void Dispose()
+    {
+        GoalContext.GoalStateChanged -= OnGoalGoalStateChanged;
+    }
+
+}

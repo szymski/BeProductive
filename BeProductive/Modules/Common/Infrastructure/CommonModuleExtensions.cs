@@ -28,6 +28,7 @@ public static class CommonModuleExtensions
         var options = new Options();
         builder(options);
 
+        // TODO: Dapper SQL logging
         services.AddDbContextFactory<AppContext>(dbOptions =>
         {
             Log.Information("Selected database provider {Provider} with connection string {ConnectionString}",

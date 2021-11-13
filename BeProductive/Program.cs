@@ -1,4 +1,5 @@
 global using AppContext = BeProductive.Modules.Common.Persistence.AppContext;
+global using AppContextFactory = Microsoft.EntityFrameworkCore.IDbContextFactory<BeProductive.Modules.Common.Persistence.AppContext>;
 using BeProductive.Modules.Common.Domain;
 using BeProductive.Modules.Common.Infrastructure;
 using BeProductive.Modules.Common.Persistence;
@@ -18,6 +19,7 @@ Log.Logger = new LoggerConfiguration()
     .MinimumLevel.Override("BeProductive", LogEventLevel.Debug)
     .MinimumLevel.Override("Microsoft.AspNetCore", LogEventLevel.Warning)
     .MinimumLevel.Override("Microsoft.EntityFrameworkCore", LogEventLevel.Warning)
+    // .MinimumLevel.Override("Microsoft.EntityFrameworkCore", LogEventLevel.Information)
     .Enrich.FromLogContext()
     .Destructure.ByTransforming<Goal>(goal => new { goal.Id, goal.UserId, goal.Name })
     .Destructure.ByTransforming<Ritual>(ritual => new { ritual.Id, ritual.UserId, ritual.Type, ritual.Title })
