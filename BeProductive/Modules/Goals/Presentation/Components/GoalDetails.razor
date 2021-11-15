@@ -20,9 +20,16 @@
                 OnGoalStateChanged="GoalStateChanged"/>
         </Card>
 
-        <GoalStatsDetails/>
-        <GoalDescriptionDetails/>
-        <EmergencyGoalDetails/>
+        <ErrorBoundary>
+            <ChildContent>
+                <GoalStatsDetails/>
+                <GoalDescriptionDetails/>
+                <EmergencyGoalDetails/>
+            </ChildContent>
+            <ErrorContent>
+                <ErrorDisplay Exception="@context"/>
+            </ErrorContent>
+        </ErrorBoundary>
     </Body>
 </Card>
 
@@ -36,7 +43,7 @@
 @code {
 
     private int _lastGoalId = 0;
-    
+
     [CascadingParameter]
     public GoalContext GoalContext
     {
@@ -51,7 +58,7 @@
             _goalContext.GoalStateChanged += OnGoalStateChangedExternally;
         }
     }
-    
+
     private GoalContext? _goalContext;
 
     [CascadingParameter]

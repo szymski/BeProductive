@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="DataSourceManagerImpl" format="xml" multifile-model="true">
-    <data-source source="LOCAL" name="database" uuid="f4d4c3c9-209e-48cb-af99-14097afbd2f0">
+    <data-source source="LOCAL" name="1. local_sqlite" uuid="f4d4c3c9-209e-48cb-af99-14097afbd2f0">
       <driver-ref>sqlite.xerial</driver-ref>
       <synchronize>true</synchronize>
       <jdbc-driver>org.sqlite.JDBC</jdbc-driver>
@@ -13,14 +13,15 @@
         </library>
       </libraries>
     </data-source>
-    <data-source source="LOCAL" name="PostgreSQL - beproductive@localhost" uuid="c3a5ff5b-cdfe-41d4-8d4e-b5f28b1f4b15">
+    <data-source source="LOCAL" name="2. local_postgres" uuid="c3a5ff5b-cdfe-41d4-8d4e-b5f28b1f4b15">
       <driver-ref>postgresql</driver-ref>
       <synchronize>true</synchronize>
+      <rewrite-bounds>false</rewrite-bounds>
       <jdbc-driver>org.postgresql.Driver</jdbc-driver>
       <jdbc-url>jdbc:postgresql://localhost:5432/beproductive</jdbc-url>
       <working-dir>$ProjectFileDir$</working-dir>
     </data-source>
-    <data-source source="LOCAL" name="PROD" uuid="1830ee70-f294-41b6-bf4d-6a3b3c1eefd0">
+    <data-source source="LOCAL" name="3. PROD Postgres" uuid="1830ee70-f294-41b6-bf4d-6a3b3c1eefd0">
       <driver-ref>postgresql</driver-ref>
       <synchronize>true</synchronize>
       <jdbc-driver>org.postgresql.Driver</jdbc-driver>

@@ -47,6 +47,7 @@ builder.Services.AddCommonModule(options =>
 {
     options.Database = builder.Configuration.GetRequiredSection("Database")
         .Get<CommonModuleExtensions.DbOptions>();
+    AppContext.Provider = options.Database.Provider.ToString();
 });
 builder.Services.AddUsersModule();
 builder.Services.AddGoalsModule();

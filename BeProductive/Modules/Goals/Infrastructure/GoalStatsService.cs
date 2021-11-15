@@ -22,7 +22,7 @@ WITH last_failed AS (
 SELECT ""Day""
 FROM ""GoalDayStates"" ls
     WHERE ls.""GoalId"" = @GoalId
-    AND ls.""State"" <> @SuccessState
+    AND ls.""State"" <> 'Success'
     ORDER BY ls.""Day"" DESC
     LIMIT 1
 ),
@@ -35,7 +35,7 @@ states AS (
 )
 SELECT count(*)
 FROM states
-    ";
+";
 
     public async Task<int> GetCurrentStreak(Goal goal)
     {
@@ -44,12 +44,11 @@ FROM states
         await using var context = await _contextFactory.CreateDbContextAsync();
         var connection = context.Database.GetDbConnection();
 
-        var res = await connection.QuerySingleAsync<int>(GetCurrentStreakSql, new
+        var streak = await connection.QuerySingleAsync<int>(GetCurrentStreakSql, new
         {
             GoalId = goal.Id,
-            SuccessState = GoalState.Success,
         });
 
-        return res;
+        return streak;
     }
 }

@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using BeProductive.Modules.Goals.Domain;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 public class GoalDayStateEntityConfiguration : IEntityTypeConfiguration<GoalDayState>
@@ -9,5 +10,16 @@ public class GoalDayStateEntityConfiguration : IEntityTypeConfiguration<GoalDayS
             .WithMany(goal => goal.GoalDayStates)
             .HasForeignKey(goalDayState => goalDayState.GoalId)
             .OnDelete(DeleteBehavior.Cascade);
+
+        if (AppContext.IsPostgres)
+        {
+            builder.Property(datState => datState.State)
+                .HasConversion<GoalState>();
+        }
+        else
+        {
+            builder.Property(datState => datState.State)
+                .HasConversion<string>();
+        }
     }
 }

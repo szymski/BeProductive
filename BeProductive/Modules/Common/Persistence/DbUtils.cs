@@ -4,6 +4,7 @@ using BeProductive.Modules.Rituals.Domain;
 using BeProductive.Modules.Users.Domain;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Serilog;
 
 namespace BeProductive.Modules.Common.Persistence;
 
@@ -11,9 +12,7 @@ public static class DbUtils
 {
     public static async Task InitializeDb(AppContext context, UserManager<User> userManager)
     {
-        // var builder = new DbContextOptionsBuilder<AppContext>(options);
-        // await using var context = new AppContext(builder.Options);
-
+        CreateSchema(context);
         await context.Database.EnsureCreatedAsync();
         SeedDb(context, userManager);
     }
@@ -27,11 +26,19 @@ public static class DbUtils
         context.SaveChanges();
     }
 
+    private static void CreateSchema(AppContext context)
+    {
+        if (!context.Database.IsNpgsql()) return;
+
+        Log.Information("Creating schema");
+        context.Database.ExecuteSqlRaw("CREATE SCHEMA IF NOT EXISTS public");
+    }
+
     private static void SeedGoals(AppContext context)
     {
         if (context.Goals.Any()) return;
 
-        Console.WriteLine("Seeding Goals");
+        Log.Information("Seeding Goals");
 
         var user = context.Users.First();
 
@@ -49,7 +56,7 @@ public static class DbUtils
     {
         if (context.Rituals.Any()) return;
 
-        Console.WriteLine("Seeding rituals");
+        Log.Information("Seeding rituals");
         
         var user = context.Users.First();
 
@@ -68,7 +75,7 @@ public static class DbUtils
     {
         if(context.Users.Any()) return;
 
-        Console.WriteLine("Seeding users");
+        Log.Information("Seeding users");
 
         {
             var task = userManager.CreateAsync(new()
@@ -83,7 +90,7 @@ public static class DbUtils
 
             if (result.Succeeded)
             {
-                Console.WriteLine("Seeding user succeeded");
+                Log.Information("Seeding user succeeded");
             }
             else
             {
@@ -105,7 +112,7 @@ public static class DbUtils
 
             if (result.Succeeded)
             {
-                Console.WriteLine("Seeding user 2 succeeded");
+                Log.Information("Seeding user 2 succeeded");
             }
             else
             {

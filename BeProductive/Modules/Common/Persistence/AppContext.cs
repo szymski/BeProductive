@@ -1,12 +1,13 @@
 ﻿using System.Reflection;
 using BeProductive.Modules.GoalExtensions.Description.Domain;
 using BeProductive.Modules.GoalExtensions.EmergencyGoal.Domain;
-using BeProductive.Modules.Goals.Domain.Entities;
+using BeProductive.Modules.Goals.Domain;
 using BeProductive.Modules.Rituals.Domain;
 using BeProductive.Modules.Users.Domain;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using Npgsql;
 
 namespace BeProductive.Modules.Common.Persistence;
 
@@ -31,6 +32,21 @@ public class AppContext : IdentityDbContext<User, IdentityRole<int>, int>
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
+
+        // TODO: Move this to another file
+        if (Database.IsNpgsql())
+        {
+            modelBuilder.HasPostgresEnum<GoalState>();
+        }
+        
         modelBuilder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
     }
+
+    static AppContext()
+    {
+        NpgsqlConnection.GlobalTypeMapper.MapEnum<GoalState>();
+    }
+    
+    public static string Provider { get; set; } = "Uninitialized";
+    public static bool IsPostgres => Provider == "Postgres";
 }

@@ -19,9 +19,9 @@
 - ✔ ~~Goal state selector animation when waiting for states~~
 
 ### Goal Gamification:
-- Current streak
+- ✔ ~~Current streak~~
 - Longest streak
-- UI smiles for long streaks and sad faces for fails 
+- UI smiles or fire icon for long streaks and sad faces for fails 
 
 ### Users:
 - ✔ ~~User entity~~
