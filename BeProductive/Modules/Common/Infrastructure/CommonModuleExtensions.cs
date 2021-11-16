@@ -49,6 +49,7 @@ public static class CommonModuleExtensions
         });
 
         services.AddScoped<LayoutContext>();
+        services.AddScoped<AudioService>();
 
         return services;
     }

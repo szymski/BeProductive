@@ -1,6 +1,7 @@
 ﻿@using BeProductive.Modules.Goals.Domain
 @using BeProductive.Modules.Goals.Domain.Services
 @inject GoalDomainService GoalDomainService
+@inject AudioService AudioService
 
 <CascadingValue Value="this">
     <CascadingValue Value="Goal">
@@ -9,13 +10,13 @@
 </CascadingValue>
 
 @code {
-    
+
     [Parameter]
     public Goal Goal { get; set; }
 
     [Parameter]
     public RenderFragment ChildContent { get; set; }
-    
+
     public event EventHandler<(DateOnly date, GoalState state)> GoalStateChanged;
 
     public async Task SetGoalState(DateOnly date, GoalState state)
@@ -25,20 +26,37 @@
             var wasChanged = await GoalDomainService.SetStateForDay(Goal, date, state);
             if (wasChanged)
             {
+                var soundEffect = GoalStateToSoundEffect(state);
+                await AudioService.PlaySoundEffect(soundEffect);
+
                 NotificationService.Success($"State changed to {state} for {date}");
                 NotifyGoalStateChanged(date, state);
             }
+            else
+            {
+                await AudioService.PlaySoundEffect(SoundEffect.Cancel);
+            }
         }
-        catch(Exception e)
+        catch (Exception e)
         {
             NotificationService.Error($"Failed to change state to {state} for {date}");
             throw e;
         }
     }
-    
+
     public void NotifyGoalStateChanged(DateOnly date, GoalState state)
     {
         GoalStateChanged?.Invoke(this, (date, state));
     }
-    
+
+    private static SoundEffect GoalStateToSoundEffect(GoalState state)
+        => state switch
+        {
+            GoalState.Unknown => SoundEffect.SelectGoalUncheck,
+            GoalState.Success => SoundEffect.SelectGoalSuccess,
+            GoalState.Failure => SoundEffect.SelectGoalFailure,
+            GoalState.Emergency => SoundEffect.SelectGoalEmergency,
+            _ => throw new ArgumentOutOfRangeException(nameof(state), state, null)
+            };
+
 }

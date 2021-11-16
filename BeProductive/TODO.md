@@ -21,7 +21,9 @@
 ### Goal Gamification:
 - ✔ ~~Current streak~~
 - Longest streak
-- UI smiles or fire icon for long streaks and sad faces for fails 
+- UI smiles or fire icon for long streaks and sad faces for fails
+- Add UI particle effects when choosing goal state to success
+- Maybe add sounds for goal selector
 
 ### Users:
 - ✔ ~~User entity~~
