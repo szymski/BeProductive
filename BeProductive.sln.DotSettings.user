@@ -5,6 +5,10 @@
   &lt;Assembly Path="D:\Projects\BeProductive\BeProductive\bin\Debug\net6.0\BeProductive.exe" /&gt;&#xD;
   &lt;Assembly Path="C:\Users\szymski\.nuget\packages\antdesign\0.10.2\lib\net5.0\AntDesign.dll" /&gt;&#xD;
 &lt;/AssemblyExplorer&gt;</s:String>
+	<s:String x:Key="/Default/Environment/Highlighting/HighlightingSourceSnapshotLocation/@EntryValue">C:\Users\szymski\AppData\Local\JetBrains\Rider2021.3\resharper-host\temp\Rider\vAny\CoverageData\_BeProductive.1097155028\Snapshot\snapshot.utdcvr</s:String>
+	<s:String x:Key="/Default/Environment/UnitTesting/UnitTestSessionStore/Sessions/=56bc1efd_002Df2db_002D4505_002Daab9_002D1201fcd8a1f7/@EntryIndexedValue">&lt;SessionState ContinuousTestingMode="0" Name="All tests from Solution" xmlns="urn:schemas-jetbrains-com:jetbrains-ut-session"&gt;&#xD;
+  &lt;Solution /&gt;&#xD;
+&lt;/SessionState&gt;</s:String>
 	
 	
 	</wpf:ResourceDictionary>

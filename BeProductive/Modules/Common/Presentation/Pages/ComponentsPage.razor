@@ -34,6 +34,43 @@
     <GoalCalendar DayStates="@_dayStates" OnGoalStateChanged="Callback"/>
 </div>
 
+<Divider Orientation="left">Icons</Divider>
+
+<div class="test">
+    
+</div>
+    
+<style> 
+    .test {
+        position: relative;
+        width: 64px;
+        height: 64px;
+        background: white;
+        border: 1px solid #3e99ea;
+        overflow: hidden;
+    }
+    
+    .test::after {
+        position: absolute;
+        inset: 0;
+        bottom: unset;
+        height: 100%;
+        background: linear-gradient(to bottom, #77be1c, #a0e52f, #4da11d);
+        content: "";
+        animation: 1.5s anim 1 ease-out;
+    }
+    
+    @@keyframes anim {
+        from {
+            top: 100%;
+        }
+        to {
+            top: 0;
+        }
+    }
+</style>
+
+
 @code {
 
     private readonly List<DayState> _dayStates = new()
