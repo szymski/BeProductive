@@ -28,7 +28,15 @@
                 {
                     <Space Style="width: 100%">
                         <SpaceItem>
-                            <Button Danger Type="@ButtonType.Primary" OnClick="@OnDeleted">Delete</Button>
+                            <Popconfirm Title="This cannot be undone!"
+                                        OnConfirm="OnDeleted"
+                                        OkText="Delete"
+                                        OkButtonProps="@(new ButtonProps() { Danger = true })"
+                                        CancelText="Cancel"
+                                        CancelButtonProps="@(new ButtonProps() { Type = "text" })"
+                                        Placement="Placement.Bottom">
+                                <Button Danger Type="@ButtonType.Primary">Delete</Button>
+                            </Popconfirm>
                         </SpaceItem>
                         <SpaceItem Style="margin-left: auto">
                             <Button Type="@ButtonType.Default" OnClick=@(() => JS.InvokeVoidAsync("history.back"))>Cancel</Button>
@@ -62,7 +70,7 @@
 
     [Parameter]
     public EventCallback OnFinished { get; set; }
-    
+
     [Parameter]
     public EventCallback OnDeleted { get; set; }
 

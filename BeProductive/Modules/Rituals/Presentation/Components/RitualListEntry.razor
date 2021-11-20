@@ -21,14 +21,21 @@
         @if (!Adding)
         {
             <SpaceItem Style="margin-left: auto">
-                <Tooltip Title=@("Remove")>
-                    <Button Danger
-                            Loading="@_isLoadingRemove"
-                            Shape="@ButtonShape.Circle"
-                            Icon="@IconType.Outline.Close"
-                            Size="@AntSizeLDSType.Default"
-                            Type="@ButtonType.Default"
-                            OnClick="@OnRemoveButtonClick"/>
+                <Tooltip Title=@("Remove") OverlayStyle="pointer-events: none;">
+                    <Popconfirm Title="Delete ritual item?"
+                                OnConfirm="OnRemoveButtonClick"
+                                OkText="Delete"
+                                OkButtonProps="@(new ButtonProps() { Danger = true })"
+                                CancelText="Cancel"
+                                CancelButtonProps="@(new ButtonProps() { Type = "text"})"
+                                Placement="Placement.Left">
+                        <Button Danger
+                                Loading="@_isLoadingRemove"
+                                Shape="@ButtonShape.Circle"
+                                Icon="@IconType.Outline.Close"
+                                Size="@AntSizeLDSType.Default"
+                                Type="@ButtonType.Default"/>
+                    </Popconfirm>
                 </Tooltip>
             </SpaceItem>
         }
