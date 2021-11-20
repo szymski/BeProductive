@@ -2,7 +2,8 @@
 
 <Space Direction="DirectionVHType.Vertical" Style="text-align: center">
     <SpaceItem>
-        <Text Strong>@Date.ToString("d")</Text>
+        <Text Style="display: block" Strong>@Date.ToString("d")</Text>
+        <Text Style="color: #777" Strong>@Date.DayOfWeek.ToString()</Text>
     </SpaceItem>
     @StateButton(GoalState.Success, "Success", Color.Green7)
     @StateButton(GoalState.Failure, "Failed", Color.Red6)
