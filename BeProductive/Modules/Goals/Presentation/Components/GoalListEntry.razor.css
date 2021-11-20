@@ -1,6 +1,11 @@
 ﻿.selected ::deep .card {
-    background: #eef6ff !important;
+    background: #eef6ff;
     border: 1px solid #b9e2ff;
+}
+
+[data-theme="dark"] .selected ::deep .card {
+    background: #202c31;
+    border: 1px solid #6a869d;
 }
 
 ::deep .card {

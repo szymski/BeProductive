@@ -6,3 +6,8 @@
     border: 2px solid white;
     outline: 3px solid #3e99ea;
 }
+
+[data-theme="dark"] div ::deep .color.selected {
+    border: 2px solid black;
+    outline: 3px solid #1a98ff;
+}

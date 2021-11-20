@@ -8,6 +8,10 @@
     border-radius: 2px;
 }
 
+[data-theme="dark"] .wrapper ::deep .goal-state-selector.unknown {
+    color: rgba(255, 255, 255, 0.39);
+}
+
 ::deep .goal-state-selector:focus {
     color: rgba(0, 0, 0, 0.8);
     border: 1px solid rgba(0, 0, 0, 0.2);
@@ -33,7 +37,7 @@
 
 @keyframes glow {
     from { box-shadow: transparent 0 0 8px 1px; }
-    to { box-shadow: orange 0 0 8px 1px; }
+    to { box-shadow: var(--goal-glow-color) 0 0 8px 1px; }
 }
 
 ::deep .goal-state-selector.success {

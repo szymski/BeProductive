@@ -1,32 +1,34 @@
 ﻿@inherits LayoutComponentBase
 @implements IDisposable
 
-<Layout Style="min-height: 100%">
-    <Sidebar/>
+<div class="layout">
+    <Layout Style="min-height: 100%">
+        <Sidebar/>
 
-    <Layout Style="margin-left: 200px">
-        <ContextPageHeader/>
+        <Layout Style="margin-left: 200px; min-height: 100vh">
+            <ContextPageHeader/>
 
-        <Content Style="padding: 1rem">
-            @{
-                RenderFragment? body;
-            }
-            <ErrorBoundary @ref="_errorBoundary">
-                <ChildContent>
-                    @Body
-                </ChildContent>
-                <ErrorContent Context="error">
-                    <ErrorDisplay Exception="@error"/>
-                    @Body
-                </ErrorContent>
-            </ErrorBoundary>
-        </Content>
+            <Content Style="padding: 1rem">
+                @{
+                    RenderFragment? body;
+                }
+                <ErrorBoundary @ref="_errorBoundary">
+                    <ChildContent>
+                        @Body
+                    </ChildContent>
+                    <ErrorContent Context="error">
+                        <ErrorDisplay Exception="@error"/>
+                        @Body
+                    </ErrorContent>
+                </ErrorBoundary>
+            </Content>
 
-        <Footer Style="background: white; text-align: right">
-            <Text Disabled>Copyright Szymon Jankowski © @(DateTime.Today.Year) </Text>
-        </Footer>
+            <Footer Class="layout-footer">
+                <Text Disabled>Copyright Szymon Jankowski © @(DateTime.Today.Year) </Text>
+            </Footer>
+        </Layout>
     </Layout>
-</Layout>
+</div>
 
 @code {
 

@@ -10,8 +10,13 @@
 
 ::deep .icon.none {
     border-radius: 50%;
-    background: black;
+    background: #787878;
     border: 8px solid white;
     width: 56px;
     height: 56px;
+}
+
+[data-theme="dark"] div ::deep .icon.none {
+    background: #dcdcdc;
+    border: 8px solid #141414;
 }

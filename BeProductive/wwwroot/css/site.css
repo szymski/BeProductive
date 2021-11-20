@@ -3,6 +3,17 @@
     --goal-color-failure: #e51818;
     --goal-color-emergency: #f1b61f;
     --goal-color-unknown: #ffffff;
+
+    --goal-glow-color: orange;
+}
+
+[data-theme="dark"] {
+    --goal-color-success: #3bb717;
+    --goal-color-failure: #9d1818;
+    --goal-color-emergency: #da9f14;
+    --goal-color-unknown: #212121;
+
+    --goal-glow-color: rgba(12, 148, 255, 0.5);
 }
 
 html, body {

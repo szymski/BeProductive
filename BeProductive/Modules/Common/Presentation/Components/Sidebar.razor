@@ -4,8 +4,8 @@
 
 <Sider Width="200" Style="overflow: auto; height: 100vh; position: fixed; left: 0">
     <div class="sidebar">
-        <div style="background: white; display: flex; flex-direction: column; justify-content: center; align-items: center; height: 72px; padding: 16px 0; font-size: 16px">
-            <h1 style="border-bottom: 3px solid #1890ff; margin-bottom: -3px">beProductive</h1>
+        <div class="logo">
+            <h1>beProductive</h1>
         </div>
         <Menu Class="menu" Mode="@MenuMode.Inline">
             @foreach (var (name, route) in _items)

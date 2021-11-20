@@ -4,8 +4,30 @@
     height: 100%;
 }
 
-::deep .menu  {
-    margin-top: -4px
+[data-theme="dark"] .sidebar {
+    background: #141414;
+    border-right: 1px solid #303030;
+}
+
+.logo {
+    background: transparent;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 72px;
+    padding: 16px 0;
+    font-size: 16px;
+}
+
+.logo h1 {
+    border-bottom: 3px solid #1890ff;
+    margin-bottom: -3px;
+}
+
+::deep .menu {
+    margin-top: -4px;
+    border: none;
 }
 
 .footer {
