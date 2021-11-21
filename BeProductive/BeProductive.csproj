@@ -9,7 +9,7 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="AntDesign" Version5="0.10.2" />
+        <PackageReference Include="AntDesign" Version5="0.10.2" Version="0.10.2" />
         <PackageReference Include="blazor-dragdrop" Version="2.3.0" />
         <PackageReference Include="Blazored.LocalStorage" Version="4.1.5" />
         <PackageReference Include="bogus" Version="33.1.1" />
