@@ -13,7 +13,7 @@
     --goal-color-emergency: #da9f14;
     --goal-color-unknown: #212121;
 
-    --goal-glow-color: rgba(12, 148, 255, 0.5);
+    --goal-glow-color: rgba(255, 155, 0, 0.6);
 }
 
 html, body {

@@ -51,6 +51,15 @@
     {
         _theme = SettingsService.Theme;
         SettingsService.ThemeChanged += OnThemeChanged;
+        _ = SettingsService.LoadSettings();
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            await SettingsService.LoadSettings();
+        }
     }
 
     private void OnThemeChanged(object? sender, string theme)

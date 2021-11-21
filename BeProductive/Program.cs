@@ -9,6 +9,7 @@ using BeProductive.Modules.Rituals.Infrastructure;
 using BeProductive.Modules.Settings.Infrastructure;
 using BeProductive.Modules.Users.Domain;
 using BeProductive.Modules.Users.Infrastructure;
+using Blazored.LocalStorage;
 using Microsoft.AspNetCore.Identity;
 using Plk.Blazor.DragDrop;
 using Serilog;
@@ -43,6 +44,7 @@ builder.Services.AddRazorPages();
 builder.Services.AddServerSideBlazor();
 builder.Services.AddAntDesign();
 builder.Services.AddBlazorDragDrop();
+builder.Services.AddBlazoredLocalStorage();
 
 builder.Services.AddCommonModule(options =>
 {

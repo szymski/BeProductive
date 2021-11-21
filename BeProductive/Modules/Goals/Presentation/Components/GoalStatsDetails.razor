@@ -37,7 +37,6 @@
 
     private void OnGoalGoalStateChanged(object? sender, (DateOnly date, GoalState state) args)
     {
-        Log.Information("Dupa {@Goal}", sender);
         InvokeAsync(async () =>
         {
             await UpdateStats();

@@ -37,6 +37,7 @@ SELECT count(*)
 FROM states
 ";
 
+    // TODO: When selecting goal, this is called twice
     public async Task<int> GetCurrentStreak(Goal goal)
     {
         _logger.LogDebug("Getting current streak for goal {@Goal}", goal);

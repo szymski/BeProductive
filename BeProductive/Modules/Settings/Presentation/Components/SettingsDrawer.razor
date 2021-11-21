@@ -8,7 +8,7 @@
             <Text Strong Style="font-size: 18px">Dark mode</Text>
         </SpaceItem>
         <SpaceItem>
-            <Switch OnChange="OnThemeChange"/>
+            <Switch Value="@_isDarkTheme" OnChange="OnThemeChange"/>
         </SpaceItem>
     </Space>
 </Drawer>
@@ -26,6 +26,7 @@
     public void Open()
     {
         _isOpen = true;
+        _isDarkTheme = SettingsService.IsDarkTheme;
         StateHasChanged();
     }
 
