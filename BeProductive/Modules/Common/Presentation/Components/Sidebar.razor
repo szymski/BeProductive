@@ -3,8 +3,6 @@
 @inject AuthService AuthService
 @implements IDisposable
 
-<SettingsDrawer @ref="_settingsDrawer"/>
-
 <Sider Width="200" Style="overflow: auto; height: 100vh; position: fixed; left: 0">
     <div class="sidebar">
         <div class="logo">
@@ -51,8 +49,10 @@
 
 @code {
 
+    [CascadingParameter]
+    public SettingsDrawer SettingsDrawer { get; set; }
+    
     private Popover _popover;
-    private SettingsDrawer _settingsDrawer;
 
     private string _version = "";
 
@@ -68,7 +68,6 @@
     };
 
     private IIdentity? _userIdentity;
-
 
     protected override async Task OnInitializedAsync()
     {
@@ -95,7 +94,7 @@
 
     private void OnSettingsClick()
     {
-        _settingsDrawer.Open();
+        SettingsDrawer.Open();
         _popover.Close();
     }
 

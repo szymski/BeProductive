@@ -8,4 +8,4 @@ public static class SettingsModuleExtensions
         
         return services;
     }
-}
+} 

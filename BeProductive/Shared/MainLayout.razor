@@ -1,37 +1,44 @@
-﻿@inherits LayoutComponentBase
+﻿@using BeProductive.Modules.Settings.Presentation.Components
+@inherits LayoutComponentBase
 @implements IDisposable
 
-<div class="layout">
-    <Layout Style="min-height: 100%">
-        <Sidebar/>
+<SettingsDrawer @ref="_settingsDrawer"/>
 
-        <Layout Style="margin-left: 200px; min-height: 100vh">
-            <ContextPageHeader/>
+<CascadingValue Value="_settingsDrawer">
+    <div class="layout">
+        <Layout Style="min-height: 100%">
+            <Sidebar/>
 
-            <Content Style="padding: 1rem">
-                @{
-                    RenderFragment? body;
-                }
-                <ErrorBoundary @ref="_errorBoundary">
-                    <ChildContent>
-                        @Body
-                    </ChildContent>
-                    <ErrorContent Context="error">
-                        <ErrorDisplay Exception="@error"/>
-                        @Body
-                    </ErrorContent>
-                </ErrorBoundary>
-            </Content>
+            <Layout Style="margin-left: 200px; min-height: 100vh">
+                <ContextPageHeader/>
 
-            <Footer Class="layout-footer">
-                <Text Disabled>Copyright Szymon Jankowski © @(DateTime.Today.Year) </Text>
-            </Footer>
+                <Content Style="padding: 1rem">
+                    @{
+                        RenderFragment? body;
+                    }
+                    <ErrorBoundary @ref="_errorBoundary">
+                        <ChildContent>
+                            @Body
+                        </ChildContent>
+                        <ErrorContent Context="error">
+                            <ErrorDisplay Exception="@error"/>
+                            @Body
+                        </ErrorContent>
+                    </ErrorBoundary>
+                </Content>
+
+                <Footer Class="layout-footer" style="box-sizing: border-box;">
+                    <Text Disabled>Copyright Szymon Jankowski © @(DateTime.Today.Year)</Text>
+                    <Button OnClick="@OpenSettings" Icon="@IconType.Fill.Setting" Shape="@ButtonShape.Circle" Style="margin-left: 0.5rem;"></Button>
+                </Footer>
+            </Layout>
         </Layout>
-    </Layout>
-</div>
+    </div>
+</CascadingValue>
 
 @code {
 
+    private SettingsDrawer _settingsDrawer;
     private ErrorBoundary _errorBoundary;
 
     protected override void OnInitialized()
@@ -52,6 +59,11 @@
     public void Dispose()
     {
         NavigationManager.LocationChanged -= OnLocationChanged;
+    }
+
+    private void OpenSettings()
+    {
+        _settingsDrawer.Open();
     }
 
 }

@@ -4,6 +4,16 @@
     Layout.Title = "Rituals";
 }
 
+<Alert Type="@AlertType.Info"
+       Message="Add rituals to your goal list"
+       ShowIcon="true">
+    <p>
+        Currently you don't have morning and evening ritual goals on your goal list.
+        You can do so by clicking the button below.
+    </p>
+    <Button Type="@ButtonType.Primary" style="display: block">Add goals</Button>
+</Alert>
+
 <Tabs Animated ActiveKey="@ActiveTab" OnTabClick="@OnTabClick">
     <TabPane Tab="Morning ritual" Key="morning">
         <RitualsTab Type="@RitualType.Morning"/>
