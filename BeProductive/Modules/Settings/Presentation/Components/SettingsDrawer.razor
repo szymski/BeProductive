@@ -1,0 +1,38 @@
+﻿@using Serilog
+@using BeProductive.Modules.Settings.Infrastructure
+@inject SettingsService SettingsService
+
+<Drawer Closable="true" Visible="_isOpen" Placement="right" Title=@("Settings") Width="400" OnClose="@(() => _isOpen = false)">
+    <Space Style="display: flex" Align="center">
+        <SpaceItem Style="flex-basis: 100%">
+            <Text Strong Style="font-size: 18px">Dark mode</Text>
+        </SpaceItem>
+        <SpaceItem>
+            <Switch OnChange="OnThemeChange"/>
+        </SpaceItem>
+    </Space>
+</Drawer>
+
+@code {
+    private bool _isOpen = false;
+    
+    private bool _isDarkTheme = false;
+
+    protected override void OnInitialized()
+    {
+        _isDarkTheme = SettingsService.IsDarkTheme;
+    }
+
+    public void Open()
+    {
+        _isOpen = true;
+        StateHasChanged();
+    }
+
+    private void OnThemeChange(bool isDarkMode)
+    {
+        _isDarkTheme = isDarkMode;
+        SettingsService.SetDarkTheme(isDarkMode);
+    }
+
+}

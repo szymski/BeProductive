@@ -1,6 +1,9 @@
 ﻿@using System.Security.Principal
+@using BeProductive.Modules.Settings.Presentation.Components
 @inject AuthService AuthService
 @implements IDisposable
+
+<SettingsDrawer @ref="_settingsDrawer"/>
 
 <Sider Width="200" Style="overflow: auto; height: 100vh; position: fixed; left: 0">
     <div class="sidebar">
@@ -17,9 +20,16 @@
             <div>
                 @if (_userIdentity is not null)
                 {
-                    <Popover Trigger="new[] { Trigger.Click }">
+                    <Popover @ref="_popover" Trigger="new[] { Trigger.Click }">
                         <ContentTemplate>
-                            <Button OnClick="OnLogoutClick">Logout</Button>
+                            <Space Direction="DirectionVHType.Vertical" Align="center" Size=@("0")>
+                                <SpaceItem Style="width: 100%">
+                                    <Button Block Type="@ButtonType.Text" OnClick="OnSettingsClick">Settings</Button>
+                                </SpaceItem>
+                                <SpaceItem Style="width: 100%">
+                                    <Button Block Type="@ButtonType.Text" Danger OnClick="OnLogoutClick">Logout</Button>
+                                </SpaceItem>
+                            </Space>
                         </ContentTemplate>
                         <ChildContent>
                             <a style="display: flex; align-items: center; justify-content: center; padding: 0.2rem;">
@@ -41,6 +51,9 @@
 
 @code {
 
+    private Popover _popover;
+    private SettingsDrawer _settingsDrawer;
+
     private string _version = "";
 
     record MenuItem(string Name, string Route);
@@ -55,6 +68,7 @@
     };
 
     private IIdentity? _userIdentity;
+
 
     protected override async Task OnInitializedAsync()
     {
@@ -77,6 +91,12 @@
     private async Task OnLogoutClick()
     {
         await AuthService.Logout();
+    }
+
+    private void OnSettingsClick()
+    {
+        _settingsDrawer.Open();
+        _popover.Close();
     }
 
 }

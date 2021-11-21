@@ -6,6 +6,7 @@ using BeProductive.Modules.Common.Persistence;
 using BeProductive.Modules.Goals.Infrastructure;
 using BeProductive.Modules.Rituals.Domain;
 using BeProductive.Modules.Rituals.Infrastructure;
+using BeProductive.Modules.Settings.Infrastructure;
 using BeProductive.Modules.Users.Domain;
 using BeProductive.Modules.Users.Infrastructure;
 using Microsoft.AspNetCore.Identity;
@@ -49,6 +50,7 @@ builder.Services.AddCommonModule(options =>
         .Get<CommonModuleExtensions.DbOptions>();
     AppContext.Provider = options.Database.Provider.ToString();
 });
+builder.Services.AddSettingsModule();
 builder.Services.AddUsersModule();
 builder.Services.AddGoalsModule();
 builder.Services.AddRitualsModule();

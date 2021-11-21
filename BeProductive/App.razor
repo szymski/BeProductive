@@ -1,33 +1,67 @@
 ﻿@using BeProductive.Modules.Users.Presentation.Components
 @using BeProductive.Modules.Users.Presentation.Layouts
+@using BeProductive.Modules.Settings.Infrastructure
+@implements IDisposable
 @inject MessageService MessageService
+@inject SettingsService SettingsService
 
-<CascadingAuthenticationState>
-    <AuthorizeView>
-        <Authorized Context="state">
-            <Router AppAssembly="@typeof(App).Assembly">
-                <Found Context="routeData">
-                    @* <RouteView RouteData="@routeData" DefaultLayout="@typeof(MainLayout)"/> *@
-                    <AuthorizeRouteView RouteData="@routeData" DefaultLayout="@typeof(MainLayout)">
-                        <NotAuthorized>
-                            Not authorized
-                        </NotAuthorized>
-                    </AuthorizeRouteView>
-                    <FocusOnNavigate RouteData="@routeData" Selector="h1"/>
-                </Found>
-                <NotFound>
-                    <LayoutView Layout="@typeof(MainLayout)">
-                        <NotFoundPage/>
-                    </LayoutView>
-                </NotFound>
-            </Router>
-        </Authorized>
-        <NotAuthorized>
-            <LayoutView Layout="typeof(NotAuthorizedLayout)">
-                <LoginComponent/>
-            </LayoutView>
-        </NotAuthorized>
-    </AuthorizeView>
-</CascadingAuthenticationState>
+<div data-theme="@_theme">
+    @if (SettingsService.IsDarkTheme)
+    {
+        <HeadContent>
+            <link href="_content/AntDesign/css/ant-design-blazor.dark.css" rel="stylesheet"/>
+        </HeadContent>
+    }
 
-<AntContainer/>
+    <CascadingAuthenticationState>
+        <AuthorizeView>
+            <Authorized Context="state">
+                <Router AppAssembly="@typeof(App).Assembly">
+                    <Found Context="routeData">
+                        @* <RouteView RouteData="@routeData" DefaultLayout="@typeof(MainLayout)"/> *@
+                        <AuthorizeRouteView RouteData="@routeData" DefaultLayout="@typeof(MainLayout)">
+                            <NotAuthorized>
+                                Not authorized
+                            </NotAuthorized>
+                        </AuthorizeRouteView>
+                        <FocusOnNavigate RouteData="@routeData" Selector="h1"/>
+                    </Found>
+                    <NotFound>
+                        <LayoutView Layout="@typeof(MainLayout)">
+                            <NotFoundPage/>
+                        </LayoutView>
+                    </NotFound>
+                </Router>
+            </Authorized>
+            <NotAuthorized>
+                <LayoutView Layout="typeof(NotAuthorizedLayout)">
+                    <LoginComponent/>
+                </LayoutView>
+            </NotAuthorized>
+        </AuthorizeView>
+    </CascadingAuthenticationState>
+
+    <AntContainer/>
+</div>
+
+@code {
+    private string _theme;
+
+    protected override void OnInitialized()
+    {
+        _theme = SettingsService.Theme;
+        SettingsService.ThemeChanged += OnThemeChanged;
+    }
+
+    private void OnThemeChanged(object? sender, string theme)
+    {
+        _theme = theme;
+        StateHasChanged();
+    }
+
+    public void Dispose()
+    {
+        SettingsService.ThemeChanged -= OnThemeChanged;
+    }
+
+}
