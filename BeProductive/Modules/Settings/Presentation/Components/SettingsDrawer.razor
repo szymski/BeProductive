@@ -3,37 +3,55 @@
 @inject SettingsService SettingsService
 
 <Drawer Closable="true" Visible="_isOpen" Placement="right" Title=@("Settings") Width="400" OnClose="@(() => _isOpen = false)">
-    <Space Style="display: flex" Align="center">
-        <SpaceItem Style="flex-basis: 100%">
-            <Text Strong Style="font-size: 18px">Dark mode</Text>
-        </SpaceItem>
-        <SpaceItem>
-            <Switch Value="@_isDarkTheme" OnChange="OnThemeChange"/>
-        </SpaceItem>
-    </Space>
+    @SwitchEntry("Dark mode", _isDarkTheme, OnThemeChange)
+    @SwitchEntry("Enable sounds", _soundsEnabled, OnSoundsEnabledChange)
 </Drawer>
 
 @code {
+
+    private RenderFragment SwitchEntry(string label, bool value, Action<bool> onChange)
+        => @<Space Style="display: flex; margin-bottom: 4px" Align="center">
+               <SpaceItem Style="flex-basis: 100%">
+                   <Text Strong Style="font-size: 18px">@label</Text>
+               </SpaceItem>
+               <SpaceItem>
+                   <Switch Value="@value" OnChange="@onChange"/>
+               </SpaceItem>
+           </Space>;
+
+}
+
+@code {
+
     private bool _isOpen = false;
-    
+
     private bool _isDarkTheme = false;
+    private bool _soundsEnabled = true;
 
     protected override void OnInitialized()
     {
         _isDarkTheme = SettingsService.IsDarkTheme;
+        _soundsEnabled = SettingsService.SoundsEnabled;
     }
 
     public void Open()
     {
         _isOpen = true;
         _isDarkTheme = SettingsService.IsDarkTheme;
+        _soundsEnabled = SettingsService.SoundsEnabled;
         StateHasChanged();
     }
 
-    private void OnThemeChange(bool isDarkMode)
+    private void OnThemeChange(bool value)
     {
-        _isDarkTheme = isDarkMode;
-        SettingsService.SetDarkTheme(isDarkMode);
+        _isDarkTheme = value;
+        SettingsService.SetDarkTheme(value);
+    }
+
+    private void OnSoundsEnabledChange(bool value)
+    {
+        _soundsEnabled = value;
+        SettingsService.SetSoundsEnabled(value);
     }
 
 }

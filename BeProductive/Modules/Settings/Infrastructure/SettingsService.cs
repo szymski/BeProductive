@@ -23,6 +23,8 @@ public class SettingsService
 
     public string Theme => IsDarkTheme ? "dark" : "light";
 
+    public bool SoundsEnabled { get; private set; } = true;
+
     public event EventHandler<string>? ThemeChanged;
 
     public void SetDarkTheme(bool isDark)
@@ -33,6 +35,13 @@ public class SettingsService
         _ = SaveSettings();
     }
 
+    public void SetSoundsEnabled(bool enabled)
+    {
+        _logger.LogInformation("Settings sounds enabled to {@SoundsEnabled}", enabled);
+        SoundsEnabled = enabled;
+        _ = SaveSettings();
+    }
+
     public async ValueTask SaveSettings()
     {
         _logger.LogInformation("Saving settings to local storage");
@@ -40,6 +49,7 @@ public class SettingsService
         var settings = new Domain.Settings()
         {
             DarkThemeEnabled = IsDarkTheme,
+            SoundsEnabled = SoundsEnabled,
         };
 
         await _localStorage.SetItemAsync(SettingsStorageKey, settings);
@@ -59,6 +69,8 @@ public class SettingsService
                 IsDarkTheme = settings.DarkThemeEnabled;
                 ThemeChanged?.Invoke(this, Theme);
             }
+
+            SoundsEnabled = settings.SoundsEnabled;
         }
     }
 }

@@ -1,14 +1,19 @@
-﻿using Microsoft.JSInterop;
+﻿using BeProductive.Modules.Settings.Infrastructure;
+using Microsoft.JSInterop;
 
 namespace BeProductive.Modules.Common.Infrastructure;
 
 public class AudioService
 {
     private IJSRuntime _jsRuntime;
+    private SettingsService _settingsService;
 
-    public AudioService(IJSRuntime jsRuntime)
+    public AudioService(
+        IJSRuntime jsRuntime,
+        SettingsService settingsService)
     {
         _jsRuntime = jsRuntime;
+        _settingsService = settingsService;
     }
 
     public async Task PlaySoundEffect(SoundEffect soundEffect)
@@ -29,6 +34,7 @@ public class AudioService
 
     public async Task PlayUrl(string url)
     {
+        if (!_settingsService.SoundsEnabled) return;
         await _jsRuntime.InvokeAsync<object>("PlayAudio", url);
     }
 }
