@@ -30,8 +30,17 @@ public static class GoalIcons
         "shop",
         "tool",
         "star",
-        "tablet",
+        "mobile",
         "schedule",
+        "clock-circle",
+        "book",
+        "read",
+        "heart",
+        "poweroff",
+        "shake",
+        "shopping",
+        "gift",
+        "thunderbolt",
     };
     
     public static string RandomIcon => Icons[Random.Shared.Next(Icons.Length)];

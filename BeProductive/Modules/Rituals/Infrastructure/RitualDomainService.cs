@@ -11,7 +11,7 @@ public class RitualDomainService
     private readonly ILogger<RitualDomainService> _logger;
 
     protected int UserId => _authService.GetAuthData()!.UserId;
-    
+
     public RitualDomainService(
         AppContext context,
         ILogger<RitualDomainService> logger,
@@ -34,7 +34,7 @@ public class RitualDomainService
     public async Task<Ritual> AddRitual(Ritual ritual)
     {
         ritual.UserId = UserId;
-        
+
         await _context.Rituals.AddAsync(ritual);
         await _context.SaveChangesAsync();
         _logger.LogInformation("Added ritual {@Ritual}", ritual);

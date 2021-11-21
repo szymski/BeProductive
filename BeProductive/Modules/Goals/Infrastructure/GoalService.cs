@@ -69,6 +69,25 @@ public class GoalService
 
         return goal;
     }
+    
+    public async Task<Goal> AddSystemGoal(Goal goal, string type)
+    {
+        // TODO
+        
+        goal.UserId = UserId;
+
+        await using var context = await _contextFactory.CreateDbContextAsync();
+
+        var count = await context.Goals
+            .Where(x => x.UserId == UserId)
+            .CountAsync();
+        goal.Order = count;
+        await context.Goals.AddAsync(goal);
+        await context.SaveChangesAsync();
+        _logger.LogInformation("Added new goal {@Goal}", goal);
+
+        return goal;
+    }
 
     public async Task DeleteGoal(Goal goal)
     {
