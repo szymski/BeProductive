@@ -1,0 +1,21 @@
+﻿.goal-details {
+    position: relative;
+    display: flex;
+    min-height: 100%;
+}
+
+.goal-details ::deep .card {
+    min-height: 100%;
+}
+
+.goal-details ::deep .card .ant-card-actions {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    padding: 1rem;
+}
+
+.goal-details ::deep .card .ant-card-actions:empty {
+    display: none;
+}

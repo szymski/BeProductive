@@ -44,7 +44,7 @@
 
     @if (SelectedGoal is not null)
     {
-        <Sider Theme="SiderTheme.Light" Style="margin-left: 1rem" Width="400">
+        <Sider Style="margin-left: 1rem; background: transparent" Width="400">
             <CascadingValue Value="@SelectedGoal.Context">
                 <CascadingValue Value="@SelectedGoal.Goal">
                     <GoalDetails @ref="@_goalDetails"/>
@@ -123,17 +123,10 @@
 
         if (!previousOrder.SequenceEqual(currentOrder))
         {
-            Console.WriteLine("Order differs, updating");
             var goalOrders = _goals
                 .Select((entry, i) => new KeyValuePair<Goal, int>(entry.Goal, i));
             await GoalService.UpdateOrders(goalOrders);
         }
-
-    // _goals = (await GoalService.GetGoals())
-    //     .Select(goal => new GoalEntry(goal))
-    //     .ToList();
-    //
-    // await InvokeAsync(StateHasChanged);
     }
 
     private async void DragEnd(GoalEntry _)

@@ -5,33 +5,48 @@
 @using BeProductive.Modules.GoalExtensions.EmergencyGoal.Infrastructure
 @using BeProductive.Modules.GoalExtensions.EmergencyGoal.Presentation.Components
 @using BeProductive.Modules.GoalExtensions.Description.Presentation.Components
+@using BeProductive.Modules.Rituals.Domain
 @inject GoalService GoalService
 
-<Card Title="@Goal.Name" BodyStyle="padding: 0" Style="min-height: 100%">
-    <Extra>
-        <a @onclick="NavigateToEditGoalPage">Edit</a>
-    </Extra>
-    <Body>
-        <Card Size="@AntSizeLDSType.Small" Style="border-bottom: none">
-            <GoalCalendar
-                DayStates="_dayStates"
-                HasEmergencyGoal="@Goal.HasEmergencyGoal()"
-                OnMonthChanged="OnMonthChanged"
-                OnGoalStateChanged="GoalStateChanged"/>
-        </Card>
+<div class="goal-details">
+    <Card Class="card" Title="@Goal.Name" BodyStyle="padding: 0">
+        <Extra>
+            <a @onclick="NavigateToEditGoalPage">Edit</a>
+        </Extra>
+        <Body>
+            <Card Size="@AntSizeLDSType.Small" Style="border-bottom: none">
+                <GoalCalendar
+                    DayStates="_dayStates"
+                    HasEmergencyGoal="@Goal.HasEmergencyGoal()"
+                    OnMonthChanged="OnMonthChanged"
+                    OnGoalStateChanged="GoalStateChanged"/>
+            </Card>
 
-        <ErrorBoundary>
-            <ChildContent>
-                <GoalStatsDetails/>
-                <GoalDescriptionDetails/>
-                <EmergencyGoalDetails/>
-            </ChildContent>
-            <ErrorContent>
-                <ErrorDisplay Exception="@context"/>
-            </ErrorContent>
-        </ErrorBoundary>
-    </Body>
-</Card>
+            <ErrorBoundary>
+                <ChildContent>
+                    <GoalStatsDetails/>
+                    <GoalDescriptionDetails/>
+                    <EmergencyGoalDetails/>
+                </ChildContent>
+                <ErrorContent>
+                    <ErrorDisplay Exception="@context"/>
+                </ErrorContent>
+            </ErrorBoundary>
+        </Body>
+        <ActionTemplate>
+            @if (Goal is { SystemType: RitualGoalTypes.MorningRitual or RitualGoalTypes.EveningRitual })
+            {
+                var type = (Goal.SystemType == RitualGoalTypes.MorningRitual ? "morning" : "evening");
+                
+                <div style="display: block; text-align: center">
+                    <a href=@($"/rituals/{type}")>
+                        <Text Strong Style="font-size: 16px; color: #278dff">Go to @type ritual</Text>
+                    </a>
+                </div>
+            }
+        </ActionTemplate>
+    </Card>
+</div>
 
 <style>
     .collapse {
