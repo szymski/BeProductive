@@ -34,6 +34,19 @@ public class GoalService
             .ToListAsync();
     }
 
+    public async Task<IDictionary<string, Goal>> GetSystemGoalsByTypes(IEnumerable<string> types)
+    {
+        await using var context = await _contextFactory.CreateDbContextAsync();
+
+        _logger.LogInformation("User id {Id}", UserId);
+        
+        return await context.Goals
+            .Where(goal => goal.UserId == UserId)
+            .Where(goal => goal.IsSystem && goal.SystemType != null && types.Contains(goal.SystemType))
+            .OrderBy(goal => goal.Order)
+            .ToDictionaryAsync(goal => goal.SystemType!);
+    }
+
     public async Task<Goal?> GetGoal(int id)
     {
         await using var context = await _contextFactory.CreateDbContextAsync();
@@ -75,6 +88,8 @@ public class GoalService
         // TODO
         
         goal.UserId = UserId;
+        goal.IsSystem = true;
+        goal.SystemType = type;
 
         await using var context = await _contextFactory.CreateDbContextAsync();
 
@@ -91,6 +106,12 @@ public class GoalService
 
     public async Task DeleteGoal(Goal goal)
     {
+        if (goal.IsSystem)
+        {
+            _logger.LogWarning("Attempted to delete system goal {@Goal}", goal);
+            throw new InvalidOperationException("Cannot delete system goal");
+        }
+        
         await using var context = await _contextFactory.CreateDbContextAsync();
 
         _logger.LogInformation("Deleting goal {@Goal}", goal);

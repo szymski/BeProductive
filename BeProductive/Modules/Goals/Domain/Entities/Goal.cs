@@ -9,6 +9,8 @@ public class Goal : BaseOwnedEntity
     public string Color { get; set; }
     public string? Icon { get; set; }
     public int Order { get; set; }
+    public bool IsSystem { get; set; }
+    public string? SystemType { get; set; }
     
     public List<GoalDayState> GoalDayStates { get; set; }
     

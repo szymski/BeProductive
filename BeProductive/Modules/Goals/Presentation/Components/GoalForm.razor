@@ -28,15 +28,24 @@
                 {
                     <Space Style="width: 100%">
                         <SpaceItem>
-                            <Popconfirm Title="This cannot be undone!"
-                                        OnConfirm="OnDeleted"
-                                        OkText="Delete"
-                                        OkButtonProps="@(new ButtonProps() { Danger = true })"
-                                        CancelText="Cancel"
-                                        CancelButtonProps="@(new ButtonProps() { Type = "text" })"
-                                        Placement="Placement.Bottom">
-                                <Button Danger Type="@ButtonType.Primary">Delete</Button>
-                            </Popconfirm>
+                            @if (IsSystem)
+                            {
+                                <RenderFragment>
+                                    <Text Disabled>This is a system goal. It cannot be deleted.</Text>
+                                </RenderFragment>
+                            }
+                            else
+                            {
+                                <Popconfirm Title="This cannot be undone!"
+                                            OnConfirm="OnDeleted"
+                                            OkText="Delete"
+                                            OkButtonProps="@(new ButtonProps() { Danger = true })"
+                                            CancelText="Cancel"
+                                            CancelButtonProps="@(new ButtonProps() { Type = "text" })"
+                                            Placement="Placement.Bottom">
+                                    <Button Danger Type="@ButtonType.Primary">Delete</Button>
+                                </Popconfirm>
+                            }
                         </SpaceItem>
                         <SpaceItem Style="margin-left: auto">
                             <Button Type="@ButtonType.Default" OnClick=@(() => JS.InvokeVoidAsync("history.back"))>Cancel</Button>
@@ -64,6 +73,9 @@
 
     [Parameter]
     public string? GoalName { get; set; }
+
+    [Parameter]
+    public bool IsSystem { get; set; } = false;
 
     [Parameter]
     public GoalModel Value { get; set; }

@@ -25,21 +25,37 @@ public class RitualGoalService
         _logger = logger;
         _goalService = goalService;
     }
-    
+
     public async Task AddRitualGoals()
     {
-        await _goalService.AddSystemGoal(new Goal()
+        var (hasMorning, hasEvening) = await HasRitualGoals();
+
+        if (!hasMorning)
         {
-            Name = "Perform morning ritual",
-            Icon = "clock-circle",
-            Color = "#e8c92b",
-        }, RitualGoalTypes.MorningRitual);
-        
-        await _goalService.AddSystemGoal(new Goal()
+            await _goalService.AddSystemGoal(new Goal()
+            {
+                Name = "Perform morning ritual",
+                Icon = "clock-circle",
+                Color = "#e8c92b",
+            }, RitualGoalTypes.MorningRitual);
+        }
+
+        if (!hasEvening)
         {
-            Name = "Perform evening ritual",
-            Icon = "clock-circle",
-            Color = "#2799e6",
-        }, RitualGoalTypes.EveningRitual);
+            await _goalService.AddSystemGoal(new Goal()
+            {
+                Name = "Perform evening ritual",
+                Icon = "clock-circle",
+                Color = "#2799e6",
+            }, RitualGoalTypes.EveningRitual);
+        }
+    }
+
+    public async Task<(bool morning, bool evening)> HasRitualGoals()
+    {
+        var types = new[] { RitualGoalTypes.MorningRitual, RitualGoalTypes.EveningRitual };
+        var goals = await _goalService.GetSystemGoalsByTypes(types);
+
+        return (goals.ContainsKey(RitualGoalTypes.MorningRitual), goals.ContainsKey(RitualGoalTypes.EveningRitual));
     }
 }

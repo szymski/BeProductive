@@ -1,6 +1,7 @@
 ﻿@inject RitualGoalService RitualGoalService
 @page "/rituals"
 @page "/rituals/{ActiveTab}"
+@using Serilog
 @{
     Layout.Title = "Rituals";
 }
@@ -29,10 +30,18 @@
 
 @code {
 
-    private bool _hasRitualGoals = false;
+    private bool _hasRitualGoals = true;
     
     [Parameter]
     public string? ActiveTab { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        var (hasMorning, hasEvening) = await RitualGoalService.HasRitualGoals();
+        Log.Information("Has morning ritual goals: {hasMorning}", hasMorning);
+        Log.Information("Has evening ritual goals: {hasEvening}", hasEvening);
+        _hasRitualGoals = hasMorning && hasEvening;
+    }
 
     protected override void OnAfterRender(bool firstRender)
     {

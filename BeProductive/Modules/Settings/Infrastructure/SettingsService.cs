@@ -29,7 +29,7 @@ public class SettingsService
 
     public void SetDarkTheme(bool isDark)
     {
-        _logger.LogInformation("Changed dark mode to {@DarkMode}", isDark);
+        _logger.LogDebug("Changed dark mode to {@DarkMode}", isDark);
         IsDarkTheme = isDark;
         ThemeChanged?.Invoke(this, Theme);
         _ = SaveSettings();
