@@ -9,7 +9,7 @@
 @inject GoalService GoalService
 
 <div class="goal-details">
-    <Card Class="card" Title="@Goal.Name" BodyStyle="padding: 0">
+    <Card Class="card" Title="@Goal.Name" Style="display: flex; flex-direction: column;" BodyStyle="padding: 0; flex: 1;">
         <Extra>
             <a @onclick="NavigateToEditGoalPage">Edit</a>
         </Extra>
@@ -37,7 +37,7 @@
             @if (Goal is { SystemType: RitualGoalTypes.MorningRitual or RitualGoalTypes.EveningRitual })
             {
                 var type = (Goal.SystemType == RitualGoalTypes.MorningRitual ? "morning" : "evening");
-                
+
                 <div style="display: block; text-align: center">
                     <a href=@($"/rituals/{type}")>
                         <Text Strong Style="font-size: 16px; color: #278dff">Go to @type ritual</Text>

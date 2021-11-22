@@ -41,18 +41,30 @@
             </div>
         }
     </Content>
-
-    @if (SelectedGoal is not null)
-    {
-        <Sider Style="margin-left: 1rem; background: transparent" Width="400">
+    
+    <Sider Style="margin-left: 1rem; background: transparent" Width="400" CollapsedWidth="0" Collapsed="@_isDetailsCollapsed">
+        @if (SelectedGoal is not null)
+        {
             <CascadingValue Value="@SelectedGoal.Context">
                 <CascadingValue Value="@SelectedGoal.Goal">
                     <GoalDetails @ref="@_goalDetails"/>
                 </CascadingValue>
             </CascadingValue>
-        </Sider>
-    }
+        }
+    </Sider>
 </Layout>
+
+@* TODO: Move to scoped css *@
+<style>
+    .ant-layout-sider {
+        overflow: hidden !important;
+    }
+    
+    .ant-layout-sider.ant-layout-sider-collapsed {
+        margin-left: 0 !important;
+        
+    }
+</style>
 
 @code {
 
@@ -70,6 +82,8 @@
     private GoalDetails? _goalDetails;
 
     private List<GoalEntry> _goals = new();
+    
+    private bool _isDetailsCollapsed = true;
 
     protected override async Task OnInitializedAsync()
     {
@@ -83,6 +97,11 @@
         if (GoalId.HasValue)
         {
             SelectedGoal = _goals.SingleOrDefault(goal => goal.Goal.Id == GoalId);
+            _isDetailsCollapsed = false;
+        }
+        else
+        {
+            _isDetailsCollapsed = true;
         }
     }
 
