@@ -78,6 +78,7 @@ else
         {
             ritual.Title = newTitle;
             await RitualDomainService.UpdateRitual(ritual);
+            NotificationService.Success($"Step has been updated");
         }
         catch (Exception e)
         {
@@ -92,7 +93,7 @@ else
         _rituals.Remove(ritual);
         await ReorderEntries();
 
-        NotificationService.Success($"Removed {ritual.Type} ritual ({ritual.Title})");
+        NotificationService.Success($"Removed {ritual.Type.ToString().ToLower()} ritual step ({ritual.Title})");
     }
 
     private void StartAddingEntry()
@@ -117,7 +118,7 @@ else
         });
         _rituals.Add(ritual);
 
-        NotificationService.Success($"Added new {ritual.Type} ritual");
+        NotificationService.Success($"Added new {ritual.Type.ToString().ToLower()} ritual step");
     }
 
     private async void OnDragEnd(Ritual _)
