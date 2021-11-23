@@ -30,7 +30,6 @@
 
     <ItemGroup>
         <Folder Include="Modules\Common\Presentation\Layout" />
-        <Folder Include="Modules\Users\Presentation\Pages" />
     </ItemGroup>
     
     <ItemGroup>

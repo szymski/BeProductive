@@ -41,6 +41,7 @@ public static class UserModuleExtensions
                 options => { options.Cookie.Name = "AuthCookie"; });
 
         services.AddScoped<AuthService>();
+        services.AddScoped<UserService>();
 
         return services;
     }

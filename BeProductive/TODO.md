@@ -13,7 +13,7 @@
 - ✔ ~~Emergency goal~~
 
 ### Rituals
-- Automatic adding of ritual goals
+- ✔ ~~Automatic adding of ritual goals~~
 
 ### UI Improvements:
 - ✔ ~~Goal state selector animation when waiting for states~~

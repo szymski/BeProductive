@@ -6,7 +6,9 @@
 <Sider Width="200" Style="overflow: auto; height: 100vh; position: fixed; left: 0">
     <div class="sidebar">
         <div class="logo">
-            <h1>beProductive</h1>
+            <a href="/">
+                <h1>beProductive</h1>
+            </a>
         </div>
         <Menu Class="menu" Mode="@MenuMode.Inline">
             @foreach (var (name, route) in _items)
@@ -21,6 +23,9 @@
                     <Popover @ref="_popover" Trigger="new[] { Trigger.Click }">
                         <ContentTemplate>
                             <Space Direction="DirectionVHType.Vertical" Align="center" Size=@("0")>
+                                <SpaceItem Style="width: 100%">
+                                    <Button Block Type="@ButtonType.Text" OnClick=@(() => NavigationManager.NavigateTo("/account"))>Account</Button>
+                                </SpaceItem>
                                 <SpaceItem Style="width: 100%">
                                     <Button Block Type="@ButtonType.Text" OnClick="OnSettingsClick">Settings</Button>
                                 </SpaceItem>
@@ -51,7 +56,7 @@
 
     [CascadingParameter]
     public SettingsDrawer SettingsDrawer { get; set; }
-    
+
     private Popover _popover;
 
     private string _version = "";
@@ -62,9 +67,9 @@
     {
         new("Goals", "/"),
         new("Rituals", "/rituals"),
-        new("About", "/about"),
         new("To do", "/todo"),
         new("Components", "/components"),
+        new("Account", "/account"),
     };
 
     private IIdentity? _userIdentity;

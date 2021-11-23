@@ -1,5 +1,7 @@
 ﻿::deep .color {
     cursor: pointer;
+    outline-width: 0px solid #3e99ea;
+    transition: outline-width 0.1s;
 }
 
 ::deep .color.selected {

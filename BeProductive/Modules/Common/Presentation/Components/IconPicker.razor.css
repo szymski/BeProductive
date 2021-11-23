@@ -1,6 +1,8 @@
 ﻿::deep .icon {
     cursor: pointer;
     padding: 4px;
+    outline-color: transparent;
+    transition: outline-width 0.1s, color 0.1s;
 }
 
 ::deep .icon.selected {
@@ -14,6 +16,7 @@
     border: 8px solid white;
     width: 56px;
     height: 56px;
+    transition: background 0.2s;
 }
 
 [data-theme="dark"] div ::deep .icon.none {
