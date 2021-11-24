@@ -33,6 +33,12 @@
             <Col Span="20">
                 @_user.CreatedAt.ToString("g")
             </Col>
+            <Col Span="4">
+                Last login
+            </Col>
+            <Col Span="20">
+                @_user.LastSignedInAt.ToString("g")
+            </Col>
         </Row>
     </Body>
 </Card>
@@ -77,8 +83,16 @@
 
     private async Task OnUsernameChanged(string value)
     {
-        await UserService.ChangeUsername(value);
-        _username = value;
+        try
+        {
+            await UserService.ChangeUsername(value);
+            _username = value;
+            NotificationService.Success("Username changed successfully!");
+        }
+        catch (Exception e)
+        {
+            NotificationService.Error(e.Message);
+        }
     }
 
 }

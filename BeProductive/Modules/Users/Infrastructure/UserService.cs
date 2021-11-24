@@ -27,6 +27,12 @@ public class UserService
         var authData = await _authService.GetAuthDataAsync();
         var user = await _context.Users.FindAsync(authData!.UserId);
 
+        if (await _userManager.FindByNameAsync(username) is not null)
+        {
+            _logger.LogWarning("User {@User} tried to change nickname to already existing {NewUsername}", user, username);
+            throw new("Username already exists");
+        }
+
         _logger.LogInformation("Updating user {@User} username to {Username}", user, username);
         await _userManager.SetUserNameAsync(user, username);
 

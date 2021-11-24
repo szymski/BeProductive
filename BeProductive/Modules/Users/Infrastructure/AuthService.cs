@@ -18,6 +18,7 @@ public class AuthService
     private IOptionsMonitor<CookieAuthenticationOptions> _cookieOptionsMonitor;
     private IHostEnvironmentAuthenticationStateProvider _hostAuthentication;
     private AuthenticationStateProvider _authenticationStateProvider;
+    private AppContext _context;
     private ILogger<AuthService> _logger;
 
     private AuthData? _currentAuthData;
@@ -28,14 +29,16 @@ public class AuthService
         SignInManager<User> signInManager,
         IJSRuntime jsRuntime,
         ILogger<AuthService> logger,
+        AppContext context,
         AuthenticationStateProvider authenticationStateProvider)
     {
         _cookieOptionsMonitor = cookieOptionsMonitor;
         _hostAuthentication = hostAuthentication;
         _signInManager = signInManager;
         _jsRuntime = jsRuntime;
-        _logger = logger;
         _authenticationStateProvider = authenticationStateProvider;
+        _context = context;
+        _logger = logger;
 
         authenticationStateProvider.AuthenticationStateChanged += OnAuthenticationStateProviderOnAuthenticationStateChanged;
 
@@ -118,6 +121,10 @@ public class AuthService
     public async Task Login(User user)
     {
         _logger.LogInformation("Logging in user {@User}", user);
+        
+        user.LastSignedInAt = DateTime.Now;
+        _context.Update(user);
+        await _context.SaveChangesAsync();
 
         var principal = await _signInManager.CreateUserPrincipalAsync(user);
         var identity = new ClaimsIdentity(principal.Claims, CookieAuthenticationDefaults.AuthenticationScheme);
