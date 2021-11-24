@@ -1,6 +1,6 @@
 ﻿@if (!Editing)
 {
-    <RenderFragment>
+    <div style="display: inline-flex; align-items: center">
         <Text @attributes="@Attributes">
             @Text
         </Text>
@@ -8,11 +8,11 @@
             Class="editable-text-button"
             Shape="@ButtonShape.Circle"
             Icon="@IconType.Outline.Edit"
-            Size="@AntSizeLDSType.Small"
+            Size="@AntSizeLDSType.Default"
             Type="@ButtonType.Link"
-            Style="@EditButtonStyle"
+            Style=@($"margin-left: 2px; margin-bottom: -4px; {@EditButtonStyle}")
             @onclick="StartEditing"/>
-    </RenderFragment>
+    </div>
 }
 else
 {

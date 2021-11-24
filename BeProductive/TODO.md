@@ -5,7 +5,7 @@
 - Goal required on specific days of the week
 - Goal required on specific number of days in week/month
 - Ability to add note to GoalDayState
-- System goals which cannot be removed/edited by user (rituals for example)
+- ✔ ~~System goals which cannot be removed/edited by user (rituals for example)~~
 - Gamification
 
 ### Goal extensions:
@@ -30,4 +30,4 @@
 - ✔ ~~Login form~~
 - ✔ ~~State preservation~~
 - ✔ ~~Add user to Goal, GoalDayState and Ritual entities~~
-- Account edit page
+- ✔ ~~Account edit page~~
