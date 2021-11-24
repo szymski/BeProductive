@@ -2,7 +2,7 @@
 
 public class LayoutContext
 {
-    public string Title
+    public string? Title
     {
         get => _title;
         set => SetField(ref _title, value);

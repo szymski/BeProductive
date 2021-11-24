@@ -20,6 +20,15 @@
                 <FormItem Style="align-items: center" Label="Icon">
                     <IconPicker @bind-Value="@context.Icon" Color="@context.Color"/>
                 </FormItem>
+
+                <FormItem>
+                    <Collapse DefaultActiveKey="@(new[]{"1"})" >
+                        <Panel Header="Specific days only" Key="1">
+                            <p>1231</p>
+                        </Panel>
+                    </Collapse>
+                </FormItem>
+
                 @if (Type == GoalFormType.New)
                 {
                     <Button Block Type="@ButtonType.Primary" HtmlType="submit">Add goal</Button>
