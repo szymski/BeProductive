@@ -2,6 +2,8 @@
 @using System.ComponentModel.DataAnnotations
 @using BeProductive.Modules.Goals.Presentation.Models
 @using BeProductive.Modules.Goals.Presentation.Pages
+@using OneOf
+@using Serilog
 @inject IJSRuntime JS
 
 <div>
@@ -22,9 +24,9 @@
                 </FormItem>
 
                 <FormItem>
-                    <Collapse DefaultActiveKey="@(new[]{"1"})" >
+                    <Collapse DefaultActiveKey="@(new[] { "1" })">
                         <Panel Header="Specific days only" Key="1">
-                            <p>1231</p>
+                            <CheckboxGroup @bind-Value="Days" Options="@_dayOptions" OnChange="OnDayChanged"/>
                         </Panel>
                     </Collapse>
                 </FormItem>
@@ -94,5 +96,52 @@
 
     [Parameter]
     public EventCallback OnDeleted { get; set; }
+
+    private CheckboxOption[] _dayOptions =
+    {
+        new() { Value = "all", Label = "Everyday" },
+        new() { Value = "monday", Label = "Monday" },
+        new() { Value = "tuesday", Label = "Tuesday" },
+        new() { Value = "wednesday", Label = "Wednesday" },
+        new() { Value = "thursday", Label = "Thursday" },
+        new() { Value = "friday", Label = "Friday" },
+        new() { Value = "saturday", Label = "Saturday" },
+        new() { Value = "sunday", Label = "Sunday" },
+    };
+
+    private string[] _days = { };
+
+    private string[] Days
+    {
+        get => _days;
+        set { }
+    }
+
+    protected override void OnInitialized()
+    {
+        OnDayChanged(new[] { "all" });
+    }
+
+    private void OnDayChanged(string[] values)
+    {
+        var daysOfWeek = _dayOptions[1..].Select(option => option.Value);
+
+        if (_days.Contains("all") && !values.Contains("all"))
+        {
+            _days = new string[] { };
+        }
+        else
+        {
+            var selectedAllDays = daysOfWeek.All(values.Contains) || (values.Contains("all") && !_days.Contains("all"));
+            if (selectedAllDays)
+            {
+                _days = daysOfWeek.Concat(new[] { "all" }).ToArray();
+            }
+            else
+            {
+                _days = values.Where(day => day != "all").ToArray();
+            }
+        }
+    }
 
 }

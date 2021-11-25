@@ -1,7 +1,7 @@
 ﻿using BeProductive.Modules.Common.Domain;
 using BeProductive.Modules.GoalExtensions.Description.Domain;
 using BeProductive.Modules.GoalExtensions.EmergencyGoal.Domain;
-using BeProductive.Modules.Goals.Domain.Entities;
+using BeProductive.Modules.Goals.Domain;
 
 public class Goal : BaseOwnedEntity
 {
@@ -11,6 +11,7 @@ public class Goal : BaseOwnedEntity
     public int Order { get; set; }
     public bool IsSystem { get; set; }
     public string? SystemType { get; set; }
+    public AllowedDaysOfWeek AllowedDaysOfWeek { get; set; } = AllowedDaysOfWeek.All;
     
     public List<GoalDayState> GoalDayStates { get; set; }
     
