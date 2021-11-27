@@ -1,8 +1,8 @@
 ﻿@using Microsoft.AspNetCore.Components
 @using System.ComponentModel.DataAnnotations
+@using BeProductive.Modules.Goals.Domain
 @using BeProductive.Modules.Goals.Presentation.Models
 @using BeProductive.Modules.Goals.Presentation.Pages
-@using OneOf
 @using Serilog
 @inject IJSRuntime JS
 
@@ -119,7 +119,8 @@
 
     protected override void OnInitialized()
     {
-        OnDayChanged(new[] { "all" });
+        // OnDayChanged(new[] { "all" });
+        _days = ConvertDayEnumToStringDays(Value.AllowedDaysOfWeek);
     }
 
     private void OnDayChanged(string[] values)
@@ -142,6 +143,29 @@
                 _days = values.Where(day => day != "all").ToArray();
             }
         }
+
+        Value.AllowedDaysOfWeek = ConvertDayListoEnum(_days);
+    }
+
+    private AllowedDaysOfWeek ConvertDayListoEnum(IEnumerable<string> days) =>
+        days.Select(day => Enum.Parse<AllowedDaysOfWeek>(day, true))
+            .Aggregate((current, next) => current | next);
+
+    private string[] ConvertDayEnumToStringDays(AllowedDaysOfWeek value)
+    {
+        var days = Enum.GetValues<AllowedDaysOfWeek>()
+            .Where(day => value.HasFlag(day))
+            .Select(day => day.ToString().ToLower())
+            .ToList();
+        
+        Log.Information("{A}", days);
+
+        if (days.Count == 7)
+        {
+            days.Add("all");
+        }
+
+        return days.ToArray();
     }
 
 }
