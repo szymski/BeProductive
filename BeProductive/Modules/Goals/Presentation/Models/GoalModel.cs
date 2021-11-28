@@ -14,7 +14,7 @@ public class GoalModel
     public string Icon { get; set; }
 
     [Required]
-    public AllowedDaysOfWeek AllowedDaysOfWeek { get; set; }
+    public AllowedDaysOfWeek AllowedDaysOfWeek { get; set; } = AllowedDaysOfWeek.All;
 
     public static GoalModel FromGoal(Goal goal) => new()
     {

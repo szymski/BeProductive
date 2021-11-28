@@ -11,5 +11,6 @@ public enum AllowedDaysOfWeek
     Saturday = 32,
     Sunday = 64,
 
+    None = 0,
     All = Monday | Tuesday | Wednesday | Thursday | Friday | Saturday | Sunday,
 }

@@ -119,7 +119,6 @@
 
     protected override void OnInitialized()
     {
-        // OnDayChanged(new[] { "all" });
         _days = ConvertDayEnumToStringDays(Value.AllowedDaysOfWeek);
     }
 
@@ -144,12 +143,12 @@
             }
         }
 
-        Value.AllowedDaysOfWeek = ConvertDayListoEnum(_days);
+        Value.AllowedDaysOfWeek = ConvertDayListToEnum(_days);
     }
 
-    private AllowedDaysOfWeek ConvertDayListoEnum(IEnumerable<string> days) =>
+    private AllowedDaysOfWeek ConvertDayListToEnum(IEnumerable<string> days) =>
         days.Select(day => Enum.Parse<AllowedDaysOfWeek>(day, true))
-            .Aggregate((current, next) => current | next);
+            .Aggregate(AllowedDaysOfWeek.None, (current, next) => current | next);
 
     private string[] ConvertDayEnumToStringDays(AllowedDaysOfWeek value)
     {
@@ -157,10 +156,9 @@
             .Where(day => value.HasFlag(day))
             .Select(day => day.ToString().ToLower())
             .ToList();
-        
-        Log.Information("{A}", days);
 
-        if (days.Count == 7)
+        var allDays = _dayOptions[1..].Select(option => option.Value);
+        if (allDays.All(day => days.Contains(day)))
         {
             days.Add("all");
         }
