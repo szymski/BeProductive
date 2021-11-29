@@ -1,4 +1,6 @@
-﻿namespace BeProductive.Modules.Common.Helpers;
+﻿using BeProductive.Modules.Goals.Domain;
+
+namespace BeProductive.Modules.Common.Helpers;
 
 public static class DateHelper
 {
@@ -19,4 +21,23 @@ public static class DateHelper
             date1.ToDateTime(TimeOnly.MinValue),
             date2.ToDateTime(TimeOnly.MinValue)
         );
+
+    public static bool IsDayAllowed(AllowedDaysOfWeek allowed, DateOnly day) =>
+        allowed.HasFlag(DayOfWeekToAllowedDay(day.DayOfWeek));
+    
+    public static AllowedDaysOfWeek ToAllowedDayOfWeek(DateTime date) =>
+        DayOfWeekToAllowedDay(date.DayOfWeek);
+
+    private static AllowedDaysOfWeek DayOfWeekToAllowedDay(DayOfWeek date) =>
+        date switch
+        {
+            DayOfWeek.Monday => AllowedDaysOfWeek.Monday,
+            DayOfWeek.Tuesday => AllowedDaysOfWeek.Tuesday,
+            DayOfWeek.Wednesday => AllowedDaysOfWeek.Wednesday,
+            DayOfWeek.Thursday => AllowedDaysOfWeek.Thursday,
+            DayOfWeek.Friday => AllowedDaysOfWeek.Friday,
+            DayOfWeek.Saturday => AllowedDaysOfWeek.Saturday,
+            DayOfWeek.Sunday => AllowedDaysOfWeek.Sunday,
+            _ => throw new ArgumentOutOfRangeException(nameof(date), date, "Invalid day of week"),
+        };
 }

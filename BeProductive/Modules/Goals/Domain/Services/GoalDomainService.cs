@@ -1,4 +1,5 @@
-﻿using BeProductive.Modules.Users.Infrastructure;
+﻿using BeProductive.Modules.Common.Helpers;
+using BeProductive.Modules.Users.Infrastructure;
 using BeProductive.Modules.Users.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 
@@ -45,6 +46,7 @@ public class GoalDomainService
         }
         else
         {
+            // Check for future date state change
             if (day.ToDateTime(TimeOnly.MinValue) >= DateTime.Today.AddDays(1))
             {
                 _logger.LogWarning("Attempted to change state to future date ({Date}) for goal {@Goal}", day, goal);
@@ -54,6 +56,13 @@ public class GoalDomainService
             if (entry?.State == state)
             {
                 return false;
+            }
+            
+            // Check if allowed day
+            if (!DateHelper.IsDayAllowed(goal.AllowedDaysOfWeek, day))
+            {
+                _logger.LogWarning("Attempted to change state for disallowed date {Date} for goal {@Goal}", day, goal);
+                throw new ArgumentException("Cannot set state for disallowed days");
             }
 
             entry ??= new()

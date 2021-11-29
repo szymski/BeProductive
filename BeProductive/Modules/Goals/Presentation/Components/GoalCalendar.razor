@@ -6,6 +6,7 @@
     <Calendar
         @ref="_calendar"
         FullScreen="false"
+        DateFullCellRender="DateFullCellRender"
         DateCellRender="DateCellRender"
         OnChange="DateChanged"
         Value="@Date"/>
@@ -61,7 +62,10 @@
 
     [Parameter]
     public DateTime Date { get; set; } = DateTime.Today;
-    
+
+    [Parameter]
+    public AllowedDaysOfWeek AllowedDaysOfWeek { get; set; } = AllowedDaysOfWeek.All;
+
     [Parameter]
     public bool HasEmergencyGoal { get; set; }
 
@@ -72,12 +76,14 @@
     public EventCallback<(DateTime date, GoalState state)> OnGoalStateChanged { get; set; }
 
     private Calendar _calendar;
-    
+
     private Dictionary<DateTime, Popover> _popoversByDate = new();
 
     private RenderFragment DateCellRender(DateTime datetime)
     {
-        if (!DateHelper.IsSameMonth(datetime, Date)
+        var allowed = Common.Helpers.DateHelper.IsDayAllowed(AllowedDaysOfWeek, DateOnly.FromDateTime(datetime));
+        
+        if (!allowed ||!DateHelper.IsSameMonth(datetime, Date)
             || datetime >= DateTime.Today.AddDays(1))
         {
             return @<RenderFragment/>;
@@ -140,6 +146,21 @@
         {
             await OnMonthChanged.InvokeAsync(date);
         }
+    }
+
+}
+
+@code {
+
+    protected RenderFragment DateFullCellRender(DateTime arg)
+    {
+        var allowed = Common.Helpers.DateHelper.IsDayAllowed(AllowedDaysOfWeek, DateOnly.FromDateTime(arg));
+
+        return allowed
+            ? @<div>@arg.Day</div>
+            : @<div>
+                  <Text Disabled>@arg.Day</Text>
+              </div>;
     }
 
 }
