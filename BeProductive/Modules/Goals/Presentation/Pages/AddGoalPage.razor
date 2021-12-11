@@ -1,5 +1,6 @@
 ﻿@page "/add-goal"
 @using BeProductive.Modules.Goals.Presentation.Models
+@using System.ComponentModel.DataAnnotations
 
 @{
     Layout.Title = "";
@@ -13,12 +14,19 @@
 
     private async Task OnFinish()
     {
-        var goal = _model.ApplyToGoal(new());
-        await GoalService.AddGoal(goal);
+        try
+        {
+            var goal = _model.ApplyToGoal(new());
+            await GoalService.AddGoal(goal);
 
-        NotificationService.Success("Task added successfully!");
+            NotificationService.Success("Task added successfully!");
 
-        NavigationManager.NavigateTo(GoalListPage.GetUrlWithSelectedGoal(goal));
+            NavigationManager.NavigateTo(GoalListPage.GetUrlWithSelectedGoal(goal));
+        }
+        catch (ValidationException ex)
+        {
+            NotificationService.Error(ex.Message);
+        }
     }
 
 }

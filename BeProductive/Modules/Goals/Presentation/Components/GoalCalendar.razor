@@ -33,28 +33,6 @@
 
 }
 
-@* @code { *@
-@* *@
-@*     private RenderFragment HeaderRender(CalendarHeaderRenderArgs arg) *@
-@*     { *@
-@*         return @<CascadingValue Value="@_calendar" Name="Calendar"> *@
-@*                    <CascadingValue Value=@("ant-picker-calendar") Name="PrefixCls"> *@
-@*                        <Space Style=""> *@
-@*                            <SpaceItem> *@
-@*                                <Button Type="@ButtonType.Default" Shape="@ButtonShape.CircleOutline" Icon="@IconType.Outline.Left"/> *@
-@*                            </SpaceItem> *@
-@*                            <SpaceItem> *@
-@*                                <Button Type="@ButtonType.Default" Shape="@ButtonShape.CircleOutline" Icon="@IconType.Outline.Right"/> *@
-@*                            </SpaceItem> *@
-@*                        </Space> *@
-@*                        <CalendarHeader/> *@
-@*                    </CascadingValue> *@
-@*                </CascadingValue>; *@
-@*     } *@
-@* *@
-@* } *@
-
-
 @code {
 
     [Parameter]
@@ -82,8 +60,8 @@
     private RenderFragment DateCellRender(DateTime datetime)
     {
         var allowed = Common.Helpers.DateHelper.IsDayAllowed(AllowedDaysOfWeek, DateOnly.FromDateTime(datetime));
-        
-        if (!allowed ||!DateHelper.IsSameMonth(datetime, Date)
+
+        if (!DateHelper.IsSameMonth(datetime, Date)
             || datetime >= DateTime.Today.AddDays(1))
         {
             return @<RenderFragment/>;
@@ -103,7 +81,7 @@
             @<Popover
                  @ref="@_popoversByDate[datetime]"
                  @key="datetime"
-                 Trigger=@(new Trigger[] { Trigger.Click })
+                 Trigger=@(allowed || dayState is not null ? new[] { Trigger.Click } : new Trigger[] { })
                  Placement="Placement.Bottom"
                  Style="position: absolute; inset: 0">
                 <ChildContent>
@@ -164,3 +142,4 @@
     }
 
 }
+

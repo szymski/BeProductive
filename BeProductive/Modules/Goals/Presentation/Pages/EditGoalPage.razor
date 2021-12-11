@@ -1,5 +1,6 @@
 ﻿@page "/goal/{GoalId:int}/edit"
 @using BeProductive.Modules.Goals.Presentation.Models
+@using System.ComponentModel.DataAnnotations
 @{
     Layout.Title = "";
 }
@@ -32,12 +33,19 @@
 
     private async Task OnFinished()
     {
-        var goal = _model.ApplyToGoal(_goal);
-        await GoalService.UpdateGoal(goal);
-        
-        NotificationService.Success("The goal has been updated");
+        try
+        {
+            var goal = _model.ApplyToGoal(_goal);
+            await GoalService.UpdateGoal(goal);
 
-        NavigationManager.NavigateTo(GoalListPage.GetUrlWithSelectedGoal(goal));
+            NotificationService.Success("The goal has been updated");
+
+            NavigationManager.NavigateTo(GoalListPage.GetUrlWithSelectedGoal(goal));
+        }
+        catch (ValidationException ex)
+        {
+            NotificationService.Error(ex.Message);
+        }
     }
 
     private async Task OnDeleted()

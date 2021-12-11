@@ -58,6 +58,8 @@ public class GoalService
 
     public async Task<Goal> UpdateGoal(Goal goal)
     {
+        goal.Validate();
+        
         await using var context = await _contextFactory.CreateDbContextAsync();
 
         _logger.LogInformation("Updating goal {@Goal}", goal);
@@ -68,6 +70,8 @@ public class GoalService
 
     public async Task<Goal> AddGoal(Goal goal)
     {
+        goal.Validate();
+        
         goal.UserId = UserId;
 
         await using var context = await _contextFactory.CreateDbContextAsync();

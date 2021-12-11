@@ -1,6 +1,7 @@
 ﻿@using BeProductive.Modules.Goals.Domain
 @using BeProductive.Modules.Goals.Domain.Services
 @using BeProductive.Modules.GoalExtensions.EmergencyGoal.Infrastructure
+@using Serilog
 @inject GoalDomainService GoalDomainService
 
 <GoalStateSelector
@@ -55,6 +56,10 @@
         }
         else
         {
+            while (!Common.Helpers.DateHelper.IsDayAllowed(Goal.AllowedDaysOfWeek, _day))
+            {
+                _day = _day.AddDays(-1);
+            }
             State = GoalState.Unknown;
         }
 
@@ -63,14 +68,18 @@
 
     private void UpdateDayUsingLastDay(GoalDayState lastState)
     {
-        _day = lastState.Day.AddDays(1);
+        var nextAllowedDay = lastState.Day.AddDays(1);
+        while (!Common.Helpers.DateHelper.IsDayAllowed(Goal.AllowedDaysOfWeek, nextAllowedDay))
+        {
+            nextAllowedDay = nextAllowedDay.AddDays(1);
+        }
+
+        _day = nextAllowedDay;
         var afterToday = _day > DateOnly.FromDateTime(DateTime.Today);
         if (afterToday)
         {
-            _day = DateOnly.FromDateTime(DateTime.Today);
-
-            var isSameDay = DateHelper.IsSameDay(DateTime.Today, lastState.Day.ToDateTime(TimeOnly.MinValue));
-            State = isSameDay ? lastState.State : GoalState.Unknown;
+            _day = lastState.Day;
+            State = lastState.State;
         }
         else
         {
