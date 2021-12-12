@@ -38,8 +38,6 @@
     protected override async Task OnInitializedAsync()
     {
         var (hasMorning, hasEvening) = await RitualGoalService.HasRitualGoals();
-        Log.Information("Has morning ritual goals: {hasMorning}", hasMorning);
-        Log.Information("Has evening ritual goals: {hasEvening}", hasEvening);
         _hasRitualGoals = hasMorning && hasEvening;
     }
 

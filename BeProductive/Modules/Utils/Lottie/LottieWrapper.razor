@@ -1,0 +1,36 @@
+﻿@using Serilog
+@implements IAsyncDisposable
+@inject IJSRuntime JS
+
+<div style="position: relative; background: blue; display: inline-block">
+    <div id="container" style="width: 300px; height: 300px; position: absolute; top: 50%; bottom: 50%; left: 50%; margin: auto; transform: translate(-50%, 0)"></div>
+    @ChildContent(this)
+</div>
+
+@code {
+
+    [Parameter]
+    public RenderFragment<LottieWrapper> ChildContent { get; set; }
+
+    [Parameter]
+    [EditorRequired]
+    public string Path { get; set; }
+
+    private IJSObjectReference? _animation;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        _animation ??= await JS.InvokeAsync<IJSObjectReference>("LoadAnimation", Path, "container");
+    }
+
+    public async void Play()
+    {
+        await _animation!.InvokeVoidAsync("playShot");
+    }
+
+    public async ValueTask DisposeAsync()
+    {
+        _animation?.InvokeVoidAsync("destroy");
+    }
+
+}

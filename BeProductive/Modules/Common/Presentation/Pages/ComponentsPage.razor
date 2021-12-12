@@ -2,6 +2,7 @@
 @using BeProductive.Modules.Goals.Domain
 @using BeProductive.Modules.Goals.Presentation.Models
 @using DateHelper = BeProductive.Modules.Common.Helpers.DateHelper
+@inject IJSRuntime JS
 
 @{
     Layout.Title = "Components preview";
@@ -37,9 +38,17 @@
 <Divider Orientation="left">Icons</Divider>
 
 <div class="test">
-    
+
 </div>
-    
+
+<br>
+<br>
+<br>
+
+<LottieWrapper Path="/animations/2023-particle-explosion.json">
+    <Button Type="@ButtonType.Primary" style="width: 64px; height: 64px; margin: auto; z-index: 2" @onclick="@(() => context.Play())">Play!</Button>
+</LottieWrapper>
+
 <style> 
     .test {
         position: relative;
