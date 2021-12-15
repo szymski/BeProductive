@@ -5,6 +5,7 @@
 @inject GoalDomainService GoalDomainService
 
 <GoalStateSelector
+    @ref="_stateSelector"
     State="@State"
     Text="@_day.DayOfWeek.ToString()[..3].ToUpper()"
     Date="@_day.ToDateTime(TimeOnly.MinValue)"
@@ -13,6 +14,8 @@
     StateChanged="OnGoalStateChanged"/>
 
 @code {
+
+    private GoalStateSelector _stateSelector;
 
     [CascadingParameter]
     public Goal Goal { get; set; }
@@ -30,6 +33,11 @@
     {
         GoalContext.GoalStateChanged += OnGoalStateChangedExternally;
         await GetLastDay();
+    }
+
+    protected override void OnAfterRender(bool firstRender)
+    {
+        GoalContext.StateSelector = _stateSelector;
     }
 
     private void OnGoalStateChangedExternally(object? sender, (DateOnly date, GoalState state) args)

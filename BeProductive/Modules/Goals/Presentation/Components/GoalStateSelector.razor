@@ -1,5 +1,6 @@
 ﻿@using BeProductive.Modules.Goals.Domain
 @using Microsoft.AspNetCore.Mvc.Razor
+@using Serilog
 
 <div class="wrapper">
     <Popover
@@ -7,13 +8,18 @@
         Trigger=@(new Trigger[] { Trigger.Click })
         Placement="Placement.Left">
         <ChildContent>
-            <Button
-                Class=@($"goal-state-selector {StateToClass(State)} {(IsToday ? "" : "waiting")}")
-                Type="@ButtonType.Default"
-                OnClick="args => _popover.OnClickDiv(args)"
-                OnClickStopPropagation>
-                @Text
-            </Button>
+            <LottieWrapper @ref="_animation" Path="/animations/2023-particle-explosion-green.json" Size="400%" Style="z-index: 11">
+                <LottieWrapper @ref="_animation2" Path="/animations/7598-particle-explosion.json" Size="600%" Style="z-index: 1" Context="anim2">
+                    <Button
+                        Class=@($"goal-state-selector {StateToClass(State)} {(IsToday ? "" : "waiting")}")
+                        Type="@ButtonType.Default"
+                        OnClick="args => _popover.OnClickDiv(args)"
+                        OnClickStopPropagation
+                        Style="z-index: 10">
+                        @Text
+                    </Button>
+                </LottieWrapper>
+            </LottieWrapper>
         </ChildContent>
         <ContentTemplate>
             <GoalStatePopoverContent
@@ -42,6 +48,8 @@
 
 @code {
 
+    private LottieWrapper _animation;
+    private LottieWrapper _animation2;
     private Popover _popover;
 
     [Parameter]
@@ -61,6 +69,17 @@
 
     [Parameter]
     public bool HasEmergencyGoal { get; set; }
+
+    public void PlaySuccessAnimation()
+    {
+        _animation.Play();
+    }
+    
+    public void PlaySuccessAnimation2()
+    {
+        _animation.Play();
+        _animation2.Play();
+    }
 
     private async Task OnStateButtonClick(GoalState state)
     {

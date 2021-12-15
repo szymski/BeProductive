@@ -2,12 +2,14 @@
 @implements IAsyncDisposable
 @inject IJSRuntime JS
 
-<div style="position: relative; background: blue; display: inline-block">
-    <div id="container" style="width: @Size; height: @Size; position: absolute; top: 50%; bottom: 50%; left: 50%; margin: auto; transform: translate(-50%, 0)"></div>
+<div style="position: relative; display: inline-block">
+    <div @ref="_container" style="width: @Size; height: @Size; position: absolute; top: 50%; bottom: 50%; left: 50%; margin: auto; transform: translate(-50%, 0); pointer-events: none; @Style"></div>
     @ChildContent(this)
 </div>
 
 @code {
+
+    private ElementReference _container;
 
     [Parameter]
     public RenderFragment<LottieWrapper> ChildContent { get; set; }
@@ -20,11 +22,15 @@
     [EditorRequired]
     public string Size { get; set; } = "400%";
 
+    [Parameter]
+    [EditorRequired]
+    public string Style { get; set; } = "";
+
     private IJSObjectReference? _animation;
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        _animation ??= await JS.InvokeAsync<IJSObjectReference>("LoadAnimation", Path, "container");
+        _animation ??= await JS.InvokeAsync<IJSObjectReference>("LoadAnimation", Path, _container);
     }
 
     public async void Play()

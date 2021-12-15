@@ -1,6 +1,8 @@
 ﻿@using BeProductive.Modules.Goals.Domain
 @using BeProductive.Modules.Goals.Domain.Services
+@using Serilog
 @inject GoalDomainService GoalDomainService
+@inject GoalStatsService GoalStatsService
 @inject AudioService AudioService
 
 <CascadingValue Value="this">
@@ -17,17 +19,22 @@
     [Parameter]
     public RenderFragment ChildContent { get; set; }
 
+    public GoalStateSelector? StateSelector { get; set; }
+
     public event EventHandler<(DateOnly date, GoalState state)> GoalStateChanged;
 
     public async Task SetGoalState(DateOnly date, GoalState state)
     {
         try
         {
+            var streakTask = GoalStatsService.GetCurrentStreak(Goal);
             var wasChanged = await GoalDomainService.SetStateForDay(Goal, date, state);
             if (wasChanged)
             {
                 var soundEffect = GoalStateToSoundEffect(state);
                 await AudioService.PlaySoundEffect(soundEffect);
+                var streak = await streakTask;
+                PlayAnimations(state, streak);
 
                 NotificationService.Success($"State changed to {state} for {date}");
                 NotifyGoalStateChanged(date, state);
@@ -41,6 +48,21 @@
         {
             NotificationService.Error($"Failed to change state to {state} for {date}");
             throw e;
+        }
+    }
+    private void PlayAnimations(GoalState newState, int streak)
+    {
+        if (newState == GoalState.Success)
+        {
+            switch (streak)
+            {
+                case >= 4:
+                    StateSelector?.PlaySuccessAnimation2();
+                    break;
+                case >= 1:
+                    StateSelector?.PlaySuccessAnimation();
+                    break;
+            }
         }
     }
 
