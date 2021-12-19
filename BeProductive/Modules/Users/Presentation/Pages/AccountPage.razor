@@ -28,6 +28,12 @@
                 <EditableText Text="@_username" TextChanged="@OnUsernameChanged"/>
             </Col>
             <Col Span="4">
+                Password
+            </Col>
+            <Col Span="20">
+                <EditableText Text="******" InitialText="" Placeholder="Change password" MinLength="3" TextChanged="@OnPasswordChanged"/>
+            </Col>
+            <Col Span="4">
                 Date joined
             </Col>
             <Col Span="20">
@@ -88,6 +94,19 @@
             await UserService.ChangeUsername(value);
             _username = value;
             NotificationService.Success("Username changed successfully!");
+        }
+        catch (Exception e)
+        {
+            NotificationService.Error(e.Message);
+        }
+    }
+    
+    private async Task OnPasswordChanged(string value)
+    {
+        try
+        {
+            await UserService.ChangePassword(value);
+            NotificationService.Success("Password changed successfully!");
         }
         catch (Exception e)
         {

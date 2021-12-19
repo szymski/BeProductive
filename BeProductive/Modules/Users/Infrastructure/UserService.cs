@@ -40,4 +40,18 @@ public class UserService
 
         await _authService.Login(user);
     }
+    
+    public async Task ChangePassword(string password)
+    {
+        var authData = await _authService.GetAuthDataAsync();
+        var user = await _context.Users.FindAsync(authData!.UserId);
+
+        _logger.LogInformation("Updating user {@User} password", user);
+        var token = await _userManager.GeneratePasswordResetTokenAsync(user);
+        await _userManager.ResetPasswordAsync(user, token, password);
+
+        await _context.SaveChangesAsync();
+
+        await _authService.Login(user);
+    }
 }

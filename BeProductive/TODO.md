@@ -12,8 +12,9 @@
 - ✔ ~~Goal description/notes~~
 - ✔ ~~Emergency goal~~
 
-### Rituals
+### Rituals:
 - ✔ ~~Automatic adding of ritual goals~~
+- Custom rituals
 
 ### UI Improvements:
 - ✔ ~~Goal state selector animation when waiting for states~~
@@ -31,3 +32,12 @@
 - ✔ ~~State preservation~~
 - ✔ ~~Add user to Goal, GoalDayState and Ritual entities~~
 - ✔ ~~Account edit page~~
+- ✔ ~~Password change~~
+
+### Pomodoro Timer:
+- Simple timer with adjustable minutes
+- Browser notifications
+- Sound effects
+- Presets
+- Breaks
+- 

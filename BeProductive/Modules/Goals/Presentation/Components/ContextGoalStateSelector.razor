@@ -47,8 +47,7 @@
         if (date != _day || state != State)
         {
             Console.WriteLine($"External Change ({Goal}): {args.date}, {args.state}");
-            InvokeAsync(async () =>
-            {
+            InvokeAsync(async () => {
                 await GetLastDay();
                 StateHasChanged();
             });
