@@ -3,6 +3,11 @@
 @if (!string.IsNullOrEmpty(_title))
 {
     <PageHeader Class=@($"page-header {(string.IsNullOrEmpty(Layout.Title) ? "hidden" : "")}") Title="@_title" Subtitle="@_subtitle"/>
+    <PageTitle>@Layout.Title - beProductive</PageTitle>
+}
+else
+{
+    <PageTitle>beProductive</PageTitle>
 }
 
 <style>

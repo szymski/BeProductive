@@ -11,7 +11,7 @@
             </a>
         </div>
         <Menu Class="menu" Mode="@MenuMode.Inline">
-            @foreach (var (name, route) in _items)
+            @foreach (var (name, route) in MenuItems.Items)
             {
                 <MenuItem RouterLink="@route" RouterMatch="NavLinkMatch.Prefix" Title="@name"/>
             }
@@ -60,18 +60,7 @@
     private Popover _popover;
 
     private string _version = "";
-
-    record MenuItem(string Name, string Route);
-
-    private List<MenuItem> _items = new()
-    {
-        new("Goals", "/"),
-        new("Rituals", "/rituals"),
-        new("To do", "/todo"),
-        new("Components", "/components"),
-        new("Account", "/account"),
-    };
-
+    
     private IIdentity? _userIdentity;
 
     protected override async Task OnInitializedAsync()
