@@ -10,16 +10,18 @@
 
 <div class="timer-wrapper">
     <div class="timer">
-        <span>
-            @if (!_isRunning)
-            {
-                @_duration.ToString("mm\\:ss")
-            }
-            else
-            {
-                @_timeLeft.ToString("mm\\:ss")
-            }
-        </span>
+        @if (!_isRunning)
+        {
+            @_duration.ToString("mm\\:ss")
+            <div class="timer-buttons">
+                <Button Size="@AntSizeLDSType.Small" Icon="@IconType.Outline.Plus" Shape="@ButtonShape.Circle" OnClick=@(() => AddDuration(1))></Button>
+                <Button Size="@AntSizeLDSType.Small" Icon="@IconType.Outline.Minus" Shape="@ButtonShape.Circle" OnClick=@(() => AddDuration(-1))></Button>
+            </div>
+        }
+        else
+        {
+            @_timeLeft.ToString("mm\\:ss")
+        }
     </div>
     <div class="buttons">
         <Space>
@@ -37,10 +39,11 @@
 @code {
     private bool _isRunning = false;
 
-    private TimeSpan _duration = TimeSpan.FromSeconds(5);
+    private TimeSpan _duration = TimeSpan.FromMinutes(5);
     private TimeSpan _timeLeft = TimeSpan.Zero;
 
     private DateTime _startTime;
+
     private DateTime _endTime;
 
     protected override void OnInitialized()
@@ -51,6 +54,22 @@
         TimerService.TimerFinished += OnTimerFinished;
     }
 
+    private void AddDuration(int scale)
+    {
+        var span = (_duration + TimeSpan.FromSeconds(scale)) switch {
+            { TotalMinutes: < 1 } => TimeSpan.FromSeconds(10),
+            { TotalMinutes: < 5 } => TimeSpan.FromMinutes(1),
+            { TotalMinutes: < 60 } => TimeSpan.FromMinutes(5),
+            _ => TimeSpan.FromMinutes(30),
+        };
+        
+        _duration = _duration.Add(span * scale);
+        if (_duration < TimeSpan.FromSeconds(10))
+        {
+            _duration = TimeSpan.FromSeconds(10);
+        }
+    }
+
     private async Task OnStartClick()
     {
         _isRunning = true;
@@ -58,7 +77,7 @@
         _startTime = DateTime.Now;
         _endTime = _startTime + _duration;
         TimerService.Start(_duration);
-        
+
         await AudioService.PlaySoundEffect(SoundEffect.TimerStart);
     }
 
