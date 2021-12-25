@@ -1,0 +1,20 @@
+﻿.timer-wrapper {
+    display: flex;
+    flex-direction: column;
+    width: 600px;
+    max-width: 100%;
+    margin: auto;
+    padding: 1rem;
+    background: rgba(128, 128, 128, 0.2);
+    border-radius: 4px;
+}
+
+.timer {
+    text-align: center;
+    font-size: 5rem;
+    font-weight: 400;
+}
+
+.buttons {
+    margin: auto;
+}

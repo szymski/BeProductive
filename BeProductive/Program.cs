@@ -7,11 +7,13 @@ using BeProductive.Modules.Goals.Infrastructure;
 using BeProductive.Modules.Rituals.Domain;
 using BeProductive.Modules.Rituals.Infrastructure;
 using BeProductive.Modules.Settings.Infrastructure;
+using BeProductive.Modules.Timer.Infrastructure;
 using BeProductive.Modules.Users.Domain;
 using BeProductive.Modules.Users.Infrastructure;
 using Blazored.LocalStorage;
 using Microsoft.AspNetCore.Identity;
 using Plk.Blazor.DragDrop;
+using Quartz;
 using Serilog;
 using Serilog.Events;
 
@@ -46,6 +48,11 @@ builder.Services.AddAntDesign();
 builder.Services.AddBlazorDragDrop();
 builder.Services.AddBlazoredLocalStorage();
 
+builder.Services.AddQuartz(q => {
+    q.UseMicrosoftDependencyInjectionJobFactory();
+});
+builder.Services.AddQuartzHostedService();
+
 builder.Services.AddCommonModule(options =>
 {
     options.Database = builder.Configuration.GetRequiredSection("Database")
@@ -56,6 +63,7 @@ builder.Services.AddSettingsModule();
 builder.Services.AddUsersModule();
 builder.Services.AddGoalsModule();
 builder.Services.AddRitualsModule();
+builder.Services.AddTimerModule();
 
 var app = builder.Build();
 
