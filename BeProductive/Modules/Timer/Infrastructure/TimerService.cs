@@ -1,63 +1,71 @@
-﻿using Quartz;
-using Serilog;
+﻿using BeProductive.Modules.Common.Infrastructure;
+using BeProductive.Modules.Utils.FluentScheduler;
 
 namespace BeProductive.Modules.Timer.Infrastructure; 
 
-public class TimerService {
-    private readonly ISchedulerFactory _schedulerFactory;
+public class TimerService : IDisposable {
+    private AudioService _audioService;
     
     private DateTime _startTime;
     private DateTime _endTime;
-    
-    public bool IsRunning { get; private set; }
+    private Job? _timerFinishedJob;
+    private Job? _timerTickJob;
 
-    public event EventHandler TimerFinished;
-    
-    public TimerService(ISchedulerFactory schedulerFactory)
+    public TimerService(AudioService audioService)
     {
-        _schedulerFactory = schedulerFactory;
+        _audioService = audioService;
     }
 
-    public async Task Start(TimeSpan duration)
+    public bool IsRunning { get; private set; }
+
+    public event EventHandler? TimerTick;
+    public event EventHandler? TimerFinished;
+
+    public void Start(TimeSpan duration)
     {
         IsRunning = true;
-        _startTime = DateTime.UtcNow;
+        _startTime = DateTime.Now;
         _endTime = _startTime + duration;
-        await ScheduleElapsedTask();
+        ScheduleElapsedTask();
     }
 
     public void Stop()
     {
         IsRunning = false;
+        StopJobs();
     }
 
-    private async Task ScheduleElapsedTask()
+    private void ScheduleElapsedTask()
     {
         var timeLeft = _endTime - DateTime.UtcNow;
 
-        var job = JobBuilder.Create<TimerJob>()
-            .Build();
-        
-        var trigger = TriggerBuilder.Create()
-            .StartAt(_endTime)
-            .Build();
-        
-        var scheduler = await _schedulerFactory.GetScheduler();
-        await scheduler.ScheduleJob(job, trigger);
+        _timerTickJob = JobHelper.AddJob(OnTimerTick, s => {
+            s.ToRunEvery(1).Seconds();
+        });
+        _timerFinishedJob = JobHelper.AddJob(OnTimerFinished, s => s.ToRunOnceAt(_endTime));
     }
 
+    private void OnTimerTick()
+    {
+        TimerTick?.Invoke(this, EventArgs.Empty);
+    }
+    
     private void OnTimerFinished()
     {
-        
+        TimerFinished?.Invoke(this, EventArgs.Empty);
+        Stop();
+        _ = _audioService.PlaySoundEffect(SoundEffect.TimerFinish);
     }
-}
 
-public class TimerJob : IJob {
-
-    private readonly TimerService _timerService;
-
-    public async Task Execute(IJobExecutionContext context)
+    private void StopJobs()
     {
-        Log.Warning("Timer fired!");
+        _timerFinishedJob?.Stop();
+        _timerTickJob?.Stop();
     }
+
+    public void Dispose()
+    {
+        StopJobs();
+    }
+
 }

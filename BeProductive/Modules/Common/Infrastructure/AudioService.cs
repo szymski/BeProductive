@@ -25,6 +25,10 @@ public class AudioService
             SoundEffect.SelectGoalUncheck => "/sounds/Pop-High-Round-Short-01.wav",
             SoundEffect.SelectGoalEmergency => "/sounds/state-change_confirm-down.ogg",
             SoundEffect.Select or SoundEffect.Cancel => "/sounds/navigation-cancel.ogg",
+            SoundEffect.TimerStart => "/sounds/timer/start.wav",
+            SoundEffect.TimerPause => "/sounds/timer/pause.wav",
+            SoundEffect.TimerResume => "/sounds/timer/resume.wav",
+            SoundEffect.TimerFinish => "/sounds/timer/finish.wav",
             _ => throw new ArgumentOutOfRangeException(nameof(soundEffect), soundEffect,
                 $"No sound effect path for {soundEffect}")
         };

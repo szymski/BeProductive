@@ -13,7 +13,6 @@ using BeProductive.Modules.Users.Infrastructure;
 using Blazored.LocalStorage;
 using Microsoft.AspNetCore.Identity;
 using Plk.Blazor.DragDrop;
-using Quartz;
 using Serilog;
 using Serilog.Events;
 
@@ -47,11 +46,6 @@ builder.Services.AddServerSideBlazor();
 builder.Services.AddAntDesign();
 builder.Services.AddBlazorDragDrop();
 builder.Services.AddBlazoredLocalStorage();
-
-builder.Services.AddQuartz(q => {
-    q.UseMicrosoftDependencyInjectionJobFactory();
-});
-builder.Services.AddQuartzHostedService();
 
 builder.Services.AddCommonModule(options =>
 {

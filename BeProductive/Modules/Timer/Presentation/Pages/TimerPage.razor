@@ -1,13 +1,25 @@
 ﻿@page "/timer"
 @using BeProductive.Modules.Timer.Infrastructure
+@using Serilog
 @inject TimerService TimerService
+@inject AudioService AudioService
+@implements IDisposable
 @{
     Layout.Title = "Pomodoro timer";
 }
 
 <div class="timer-wrapper">
     <div class="timer">
-        <span>@_duration.ToString("mm\\:ss")</span>
+        <span>
+            @if (!_isRunning)
+            {
+                @_duration.ToString("mm\\:ss")
+            }
+            else
+            {
+                @_timeLeft.ToString("mm\\:ss")
+            }
+        </span>
     </div>
     <div class="buttons">
         <Space>
@@ -26,19 +38,54 @@
     private bool _isRunning = false;
 
     private TimeSpan _duration = TimeSpan.FromSeconds(5);
-    
+    private TimeSpan _timeLeft = TimeSpan.Zero;
+
     private DateTime _startTime;
     private DateTime _endTime;
-    
+
+    protected override void OnInitialized()
+    {
+        _isRunning = TimerService.IsRunning;
+
+        TimerService.TimerTick += OnTimerTick;
+        TimerService.TimerFinished += OnTimerFinished;
+    }
+
     private async Task OnStartClick()
     {
+        _isRunning = true;
+        _timeLeft = _duration;
         _startTime = DateTime.Now;
         _endTime = _startTime + _duration;
-        _isRunning = true;
-        await TimerService.Start(_duration);
+        TimerService.Start(_duration);
+        
+        await AudioService.PlaySoundEffect(SoundEffect.TimerStart);
     }
-    private void OnStopClick()
+
+    private async Task OnStopClick()
     {
         _isRunning = false;
+        TimerService.Stop();
+        await AudioService.PlaySoundEffect(SoundEffect.TimerPause);
     }
+
+    private void OnTimerTick(object? sender, EventArgs e)
+    {
+        _timeLeft = (_endTime - DateTime.Now).Add(TimeSpan.FromSeconds(1));
+        InvokeAsync(StateHasChanged);
+    }
+
+    private void OnTimerFinished(object? sender, EventArgs e)
+    {
+        _isRunning = false;
+        Log.Warning("Time finished in razor");
+        InvokeAsync(StateHasChanged);
+    }
+
+    public void Dispose()
+    {
+        TimerService.TimerTick -= OnTimerTick;
+        TimerService.TimerFinished -= OnTimerFinished;
+    }
+
 }

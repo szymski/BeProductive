@@ -8,4 +8,9 @@ public enum SoundEffect
     SelectGoalEmergency,
     Select,
     Cancel,
+    
+    TimerStart,
+    TimerPause,
+    TimerResume,
+    TimerFinish,
 }
