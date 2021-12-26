@@ -1,102 +1,160 @@
 ﻿@page "/timer"
 @using BeProductive.Modules.Timer.Infrastructure
+@using Blazored.LocalStorage
 @using Serilog
 @inject TimerService TimerService
 @inject AudioService AudioService
+@inject ILocalStorageService LocalStorage
 @implements IDisposable
 @{
     Layout.Title = "Pomodoro timer";
 }
 
 <div class="timer-wrapper">
-    <div class="timer">
-        @if (!_isRunning)
-        {
-            @_duration.ToString("mm\\:ss")
-            <div class="timer-buttons">
-                <Button Size="@AntSizeLDSType.Small" Icon="@IconType.Outline.Plus" Shape="@ButtonShape.Circle" OnClick=@(() => AddDuration(1))></Button>
-                <Button Size="@AntSizeLDSType.Small" Icon="@IconType.Outline.Minus" Shape="@ButtonShape.Circle" OnClick=@(() => AddDuration(-1))></Button>
+    <Card BodyStyle="display: flex; flex-direction: column;">
+        <Body>
+            <div class="timer">
+                @if (_state == TimerState.Stopped)
+                {
+                    @FormatDuration(_duration)
+                    <div class="timer-buttons">
+                        <Button Size="@AntSizeLDSType.Small" Icon="@IconType.Outline.Plus" Shape="@ButtonShape.Circle" OnClick=@(() => AddDuration(1))></Button>
+                        <Button Size="@AntSizeLDSType.Small" Icon="@IconType.Outline.Minus" Shape="@ButtonShape.Circle" OnClick=@(() => AddDuration(-1))></Button>
+                    </div>
+                }
+                else
+                {
+                    @FormatDuration(_timeLeft)
+                }
             </div>
-        }
-        else
-        {
-            @_timeLeft.ToString("mm\\:ss")
-        }
-    </div>
-    <div class="buttons">
-        <Space>
-            <SpaceItem>
-                @* TODO: Using key to update button color, can't change at runtime. Maybe report a bug. *@
-                <Button @key="_isRunning" Type="@ButtonType.Primary" Color=@(!_isRunning ? Color.Green7 : Color.None) Size="@ButtonSize.Large" Disabled=@(_isRunning) OnClick="OnStartClick">Start</Button>
-            </SpaceItem>
-            <SpaceItem>
-                <Button Type="@ButtonType.Primary" Danger Size="@ButtonSize.Large" Disabled=@(!_isRunning) OnClick="OnStopClick">Stop</Button>
-            </SpaceItem>
-        </Space>
-    </div>
+            <div class="buttons">
+                <Space>
+                    <SpaceItem>
+                        @if (_state == TimerState.Stopped)
+                        {
+                            @* TODO: Using key to update button color, can't change at runtime. Maybe report a bug. *@
+                            <Button Type="@ButtonType.Primary" Color=@(Color.Green7) Size="@ButtonSize.Large" OnClick="OnStartClick">Start</Button>
+                        }
+                        else if (_state == TimerState.Running)
+                        {
+                            <Button Type="@ButtonType.Default" Size="@ButtonSize.Large" OnClick="OnPauseClick">Pause</Button>
+                        }
+                        else if (_state == TimerState.Paused)
+                        {
+                            <Button Type="@ButtonType.Default" Color=@(Color.Green7) Size="@ButtonSize.Large" OnClick="OnStartClick">Resume</Button>
+                        }
+                    </SpaceItem>
+                    <SpaceItem>
+                        <Button Type="@ButtonType.Primary" Danger Size="@ButtonSize.Large" Disabled=@(_state != TimerState.Paused) OnClick="OnResetClick">Reset</Button>
+                    </SpaceItem>
+                </Space>
+            </div>
+        </Body>
+    </Card>
 </div>
 
 @code {
-    private bool _isRunning = false;
+
+        private const string LocalStorageDurationKey = "timer_duration";
+
+    enum TimerState {
+        Stopped,
+        Running,
+        Paused,
+    }
+
+    private TimerState _state = TimerState.Stopped;
 
     private TimeSpan _duration = TimeSpan.FromMinutes(5);
     private TimeSpan _timeLeft = TimeSpan.Zero;
 
-    private DateTime _startTime;
+    private string FormatDuration(TimeSpan duration)
+        => duration.ToString(duration.TotalHours >= 1 ? "hh\\:mm\\:ss" : "mm\\:ss");
 
-    private DateTime _endTime;
-
-    protected override void OnInitialized()
+    protected override async Task OnInitializedAsync()
     {
-        _isRunning = TimerService.IsRunning;
+        _state = TimerService.IsRunning ? TimerState.Running : TimerState.Stopped;
+        _timeLeft = TimerService.RemainingTime;
 
         TimerService.TimerTick += OnTimerTick;
         TimerService.TimerFinished += OnTimerFinished;
     }
 
-    private void AddDuration(int scale)
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            try
+            {
+                _duration = await LocalStorage.GetItemAsync<TimeSpan>(LocalStorageDurationKey);
+                StateHasChanged();
+
+            }
+            catch
+            {
+    // ignored
+            }
+        }
+    }
+
+    private async Task AddDuration(int scale)
     {
         var span = (_duration + TimeSpan.FromSeconds(scale)) switch {
-            { TotalMinutes: < 1 } => TimeSpan.FromSeconds(10),
-            { TotalMinutes: < 5 } => TimeSpan.FromMinutes(1),
-            { TotalMinutes: < 60 } => TimeSpan.FromMinutes(5),
-            _ => TimeSpan.FromMinutes(30),
-        };
-        
+        { TotalMinutes: < 1 }  => TimeSpan.FromSeconds(10),
+        { TotalMinutes: < 5 } => TimeSpan.FromMinutes(1),
+        { TotalMinutes: < 60 } => TimeSpan.FromMinutes(5),
+            _ => TimeSpan.FromMinutes(30)
+            };
+
         _duration = _duration.Add(span * scale);
         if (_duration < TimeSpan.FromSeconds(10))
         {
             _duration = TimeSpan.FromSeconds(10);
         }
+
+        await LocalStorage.SetItemAsync(LocalStorageDurationKey, _duration);
     }
 
     private async Task OnStartClick()
     {
-        _isRunning = true;
-        _timeLeft = _duration;
-        _startTime = DateTime.Now;
-        _endTime = _startTime + _duration;
-        TimerService.Start(_duration);
+        if (_state == TimerState.Stopped)
+        {
+            await AudioService.PlaySoundEffect(SoundEffect.TimerStart);
+            _timeLeft = _duration;
+            TimerService.Start(_duration);
+        }
+        else if(_state == TimerState.Paused)
+        {
+            await AudioService.PlaySoundEffect(SoundEffect.TimerResume);
+            TimerService.Start(_timeLeft);
+        }
 
-        await AudioService.PlaySoundEffect(SoundEffect.TimerStart);
+        _state = TimerState.Running;
     }
 
-    private async Task OnStopClick()
+    private async Task OnPauseClick()
     {
-        _isRunning = false;
+        _state = TimerState.Paused;
+        TimerService.Stop();
+        await AudioService.PlaySoundEffect(SoundEffect.TimerPause);
+    }
+
+    private async Task OnResetClick()
+    {
+        _state = TimerState.Stopped;
         TimerService.Stop();
         await AudioService.PlaySoundEffect(SoundEffect.TimerPause);
     }
 
     private void OnTimerTick(object? sender, EventArgs e)
     {
-        _timeLeft = (_endTime - DateTime.Now).Add(TimeSpan.FromSeconds(1));
+        _timeLeft = TimerService.RemainingTime;
         InvokeAsync(StateHasChanged);
     }
 
     private void OnTimerFinished(object? sender, EventArgs e)
     {
-        _isRunning = false;
+        _state = TimerState.Stopped;
         Log.Warning("Time finished in razor");
         InvokeAsync(StateHasChanged);
     }

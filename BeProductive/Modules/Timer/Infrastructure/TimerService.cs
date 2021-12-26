@@ -17,6 +17,8 @@ public class TimerService : IDisposable {
     }
 
     public bool IsRunning { get; private set; }
+    public DateTime EndTime => _endTime;
+    public TimeSpan RemainingTime => (_endTime - DateTime.Now).Add(TimeSpan.FromSeconds(1));
 
     public event EventHandler? TimerTick;
     public event EventHandler? TimerFinished;

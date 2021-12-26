@@ -7,6 +7,8 @@
 - Ability to add note to GoalDayState
 - ✔ ~~System goals which cannot be removed/edited by user (rituals for example)~~
 - Gamification
+- Rewards for long goal success streaks
+- Reward - ticket for skipping goal
 
 ### Goal extensions:
 - ✔ ~~Goal description/notes~~
