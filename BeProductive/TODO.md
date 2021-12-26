@@ -37,9 +37,8 @@
 - ✔ ~~Password change~~
 
 ### Pomodoro Timer:
-- Simple timer with adjustable minutes
+- ✔ ~~Simple timer with adjustable minutes~~
+- ✔ ~~Sound effects~~
 - Browser notifications
-- Sound effects
 - Presets
 - Breaks
-- 

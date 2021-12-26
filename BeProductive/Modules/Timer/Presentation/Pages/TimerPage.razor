@@ -32,20 +32,28 @@
                     <SpaceItem>
                         @if (_state == TimerState.Stopped)
                         {
-                            @* TODO: Using key to update button color, can't change at runtime. Maybe report a bug. *@
-                            <Button Type="@ButtonType.Primary" Color=@(Color.Green7) Size="@ButtonSize.Large" OnClick="OnStartClick">Start</Button>
+                            <Tooltip Title=@("Start") Placement="Placement.Bottom">
+                                @* TODO: Using key to update button color, can't change at runtime. Maybe report a bug. *@
+                                <Button Type="@ButtonType.Primary" Shape="@ButtonShape.Circle" Icon="@IconType.Outline.CaretRight" Color=@(Color.Green7) Size="@ButtonSize.Large" OnClick="OnStartClick"></Button>
+                            </Tooltip>
                         }
                         else if (_state == TimerState.Running)
                         {
-                            <Button Type="@ButtonType.Default" Size="@ButtonSize.Large" OnClick="OnPauseClick">Pause</Button>
+                            <Tooltip Title=@("Pause") Placement="Placement.Bottom">
+                                <Button Type="@ButtonType.Default" Shape="@ButtonShape.Circle" Icon="@IconType.Outline.Pause" Size="@ButtonSize.Large" OnClick="OnPauseClick"></Button>
+                            </Tooltip>
                         }
                         else if (_state == TimerState.Paused)
                         {
-                            <Button Type="@ButtonType.Default" Color=@(Color.Green7) Size="@ButtonSize.Large" OnClick="OnStartClick">Resume</Button>
+                            <Tooltip Title=@("Resume") Placement="Placement.Bottom">
+                                <Button Type="@ButtonType.Default" Shape="@ButtonShape.Circle" Icon="@IconType.Outline.CaretRight" Color=@(Color.Green7) Size="@ButtonSize.Large" OnClick="OnStartClick"></Button>
+                            </Tooltip>
                         }
                     </SpaceItem>
                     <SpaceItem>
-                        <Button Type="@ButtonType.Primary" Danger Size="@ButtonSize.Large" Disabled=@(_state != TimerState.Paused) OnClick="OnResetClick">Reset</Button>
+                        <Tooltip Title=@("Reset") Placement="Placement.Bottom">
+                            <Button Type="@ButtonType.Primary" Danger Shape="@ButtonShape.Circle" Icon="@IconType.Outline.Sync" Size="@ButtonSize.Large" Disabled=@(_state != TimerState.Paused) OnClick="OnResetClick"></Button>
+                        </Tooltip>
                     </SpaceItem>
                 </Space>
             </div>
@@ -62,6 +70,8 @@
         Running,
         Paused,
     }
+
+    private LottieWrapper _anim;
 
     private TimerState _state = TimerState.Stopped;
 
@@ -123,7 +133,7 @@
             _timeLeft = _duration;
             TimerService.Start(_duration);
         }
-        else if(_state == TimerState.Paused)
+        else if (_state == TimerState.Paused)
         {
             await AudioService.PlaySoundEffect(SoundEffect.TimerResume);
             TimerService.Start(_timeLeft);
