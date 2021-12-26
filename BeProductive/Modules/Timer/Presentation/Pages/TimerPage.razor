@@ -11,21 +11,31 @@
 }
 
 <div class="timer-wrapper">
-    <Card BodyStyle="display: flex; flex-direction: column;">
+    <Card BodyStyle="display: flex; flex-direction: column">
         <Body>
-            <div class="timer">
-                @if (_state == TimerState.Stopped)
-                {
-                    @FormatDuration(_duration)
-                    <div class="timer-buttons">
-                        <Button Size="@AntSizeLDSType.Small" Icon="@IconType.Outline.Plus" Shape="@ButtonShape.Circle" OnClick=@(() => AddDuration(1))></Button>
-                        <Button Size="@AntSizeLDSType.Small" Icon="@IconType.Outline.Minus" Shape="@ButtonShape.Circle" OnClick=@(() => AddDuration(-1))></Button>
+            <div class="timer-progress-container">
+                <Progress Class="progress" Type="@ProgressType.Circle" Percent="@PercentDone" Width="200"/>
+                <div class="timer-inside">
+                    @{
+                        var spanToDisplay = _state == TimerState.Stopped ? _duration : _timeLeft;
+                    }
+                    <div class=@($"timer {(spanToDisplay.TotalHours >= 1 ? "timer--small" : "")}")>
+                        @if (_state == TimerState.Stopped)
+                        {
+                            <div>
+                                @FormatDuration(spanToDisplay)
+                            </div>
+                            <div class="timer-buttons">
+                                <Button Size="@AntSizeLDSType.Small" Icon="@IconType.Outline.Minus" Shape="@ButtonShape.Circle" OnClick=@(() => AddDuration(-1))></Button>
+                                <Button Size="@AntSizeLDSType.Small" Icon="@IconType.Outline.Plus" Shape="@ButtonShape.Circle" OnClick=@(() => AddDuration(1))></Button>
+                            </div>
+                        }
+                        else
+                        {
+                            @FormatDuration(spanToDisplay)
+                        }
                     </div>
-                }
-                else
-                {
-                    @FormatDuration(_timeLeft)
-                }
+                </div>
             </div>
             <div class="buttons">
                 <Space>
@@ -80,6 +90,9 @@
 
     private string FormatDuration(TimeSpan duration)
         => duration.ToString(duration.TotalHours >= 1 ? "hh\\:mm\\:ss" : "mm\\:ss");
+
+    private float FractionLeft => (float)Math.Clamp(Math.Floor(_timeLeft.Add(TimeSpan.FromSeconds(0)).TotalSeconds) / _duration.TotalSeconds, 0, 1);
+    private float PercentDone => _state == TimerState.Stopped ? -1f : (1f - FractionLeft) * 100f;
 
     protected override async Task OnInitializedAsync()
     {
@@ -164,6 +177,7 @@
 
     private void OnTimerFinished(object? sender, EventArgs e)
     {
+        _timeLeft = TimeSpan.Zero;
         _state = TimerState.Stopped;
         Log.Warning("Time finished in razor");
         InvokeAsync(StateHasChanged);
