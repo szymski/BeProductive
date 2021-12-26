@@ -10,12 +10,17 @@
             // hideOnTransparent: true,
         }
     });
+    
+    let removeOnFinish = false;
 
     anim.addEventListener("complete", () => {
-        anim.stop();
+        if(removeOnFinish) {
+            anim.stop();
+        }
     });
 
-    anim.playShot = () => {
+    anim.playShot = (remove) => {
+        removeOnFinish = remove;
         anim.stop();
         anim.play();
     };

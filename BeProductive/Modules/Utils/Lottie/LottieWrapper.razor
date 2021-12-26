@@ -26,6 +26,9 @@
     [EditorRequired]
     public string Style { get; set; } = "";
 
+    [Parameter]
+    public bool RemoveOnFinish { get; set; } = true;
+
     private IJSObjectReference? _animation;
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
@@ -35,7 +38,7 @@
 
     public async void Play()
     {
-        await _animation!.InvokeVoidAsync("playShot");
+        await _animation!.InvokeVoidAsync("playShot", RemoveOnFinish);
     }
 
     public async ValueTask DisposeAsync()
