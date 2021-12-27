@@ -17,7 +17,6 @@ public class TimerService : IDisposable {
     }
 
     public bool IsRunning { get; private set; }
-    public DateTime EndTime => _endTime;
     public TimeSpan RemainingTime => (_endTime - DateTime.Now).Add(TimeSpan.FromSeconds(1));
 
     public event EventHandler? TimerTick;
@@ -39,8 +38,6 @@ public class TimerService : IDisposable {
 
     private void ScheduleElapsedTask()
     {
-        var timeLeft = _endTime - DateTime.UtcNow;
-
         _timerTickJob = JobHelper.AddJob(OnTimerTick, s => {
             s.ToRunEvery(1).Seconds();
         });
