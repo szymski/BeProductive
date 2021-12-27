@@ -16,6 +16,7 @@ public class TimerService : IDisposable {
         _audioService = audioService;
     }
 
+    public Goal? SelectedGoal { get; set; }
     public bool IsRunning { get; private set; }
     public TimeSpan RemainingTime => (_endTime - DateTime.Now).Add(TimeSpan.FromSeconds(1));
 

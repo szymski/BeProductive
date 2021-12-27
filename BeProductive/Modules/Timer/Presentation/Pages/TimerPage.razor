@@ -17,10 +17,10 @@
     <Card BodyStyle="display: flex; flex-direction: column" Style="background: transparent; border: none">
         <Body>
             @{
-                var showGoal = _state == TimerState.Stopped || _goal is not null;
+                var showGoal = _state == TimerState.Stopped || Goal is not null;
             }
             <div style="margin: 1rem auto; margin-top: 0">
-                @if (_goal is not null)
+                @if (Goal is not null)
                 {
 
                     <Button Class="selected-goal"
@@ -28,7 +28,7 @@
                             Size="@ButtonSize.Large"
                             Disabled=@(_state != TimerState.Stopped)
                             OnClick="() => _goalSelectModal.Open()">
-                        @_goal.Name
+                        @Goal.Name
                     </Button>
                 }
                 else
@@ -111,7 +111,12 @@
 
     private TimerState _state = TimerState.Stopped;
 
-    private Goal? _goal;
+    private Goal? Goal
+    {
+        get => TimerService.SelectedGoal;
+        set => TimerService.SelectedGoal = value;
+    }
+
     private TimeSpan _duration = TimeSpan.FromMinutes(5);
     private TimeSpan _timeLeft = TimeSpan.Zero;
 
@@ -213,7 +218,7 @@
 
     private void OnGoalSelect(Goal? goal)
     {
-        _goal = goal;
+        Goal = goal;
     }
 
     public void Dispose()
