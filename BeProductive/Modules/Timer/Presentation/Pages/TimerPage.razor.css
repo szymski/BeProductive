@@ -8,6 +8,20 @@
     border-radius: 4px;
 }
 
+::deep .selected-goal {
+    font-size: 18px;
+    line-height: 18px;
+    font-weight: bold;
+}
+
+::deep .selected-goal:disabled {
+    color: unset;
+}
+
+::deep .selected-goal:hover:not(:disabled) {
+    color: #177ddc;
+}
+
 .timer {
     position: relative;
     display: flex;

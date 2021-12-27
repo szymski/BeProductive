@@ -1,5 +1,6 @@
 ﻿@page "/timer"
 @using BeProductive.Modules.Timer.Infrastructure
+@using BeProductive.Modules.Timer.Presentation.Components
 @using Blazored.LocalStorage
 @using Serilog
 @inject TimerService TimerService
@@ -10,9 +11,31 @@
     Layout.Title = "Pomodoro timer";
 }
 
+<GoalSelectModal @ref="_goalSelectModal" OnGoalSelect="OnGoalSelect"/>
+
 <div class="timer-wrapper">
-    <Card BodyStyle="display: flex; flex-direction: column">
+    <Card BodyStyle="display: flex; flex-direction: column" Style="background: transparent; border: none">
         <Body>
+            @{
+                var showGoal = _state == TimerState.Stopped || _goal is not null;
+            }
+            <div style="margin: 1rem auto; margin-top: 0">
+                @if (_goal is not null)
+                {
+
+                    <Button Class="selected-goal"
+                            Type="@ButtonType.Text"
+                            Size="@ButtonSize.Large"
+                            Disabled=@(_state != TimerState.Stopped)
+                            OnClick="() => _goalSelectModal.Open()">
+                        @_goal.Name
+                    </Button>
+                }
+                else
+                {
+                    <Button Type="@ButtonType.Default" OnClick="() => _goalSelectModal.Open()" Style=@(showGoal ? "" : "opacity: 0; pointer-events: none")>Choose goal</Button>
+                }
+            </div>
             <div class="timer-progress-container">
                 <Progress Class="progress" Type="@ProgressType.Circle" Percent="@PercentDone" Width="200"/>
                 <div class="timer-inside">
@@ -67,9 +90,12 @@
                     </SpaceItem>
                 </Space>
             </div>
+            <div class="buttons">
+            </div>
         </Body>
     </Card>
 </div>
+
 
 @code {
 
@@ -81,10 +107,11 @@
         Paused,
     }
 
-    private LottieWrapper _anim;
+    private GoalSelectModal? _goalSelectModal;
 
     private TimerState _state = TimerState.Stopped;
 
+    private Goal? _goal;
     private TimeSpan _duration = TimeSpan.FromMinutes(5);
     private TimeSpan _timeLeft = TimeSpan.Zero;
 
@@ -175,12 +202,18 @@
         InvokeAsync(StateHasChanged);
     }
 
+
     private void OnTimerFinished(object? sender, EventArgs e)
     {
         _timeLeft = TimeSpan.Zero;
         _state = TimerState.Stopped;
         Log.Warning("Time finished in razor");
         InvokeAsync(StateHasChanged);
+    }
+
+    private void OnGoalSelect(Goal? goal)
+    {
+        _goal = goal;
     }
 
     public void Dispose()
