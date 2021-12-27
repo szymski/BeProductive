@@ -11,66 +11,53 @@
     <Loader Loading="@(!_goals.Any())">
         <AntList DataSource="@_goals" Style="overflow: auto; max-height: 50vh; min-height: 200px">
             <ChildContent Context="goal">
-                @if (goal is null)
-                {
-                    <ListItem Class="goal-item" OnClick="() => SelectGoal(null)">
-                        <Space Style="margin: 0 1rem; width: 100%; height: 32px">
-                            <SpaceItem>
-                            </SpaceItem>
-                            <SpaceItem Style="width: 100%; text-align: center">
-                                <Text Strong Style="font-size: 16px">
-                                    None
-                                </Text>
-                            </SpaceItem>
-                        </Space>
-                    </ListItem>
-                }
-                else
-                {
-                    <ListItem Class="goal-item" OnClick="() => SelectGoal(goal)">
-                        <Space Style="margin: 0 1rem; width: 100%; height: 32px">
-                            <SpaceItem>
-                                @if (string.IsNullOrEmpty(goal.Icon))
-                                {
+                <div class="content">
+                    @if (goal is null)
+                    {
+                        <ListItem Class="goal-item" OnClick="() => SelectGoal(null)">
+                            <Space Style="margin: 0 1rem; width: 100%; height: 32px">
+                                <SpaceItem>
+                                </SpaceItem>
+                                <SpaceItem Style="width: 100%; text-align: center">
+                                    <Text Strong Style="font-size: 16px">
+                                        None
+                                    </Text>
+                                </SpaceItem>
+                            </Space>
+                        </ListItem>
+                    }
+                    else
+                    {
+                        <ListItem Class="goal-item" OnClick="() => SelectGoal(goal)">
+                            <Space Style="margin: 0 1rem; width: 100%; height: 32px">
+                                <SpaceItem>
+                                    @if (string.IsNullOrEmpty(goal.Icon))
+                                    {
 
-                                    <Avatar Size="large" Style=@($"background: {@goal.Color}")/>
-                                }
-                                else
-                                {
+                                        <Avatar Size="large" Style=@($"background: {@goal.Color}")/>
+                                    }
+                                    else
+                                    {
 
-                                    <Avatar Size="large"
-                                            Style=@($"color: {@goal.Color}; background: transparent; font-size: 32px")
-                                            Icon="@goal.Icon"/>
+                                        <Avatar Size="large"
+                                                Style=@($"color: {@goal.Color}; background: transparent; font-size: 32px")
+                                                Icon="@goal.Icon"/>
 
-                                }
-                            </SpaceItem>
-                            <SpaceItem Style="width: 100%; text-align: center">
-                                <Text Strong Style="font-size: 16px">
-                                    @goal.Name
-                                </Text>
-                            </SpaceItem>
-                        </Space>
-                    </ListItem>
-                }
+                                    }
+                                </SpaceItem>
+                                <SpaceItem Style="width: 100%; text-align: center">
+                                    <Text Strong Style="font-size: 16px">
+                                        @goal.Name
+                                    </Text>
+                                </SpaceItem>
+                            </Space>
+                        </ListItem>
+                    }
+                </div>
             </ChildContent>
         </AntList>
     </Loader>
 </Modal>
-
-<style>
-    .goal-item {
-        cursor: pointer;
-    }
-    
-    .goal-item:hover {
-        background: rgba(0, 0, 0, 0.1);
-    }
-    
-    [data-theme="dark"] .goal-item:hover {
-        /* TODO */
-        background: rgba(255, 255, 255, 0.2);
-    }
-</style>
 
 @code {
 
