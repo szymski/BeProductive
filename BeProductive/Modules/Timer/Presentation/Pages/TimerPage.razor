@@ -2,9 +2,10 @@
 @using BeProductive.Modules.Timer.Infrastructure
 @using BeProductive.Modules.Timer.Presentation.Components
 @using Blazored.LocalStorage
-@using Serilog
+@using BeProductive.Modules.Goals.Domain.Services
 @inject TimerService TimerService
 @inject AudioService AudioService
+@inject GoalDomainService GoalDomainService
 @inject ILocalStorageService LocalStorage
 @implements IDisposable
 @{
@@ -19,7 +20,7 @@
             @{
                 var showGoal = _state == TimerState.Stopped || Goal is not null;
             }
-            <div style="margin: 1rem auto; margin-top: 0">
+            <div style="margin: 0 auto 1rem;">
                 @if (Goal is not null)
                 {
 
@@ -212,8 +213,17 @@
     {
         _timeLeft = TimeSpan.Zero;
         _state = TimerState.Stopped;
-        Log.Warning("Time finished in razor");
         InvokeAsync(StateHasChanged);
+
+        if (Goal is not null)
+        {
+            AddSuccessStateForGoal();
+        }
+    }
+
+    private void AddSuccessStateForGoal()
+    {
+        throw new NotImplementedException();
     }
 
     private void OnGoalSelect(Goal? goal)

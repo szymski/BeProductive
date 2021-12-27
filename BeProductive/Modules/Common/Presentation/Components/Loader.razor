@@ -1,0 +1,28 @@
+﻿<Spin Indicator="@Icon"
+      Size="large"
+      Spinning="@Loading"
+      Style="display: flex; align-items: center; justify-content: center">
+    @ChildContent
+</Spin>
+
+
+@code {
+
+    [Parameter]
+    [EditorRequired]
+    public bool Loading { get; set; }
+
+    [Parameter]
+    [EditorRequired]
+    public RenderFragment ChildContent { get; set; }
+
+}
+
+@code {
+
+    public static RenderFragment Icon =>
+        @<Icon Type="@IconType.Outline.Loading"
+               Style="font-size: 48px"
+               Spin/>;
+
+}

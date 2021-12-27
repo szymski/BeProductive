@@ -51,7 +51,16 @@
         <a class="dismiss">🗙</a>
     </div>
 
-    <script src="_framework/blazor.server.js"></script>
+    <script autostart="false" src="_framework/blazor.server.js"></script>
     <script>navigator.serviceWorker.register('service-worker.js');</script>
+    <script>
+        Blazor.start({})
+            .then(() => {
+                  Blazor.defaultReconnectionHandler.onConnectionDown = function () {
+                      console.log("Reloading")
+                      window.location.reload();
+                  };
+              });
+    </script>
 </body>
 </html>

@@ -8,7 +8,7 @@
        Footer="RenderFooter()"
        Centered
        BodyStyle="padding: 0">
-    <Spin Size="large" Spinning=@(!_goals.Any()) Style="margin-top: 0.5rem">
+    <Loader Loading="@(!_goals.Any())">
         <AntList DataSource="@_goals" Style="overflow: auto; max-height: 50vh; min-height: 200px">
             <ChildContent Context="goal">
                 @if (goal is null)
@@ -54,7 +54,7 @@
                 }
             </ChildContent>
         </AntList>
-    </Spin>
+    </Loader>
 </Modal>
 
 <style>
@@ -81,7 +81,7 @@
 
 @code {
 
-    private bool _visible = false;
+    private bool _visible = true;
 
     private List<Goal?> _goals = new();
 
