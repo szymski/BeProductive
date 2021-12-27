@@ -15,7 +15,7 @@
                     @if (goal is null)
                     {
                         <ListItem Class="goal-item" OnClick="() => SelectGoal(null)">
-                            <Space Style="margin: 0 1rem; width: 100%; height: 32px">
+                            <Space Class="space">
                                 <SpaceItem>
                                 </SpaceItem>
                                 <SpaceItem Style="width: 100%; text-align: center">
@@ -29,7 +29,7 @@
                     else
                     {
                         <ListItem Class="goal-item" OnClick="() => SelectGoal(goal)">
-                            <Space Style="margin: 0 1rem; width: 100%; height: 32px">
+                            <Space Class="space">
                                 <SpaceItem>
                                     @if (string.IsNullOrEmpty(goal.Icon))
                                     {
@@ -68,7 +68,7 @@
 
 @code {
 
-    private bool _visible = true;
+    private bool _visible = false;
 
     private List<Goal?> _goals = new();
 

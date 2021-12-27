@@ -2,10 +2,16 @@
     --goal-item-hover-color: rgba(0, 0, 0, 0.2);
 }
 
-.content ::deep .goal-item  {
+.content ::deep .goal-item {
     cursor: pointer;
 }
 
 .content ::deep .goal-item:hover {
-    background: var(--goal-item-hover-color); 
+    background: var(--goal-item-hover-color);
+}
+
+::deep .space {
+    margin: 0 1rem;
+    width: 100%;
+    height: 32px
 }
