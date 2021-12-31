@@ -3,6 +3,8 @@
 @using BeProductive.Modules.Timer.Presentation.Components
 @using Blazored.LocalStorage
 @using BeProductive.Modules.Goals.Domain.Services
+@using DateHelper=BeProductive.Modules.Common.Helpers.DateHelper
+@using BeProductive.Modules.Goals.Domain
 @inject TimerService TimerService
 @inject AudioService AudioService
 @inject GoalDomainService GoalDomainService
@@ -23,7 +25,6 @@
             <div style="margin: 0 auto 1rem;">
                 @if (Goal is not null)
                 {
-
                     <Button Class="selected-goal"
                             Type="@ButtonType.Text"
                             Size="@ButtonSize.Large"
@@ -92,6 +93,9 @@
                 </Space>
             </div>
             <div class="buttons">
+                <LottieWrapper @ref="_animation" Path="/animations/645-success.json" RemoveOnFinish="false" Size="100%">
+                    <div style="width: 200px; height: 200px"></div>
+                </LottieWrapper>
             </div>
         </Body>
     </Card>
@@ -109,6 +113,7 @@
     }
 
     private GoalSelectModal? _goalSelectModal;
+    private LottieWrapper? _animation;
 
     private TimerState _state = TimerState.Stopped;
 
@@ -217,13 +222,14 @@
 
         if (Goal is not null)
         {
-            AddSuccessStateForGoal();
+            _animation!.Play();
+            InvokeAsync(AddSuccessStateForGoal);
         }
     }
 
-    private void AddSuccessStateForGoal()
+    private async Task AddSuccessStateForGoal()
     {
-        throw new NotImplementedException();
+        await GoalDomainService.SetStateForDay(Goal!, DateOnly.FromDateTime(DateTime.Today), GoalState.Success);
     }
 
     private void OnGoalSelect(Goal? goal)

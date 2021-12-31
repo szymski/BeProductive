@@ -10,6 +10,34 @@
     background: var(--goal-item-hover-color);
 }
 
+.content ::deep .goal-text--unknown {
+    color: #a9a9a9;
+}
+
+.content ::deep .goal-text--unknown {
+    animation-name: glow;
+    animation-duration: 2s;
+    animation-iteration-count: infinite;
+    animation-direction: alternate;
+}
+
+@keyframes glow {
+    from { text-shadow: 0 0 8px var(--goal-glow-color); }
+    to { text-shadow: 0 0 0 var(--goal-glow-color); }
+}
+
+.content ::deep .goal-text--success {
+    color: #32c941;
+}
+
+.content ::deep .goal-text--failure {
+    color: #da3232;
+}
+
+.content ::deep .goal-text--emergency {
+    color: #f8d24b;
+}
+
 ::deep .space {
     margin: 0 1rem;
     width: 100%;

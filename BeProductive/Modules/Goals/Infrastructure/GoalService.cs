@@ -4,14 +4,13 @@ using Microsoft.EntityFrameworkCore;
 
 namespace BeProductive.Modules.Goals.Infrastructure;
 
-public class GoalService
-{
+public class GoalService {
     private readonly IDbContextFactory<AppContext> _contextFactory;
     private readonly ILogger<GoalService> _logger;
     private readonly AuthService _authService;
 
     protected int UserId => _authService.GetAuthData()!.UserId;
-    
+
     public GoalService(
         ILogger<GoalService> logger,
         IDbContextFactory<AppContext> contextFactory,
@@ -27,7 +26,7 @@ public class GoalService
         await using var context = await _contextFactory.CreateDbContextAsync();
 
         _logger.LogInformation("User id {Id}", UserId);
-        
+
         return await context.Goals
             .Where(goal => goal.UserId == UserId)
             .OrderBy(goal => goal.Order)
@@ -39,7 +38,7 @@ public class GoalService
         await using var context = await _contextFactory.CreateDbContextAsync();
 
         _logger.LogInformation("User id {Id}", UserId);
-        
+
         return await context.Goals
             .Where(goal => goal.UserId == UserId)
             .Where(goal => goal.IsSystem && goal.SystemType != null && types.Contains(goal.SystemType))
@@ -59,7 +58,7 @@ public class GoalService
     public async Task<Goal> UpdateGoal(Goal goal)
     {
         goal.Validate();
-        
+
         await using var context = await _contextFactory.CreateDbContextAsync();
 
         _logger.LogInformation("Updating goal {@Goal}", goal);
@@ -71,7 +70,7 @@ public class GoalService
     public async Task<Goal> AddGoal(Goal goal)
     {
         goal.Validate();
-        
+
         goal.UserId = UserId;
 
         await using var context = await _contextFactory.CreateDbContextAsync();
@@ -86,11 +85,11 @@ public class GoalService
 
         return goal;
     }
-    
+
     public async Task<Goal> AddSystemGoal(Goal goal, string type)
     {
         // TODO
-        
+
         goal.UserId = UserId;
         goal.IsSystem = true;
         goal.SystemType = type;
@@ -115,12 +114,39 @@ public class GoalService
             _logger.LogWarning("Attempted to delete system goal {@Goal}", goal);
             throw new InvalidOperationException("Cannot delete system goal");
         }
-        
+
         await using var context = await _contextFactory.CreateDbContextAsync();
 
         _logger.LogInformation("Deleting goal {@Goal}", goal);
         context.Goals.Remove(goal);
         await context.SaveChangesAsync();
+    }
+
+    public async Task<GoalDayState?> GetStateForDay(Goal goal, DateOnly date)
+    {
+        await using var context = await _contextFactory.CreateDbContextAsync();
+
+        return await context.GoalDayStates
+            .Where(x => x.GoalId == goal.Id)
+            .Where(x => x.Day == date)
+            .SingleOrDefaultAsync();
+    }
+
+    public async Task<IDictionary<Goal, GoalDayState?>> GetManyGoalsStatesForDay(IEnumerable<Goal> goals, DateOnly date)
+    {
+        var goalIdMap = goals.ToDictionary(goal => goal.Id);
+        var goalIds = goalIdMap.Keys;
+
+        await using var context = await _contextFactory.CreateDbContextAsync();
+
+        var states = await context.GoalDayStates
+            .Where(x => goalIds.Contains(x.GoalId))
+            .Where(x => x.Day == date)
+            .ToListAsync();
+
+        return goalIdMap.Values
+            .ToDictionary(goal => goal,
+                          goal => states.SingleOrDefault(state => state.GoalId == goal.Id));
     }
 
     public async Task<IReadOnlyList<GoalDayState>> GetStatesForMonth(Goal goal, DateTime date)
@@ -147,7 +173,7 @@ public class GoalService
         var entry = await context.Goals
             .Where(x => x.UserId == UserId)
             .SingleAsync(x => x.Id == goal.Id);
-        
+
         return await context.Entry(entry)
             .Collection(goal => goal.GoalDayStates)
             .Query()

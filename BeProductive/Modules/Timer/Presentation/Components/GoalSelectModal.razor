@@ -1,4 +1,6 @@
-﻿@inject GoalService GoalService
+﻿@using BeProductive.Modules.Goals.Domain
+@using Serilog
+@inject GoalService GoalService
 
 @* TODO: Better scrollbar *@
 
@@ -8,11 +10,14 @@
        Footer="RenderFooter()"
        Centered
        BodyStyle="padding: 0">
+    @{
+        var i = 0;
+    }
     <Loader Loading="@(!_goals.Any())">
         <AntList DataSource="@_goals" Style="overflow: auto; max-height: 50vh; min-height: 200px">
-            <ChildContent Context="goal">
+            <ChildContent Context="item">
                 <div class="content">
-                    @if (goal is null)
+                    @if (item is null)
                     {
                         <ListItem Class="goal-item" OnClick="() => SelectGoal(null)">
                             <Space Class="space">
@@ -28,25 +33,23 @@
                     }
                     else
                     {
+                        var (goal, state) = item;
                         <ListItem Class="goal-item" OnClick="() => SelectGoal(goal)">
                             <Space Class="space">
                                 <SpaceItem>
                                     @if (string.IsNullOrEmpty(goal.Icon))
                                     {
-
-                                        <Avatar Size="large" Style=@($"background: {@goal.Color}")/>
+                                        <Avatar Size="large" Style=@($"background: {goal.Color}")/>
                                     }
                                     else
                                     {
-
                                         <Avatar Size="large"
-                                                Style=@($"color: {@goal.Color}; background: transparent; font-size: 32px")
+                                                Style=@($"color: {goal.Color}; background: transparent; font-size: 32px")
                                                 Icon="@goal.Icon"/>
-
                                     }
                                 </SpaceItem>
                                 <SpaceItem Style="width: 100%; text-align: center">
-                                    <Text Strong Style="font-size: 16px">
+                                    <Text Class=@($"goal-text--{state.ToString().ToLower()}") Strong Style=@($"font-size: 16px; animation-delay: {i++ * -200}ms")>
                                         @goal.Name
                                     </Text>
                                 </SpaceItem>
@@ -68,9 +71,12 @@
 
 @code {
 
+    record GoalItem(Goal Goal, GoalState State);
+
     private bool _visible = false;
 
-    private List<Goal?> _goals = new();
+    private List<GoalItem?> _goals = new();
+    private Dictionary<Goal, GoalDayState> _goalLastStates = new();
 
     [Parameter]
     public EventCallback<Goal?> OnGoalSelect { get; set; }
@@ -79,17 +85,20 @@
     {
         _visible = true;
         StateHasChanged();
-
-        if (!_goals.Any())
-        {
-            InvokeAsync(LoadGoals);
-        }
+        InvokeAsync(LoadGoals);
     }
 
     private async Task LoadGoals()
     {
-        _goals = (await GoalService.GetGoals())!;
-        _goals.Insert(0, null!);
+        var goals = await GoalService.GetGoals();
+        var states = await GoalService
+            .GetManyGoalsStatesForDay(goals, DateOnly.FromDateTime(DateTime.Today));
+        _goals = states
+            .Select(pair => new GoalItem(pair.Key, pair.Value?.State ?? GoalState.Unknown))
+            .OrderBy(item => GoalStateOrders[item.State])
+            .Cast<GoalItem?>()
+            .ToList();
+        _goals.Insert(0, null);
         StateHasChanged();
     }
 
@@ -98,5 +107,21 @@
         _visible = false;
         await OnGoalSelect.InvokeAsync(goal);
     }
+
+    public static readonly Dictionary<GoalState, int> GoalStateOrders = new()
+    {
+        {
+            GoalState.Unknown, 0
+        },
+        {
+            GoalState.Emergency, 1
+        },
+        {
+            GoalState.Failure, 2
+        },
+        {
+            GoalState.Success, 3
+        },
+    };
 
 }
