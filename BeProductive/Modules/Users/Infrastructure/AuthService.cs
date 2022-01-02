@@ -122,7 +122,7 @@ public class AuthService
     {
         _logger.LogInformation("Logging in user {@User}", user);
         
-        user.LastSignedInAt = DateTime.Now;
+        user.LastSignedInAt = DateTime.UtcNow;
         _context.Update(user);
         await _context.SaveChangesAsync();
 
@@ -130,7 +130,6 @@ public class AuthService
         var identity = new ClaimsIdentity(principal.Claims, CookieAuthenticationDefaults.AuthenticationScheme);
         principal = new(identity);
         _signInManager.Context.User = principal;
-        _hostAuthentication.SetAuthenticationState(Task.FromResult(new AuthenticationState(principal)));
 
         var cookieOptions = _cookieOptionsMonitor
             .Get(CookieAuthenticationDefaults.AuthenticationScheme);
@@ -146,6 +145,8 @@ public class AuthService
         );
 
         _currentAuthData = new AuthData(user.Id, user.UserName);
+        
+        _hostAuthentication.SetAuthenticationState(Task.FromResult(new AuthenticationState(principal)));
     }
 
     public async Task Logout()

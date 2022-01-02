@@ -8,8 +8,8 @@ namespace BeProductive.Modules.Users.Domain;
 public class User : IdentityUser<int>
 {
     public override string UserName { get; set; }
-    public DateTime CreatedAt { get; set; } = DateTime.Now; 
-    public DateTime LastSignedInAt { get; set; } = DateTime.Now; 
+    public DateTime CreatedAt { get; set; } = DateTime.UtcNow; 
+    public DateTime LastSignedInAt { get; set; } = DateTime.UtcNow; 
 
     public string FullName { get; set; }
     public List<Goal> Goals { get; set; }
