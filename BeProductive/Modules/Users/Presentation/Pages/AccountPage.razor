@@ -1,17 +1,18 @@
 ﻿@inject AuthService AuthService
-@inject AppContext Context
 @inject UserService UserService
 @page "/account"
 @using BeProductive.Modules.Users.Infrastructure.Data
 @using BeProductive.Modules.Users.Domain
+@using Serilog
 @{
     Layout.Title = "Account";
 }
 
+
 <Card>
     <Body>
         <Row Class="row" Gutter="(16, 2)">
-            <Col Span="4" Flex="@("auto")">
+            <Col Span="4" Flex=@("auto")>
                 <Avatar Size="large" Style="width: 72px; height: 72px; font-size: 72px" Icon="user"/>
             </Col>
             <Col Span="20"/>
@@ -19,7 +20,7 @@
                 User ID
             </Col>
             <Col Span="20">
-                @_authData.UserId
+                @_authData?.UserId
             </Col>
             <Col Span="4">
                 Username
@@ -37,13 +38,13 @@
                 Date joined
             </Col>
             <Col Span="20">
-                @_user.CreatedAt.ToString("g")
+                @_user?.CreatedAt.ToString("g")
             </Col>
             <Col Span="4">
                 Last login
             </Col>
             <Col Span="20">
-                @_user.LastSignedInAt.ToString("g")
+                @_user?.LastSignedInAt.ToString("g")
             </Col>
         </Row>
     </Body>
@@ -75,6 +76,8 @@
 
 @code {
 
+    // TODO: Crashes on production env with Postgres
+
     private User? _user;
     private AuthData? _authData;
 
@@ -83,7 +86,7 @@
     protected override async Task OnInitializedAsync()
     {
         _authData = await AuthService.GetAuthDataAsync();
-        _user = await Context.Users.FindAsync(_authData.UserId);
+        _user = await UserService.GetUserById(_authData.UserId);
         _username = _authData.Username;
     }
 
@@ -97,10 +100,11 @@
         }
         catch (Exception e)
         {
+            Log.Error(e, "Failed to change username");
             NotificationService.Error(e.Message);
         }
     }
-    
+
     private async Task OnPasswordChanged(string value)
     {
         try
@@ -110,6 +114,7 @@
         }
         catch (Exception e)
         {
+            Log.Error(e, "Failed to change password");
             NotificationService.Error(e.Message);
         }
     }
