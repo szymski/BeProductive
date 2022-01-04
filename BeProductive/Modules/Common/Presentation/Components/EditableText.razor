@@ -22,6 +22,7 @@ else
                 Style="@InputStyle"
                 Placeholder="@Placeholder"
                 Disabled="@Loading"
+                type="@InputType"
                 @bind-Value="@_editText"
                 autofocus
                 @onkeyup="OnInputKeyPress"/>
@@ -105,6 +106,9 @@ else
 
     [Parameter]
     public string DeleteButtonStyle { get; set; } = "";
+    
+    [Parameter]
+    public string InputType { get; set; } = "";
 
     [Parameter(CaptureUnmatchedValues = true)]
     public Dictionary<string, object> Attributes { get; set; }
