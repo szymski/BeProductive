@@ -55,7 +55,7 @@ public class UserService
         await using var context = await _contextFactory.CreateDbContextAsync();
         
         var authData = await _authService.GetAuthDataAsync();
-        var user = await context.Users.FindAsync(authData!.UserId);
+        var user = await _userManager.FindByIdAsync(authData!.UserId.ToString());
 
         _logger.LogInformation("Updating user {@User} password", user);
         var token = await _userManager.GeneratePasswordResetTokenAsync(user);
