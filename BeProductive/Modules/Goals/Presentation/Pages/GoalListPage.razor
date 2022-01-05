@@ -12,7 +12,7 @@
 <PageTitle>Goal list</PageTitle>
 
 <Layout Style="min-height: 100%">
-    <Content >
+    <Content>
         @if (_goals.Count == 0)
         {
             <Empty Description=@("You have no goals defined. Add the first one by clicking the button below.")/>
@@ -41,7 +41,7 @@
             </div>
         }
     </Content>
-    
+
     <Sider Style="margin-left: 1rem; background: transparent" Width="400" CollapsedWidth="0" Collapsed="@_isDetailsCollapsed">
         @if (SelectedGoal is not null)
         {
@@ -68,8 +68,7 @@
 
 @code {
 
-    private record GoalEntry(Goal Goal, GoalContext? Context = null)
-    {
+    private record GoalEntry(Goal Goal, GoalContext? Context = null) {
         public GoalContext? Context { get; set; } = Context;
     }
 
@@ -82,7 +81,7 @@
     private GoalDetails? _goalDetails;
 
     private List<GoalEntry> _goals = new();
-    
+
     private bool _isDetailsCollapsed = true;
 
     protected override async Task OnInitializedAsync()

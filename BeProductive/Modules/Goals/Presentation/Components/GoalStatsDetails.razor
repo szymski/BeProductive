@@ -13,7 +13,7 @@
 @code {
 
     [CascadingParameter]
-    public GoalContext GoalContext
+    public GoalContext? GoalContext
     {
         get => _goalContext!;
         set
@@ -23,7 +23,10 @@
                 _goalContext.GoalStateChanged -= OnGoalGoalStateChanged;
             }
             _goalContext = value;
-            _goalContext.GoalStateChanged += OnGoalGoalStateChanged;
+            if (_goalContext is not null)
+            {
+                _goalContext.GoalStateChanged += OnGoalGoalStateChanged;
+            }
         }
     }
 
@@ -47,12 +50,13 @@
 
     private async Task UpdateStats()
     {
+        if(GoalContext is null) return;
         _streak = await GoalStatsService.GetCurrentStreak(GoalContext.Goal);
     }
 
     public void Dispose()
     {
-        GoalContext.GoalStateChanged -= OnGoalGoalStateChanged;
+        if (GoalContext != null) GoalContext.GoalStateChanged -= OnGoalGoalStateChanged;
     }
 
 }

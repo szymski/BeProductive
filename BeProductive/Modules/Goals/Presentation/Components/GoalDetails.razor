@@ -9,7 +9,10 @@
 @inject GoalService GoalService
 
 <div class="goal-details">
-    <Card Class="card" Title="@Goal.Name" Style="display: flex; flex-direction: column;" BodyStyle="padding: 0; flex: 1;">
+    <Card Class="card" Style="display: flex; flex-direction: column;" BodyStyle="padding: 0; flex: 1;">
+        <TitleTemplate>
+            @Goal.Name
+        </TitleTemplate>
         <Extra>
             <a @onclick="NavigateToEditGoalPage">Edit</a>
         </Extra>
@@ -71,7 +74,10 @@
                 _goalContext.GoalStateChanged -= OnGoalStateChangedExternally;
             }
             _goalContext = value;
-            _goalContext.GoalStateChanged += OnGoalStateChangedExternally;
+            if (_goalContext is not null)
+            {
+                _goalContext.GoalStateChanged += OnGoalStateChangedExternally;
+            }
         }
     }
 
