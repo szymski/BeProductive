@@ -7,7 +7,7 @@
 @inject IJSRuntime JS
 
 <div>
-    <PageHeader BackIcon="true">
+    <PageHeader BackIcon="true" Class="header">
         <PageHeaderTitle>
             @(Type == GoalFormType.New ? "Add goal" : $"Edit goal{(GoalName != null ? $" - {GoalName}" : "")}")
         </PageHeaderTitle>
@@ -26,7 +26,7 @@
                 <FormItem>
                     <Collapse DefaultActiveKey="@(new[] { "1" })">
                         <Panel Header="Specific days only" Key="1">
-                            <CheckboxGroup @bind-Value="Days" Options="@_dayOptions" OnChange="OnDayChanged"/>
+                            <CheckboxGroup @bind-Value="Days" Class="checkbox-group" Options="@_dayOptions" OnChange="OnDayChanged"/>
                         </Panel>
                     </Collapse>
                 </FormItem>

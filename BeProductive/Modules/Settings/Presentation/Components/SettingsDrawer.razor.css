@@ -1,0 +1,10 @@
+﻿::deep .testb  {
+    width: 350px !important;
+    /*min-width: ;*/
+}
+
+@media(max-width: 768px) {
+    ::deep .testb {
+        max-width: 100vw !important;
+    }
+}

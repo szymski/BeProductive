@@ -20,6 +20,24 @@
     font-size: 16px;
 }
 
+::deep .sidebar-menu-button {
+    display: none;
+}
+
+@media (max-width: 768px) {
+    ::deep .sidebar-menu-button {
+        display: block;
+        position: absolute;
+        right: 100%;
+        margin-right: 4px;
+    }
+
+    .logo-link {
+        margin-left: 28px;
+        position: relative;
+    }
+}
+
 .logo h1 {
     border-bottom: 3px solid #1890ff;
     margin-bottom: -3px;

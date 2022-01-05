@@ -12,3 +12,23 @@
 [data-theme="dark"] .layout ::deep .layout-footer {
     background: rgba(255, 255, 255, 0.1);
 }
+
+::deep .content-wrapper {
+    margin-left: 200px;
+}
+
+@media(max-width: 768px) {
+    ::deep .content-wrapper {
+        margin-left: 0;
+    }
+}
+
+::deep .content {
+    padding: 1rem;
+}
+
+@media(max-width: 768px) {
+    ::deep .content {
+        padding: 0.5rem;
+    }
+}

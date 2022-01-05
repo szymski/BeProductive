@@ -1,4 +1,13 @@
-﻿::deep .icon {
+﻿::deep .space {
+    justify-content: space-between;
+}
+
+::deep .space:after {
+    content: '';
+    flex: auto;
+}
+
+::deep .icon {
     cursor: pointer;
     padding: 4px;
     outline-color: transparent;

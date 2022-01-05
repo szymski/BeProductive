@@ -2,10 +2,18 @@
 @using BeProductive.Modules.Settings.Infrastructure
 @inject SettingsService SettingsService
 
-<Drawer Closable="true" Visible="_isOpen" Placement="right" Title=@("Settings") Width="400" OnClose="@(() => _isOpen = false)">
-    @SwitchEntry("Dark mode", _isDarkTheme, OnThemeChange)
-    @SwitchEntry("Enable sounds", _soundsEnabled, OnSoundsEnabledChange)
-</Drawer>
+<div>
+    <Drawer Closable="true" Visible="_isOpen" WrapClassName="testb" Placement="right" Title=@("Settings") OnClose="@(() => _isOpen = false)">
+        @SwitchEntry("Dark mode", _isDarkTheme, OnThemeChange)
+        @SwitchEntry("Enable sounds", _soundsEnabled, OnSoundsEnabledChange)
+    </Drawer>
+</div>
+
+<style>
+    .testa {
+        min-width: 350px;
+    }
+</style>
 
 @code {
 

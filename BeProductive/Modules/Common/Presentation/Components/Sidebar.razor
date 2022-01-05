@@ -1,14 +1,24 @@
 ﻿@using System.Security.Principal
 @using BeProductive.Modules.Settings.Presentation.Components
+@using Serilog
 @inject AuthService AuthService
 @implements IDisposable
 
-<Sider Width="200" Style="overflow: auto; height: 100vh; position: fixed; left: 0">
+<Sider @ref="_sider" Width="200" Style="overflow: auto; height: 100vh; position: fixed; left: 0; z-index: 100" Breakpoint="BreakpointType.Sm" CollapsedWidth="0" OnBreakpoint="OnBreakpoint">
     <div class="sidebar">
         <div class="logo">
-            <a href="/">
-                <h1>beProductive</h1>
-            </a>
+            <div class="logo-link">
+                <Button
+                    Class="sidebar-menu-button"
+                    Type="@ButtonType.Text"
+                    Size="@ButtonSize.Large"
+                    Shape="@ButtonShape.Circle"
+                    Icon="@IconType.Outline.MenuFold"
+                    OnClick="() => _sider.ToggleCollapsed()"/>
+                <a href="/">
+                    <h1>beProductive</h1>
+                </a>
+            </div>
         </div>
         <Menu Class="menu" Mode="@MenuMode.Inline">
             @foreach (var (name, route) in MenuItems.Items)
@@ -54,30 +64,34 @@
 
 @code {
 
+    private Sider _sider;
+    private Popover? _popover;
+
     [CascadingParameter]
     public SettingsDrawer SettingsDrawer { get; set; }
 
-    private Popover _popover;
-
     private string _version = "";
-    
+
     private IIdentity? _userIdentity;
+
+    private bool _isMobile = false;
 
     protected override async Task OnInitializedAsync()
     {
         NavigationManager.LocationChanged += OnLocationChanged;
+
         _version = $"v{ThisAssembly.Info.Version} ({ThisAssembly.Info.Configuration})";
 
         _userIdentity = await AuthService.GetAuthState();
     }
 
-    public void Dispose()
-    {
-        NavigationManager.LocationChanged -= OnLocationChanged;
-    }
-
     private void OnLocationChanged(object? sender, LocationChangedEventArgs args)
     {
+        if (_isMobile)
+        {
+            _sider.Collapsed = true;
+        }
+        _popover?.Close();
         InvokeAsync(StateHasChanged);
     }
 
@@ -88,8 +102,27 @@
 
     private void OnSettingsClick()
     {
+        if (_isMobile)
+        {
+            _sider.Collapsed = true;
+        }
         SettingsDrawer.Open();
-        _popover.Close();
+        _popover?.Close();
+    }
+
+    public void ToggleMenu()
+    {
+        _sider.ToggleCollapsed();
+    }
+
+    private void OnBreakpoint(bool isMobile)
+    {
+        _isMobile = isMobile;
+    }
+
+    public void Dispose()
+    {
+        NavigationManager.LocationChanged -= OnLocationChanged;
     }
 
 }

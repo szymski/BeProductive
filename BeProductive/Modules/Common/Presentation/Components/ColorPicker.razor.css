@@ -1,7 +1,17 @@
-﻿::deep .color {
+﻿::deep .space {
+    justify-content: space-between;
+}
+
+::deep .space:after {
+    content: '';
+    flex: auto;
+}
+
+::deep .color {
     cursor: pointer;
     outline-width: 0px solid #3e99ea;
     transition: outline-width 0.1s;
+    margin-bottom: 4px;
 }
 
 ::deep .color.selected {

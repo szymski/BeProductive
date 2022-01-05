@@ -49,3 +49,7 @@ html, body {
     .blazor-error-boundary::after {
         content: "An error has occurred."
     }
+    
+.ant-message-notice-content {
+    font-size: 18px;
+}

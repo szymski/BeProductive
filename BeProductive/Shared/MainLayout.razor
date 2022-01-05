@@ -7,12 +7,12 @@
 <CascadingValue Value="_settingsDrawer">
     <div class="layout">
         <Layout Style="min-height: 100%">
-            <Sidebar/>
+            <Sidebar @ref="_sidebar"/>
 
-            <Layout Style="margin-left: 200px; min-height: 100vh">
-                <ContextPageHeader/>
+            <Layout Class="content-wrapper" Style="min-height: 100vh">
+                <ContextPageHeader OnMenuClicked="OnMenuClicked"/>
 
-                <Content Style="padding: 1rem">
+                <Content Class="content">
                     @{
                         RenderFragment? body;
                     }
@@ -38,6 +38,7 @@
 
 @code {
 
+    private Sidebar _sidebar;
     private SettingsDrawer _settingsDrawer;
     private ErrorBoundary _errorBoundary;
 
@@ -57,14 +58,19 @@
         _errorBoundary.Recover();
     }
 
-    public void Dispose()
-    {
-        NavigationManager.LocationChanged -= OnLocationChanged;
-    }
-
     private void OpenSettings()
     {
         _settingsDrawer.Open();
+    }
+
+    private async Task OnMenuClicked()
+    {
+        _sidebar.ToggleMenu();        
+    }
+
+    public void Dispose()
+    {
+        NavigationManager.LocationChanged -= OnLocationChanged;
     }
 
 }

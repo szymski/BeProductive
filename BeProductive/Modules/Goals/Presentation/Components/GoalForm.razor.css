@@ -1,0 +1,20 @@
+﻿::deep .header {
+    margin: -8px;
+}
+
+::deep .checkbox-group .ant-checkbox-wrapper {
+    margin-left: 0;
+    margin-top: 4px;
+}
+
+@media (max-width: 768px) {
+    ::deep .checkbox-group {
+        display: flex;
+        flex-direction: column;
+    }
+
+    ::deep .checkbox-group .ant-checkbox-wrapper {
+        margin: 0.25rem;
+        font-size: 16px;
+    }
+}

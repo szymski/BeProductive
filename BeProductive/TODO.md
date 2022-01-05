@@ -20,13 +20,14 @@
 
 ### UI Improvements:
 - ✔ ~~Goal state selector animation when waiting for states~~
+- Responsiveness 👹
 
 ### Goal Gamification:
 - ✔ ~~Current streak~~
-- Longest streak
-- UI smiles or fire icon for long streaks and sad faces for fails
-- Add UI particle effects when choosing goal state to success
+- ✔ ~~Add UI particle effects when choosing goal state to success~~
 - ✔ ~~Maybe add sounds for goal selector~~
+- UI smiles or fire icon for long streaks and sad faces for fails
+- Longest streak
 
 ### Users:
 - ✔ ~~User entity~~
@@ -35,10 +36,13 @@
 - ✔ ~~Add user to Goal, GoalDayState and Ritual entities~~
 - ✔ ~~Account edit page~~
 - ✔ ~~Password change~~
+- Registration with invitation codes
+- Mail verifications?
 
 ### Pomodoro Timer:
 - ✔ ~~Simple timer with adjustable minutes~~
 - ✔ ~~Sound effects~~
+- ✔ ~~Finishing goal when timer finishes~~
 - Browser notifications
 - Presets
 - Breaks

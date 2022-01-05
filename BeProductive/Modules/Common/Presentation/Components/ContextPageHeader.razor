@@ -2,7 +2,18 @@
 
 @if (!string.IsNullOrEmpty(_title))
 {
-    <PageHeader Class=@($"page-header {(string.IsNullOrEmpty(Layout.Title) ? "hidden" : "")}") Title="@_title" Subtitle="@_subtitle"/>
+    <PageHeader Class=@($"page-header {(string.IsNullOrEmpty(Layout.Title) ? "hidden" : "")}") Title="@_title" Subtitle="@_subtitle">
+        <TitleTemplate>
+            <Button
+                Class="menu-button"
+                Type="@ButtonType.Text"
+                Size="@ButtonSize.Large"
+                Shape="@ButtonShape.Circle"
+                Icon="@IconType.Outline.MenuUnfold"
+                OnClick="OnMenuClick"/>
+            @_title
+        </TitleTemplate>
+    </PageHeader>
     <PageTitle>@Layout.Title - beProductive</PageTitle>
 }
 else
@@ -10,6 +21,8 @@ else
     <PageTitle>beProductive</PageTitle>
 }
 
+
+@* TODO: Separate file *@
 <style>
     .page-header {
         margin-top: 0;
@@ -18,6 +31,21 @@ else
 
     .page-header.hidden {
         margin-top: -72px;
+    }
+    
+    .menu-button {
+        display: none;
+    }
+    
+    @@media(max-width: 768px) {
+        .menu-button {
+            display: inline-block;
+        }
+        
+        .page-header {
+            padding-left: 16px;
+            padding-right: 16px;
+        }
     }
 </style>
 
@@ -29,6 +57,9 @@ else
     [CascadingParameter]
     public AuthenticationState AuthenticationState { get; set; }
 
+    [Parameter]
+    public EventCallback OnMenuClicked { get; set; }
+    
     protected override void OnInitialized()
     {
         Layout.OnUpdate += OnUpdate;
@@ -41,12 +72,6 @@ else
     // InvokeAsync(StateHasChanged);
     }
 
-    public void Dispose()
-    {
-        Layout.OnUpdate -= OnUpdate;
-        NavigationManager.LocationChanged -= OnNavigation;
-    }
-
     private void OnUpdate()
     {
         if (!string.IsNullOrEmpty(Layout.Title))
@@ -55,6 +80,17 @@ else
             _subtitle = Layout.Subtitle ?? "";
         }
         InvokeAsync(StateHasChanged);
+    }
+
+    private Task OnMenuClick()
+    {
+        return OnMenuClicked.InvokeAsync();
+    }
+
+    public void Dispose()
+    {
+        Layout.OnUpdate -= OnUpdate;
+        NavigationManager.LocationChanged -= OnNavigation;
     }
 
 }
