@@ -1,13 +1,27 @@
 ﻿@page "/about"
-
+@using BlazorPro.BlazorSize
 @{
     Layout.Title = "About";
 }
 
 <h3>About</h3>
 
-<a href="/account">Go to account</a>
+@if (IsSmall)
+{
+    <div>small</div>
+}
+else
+{
+    <div>big</div>
+}
+
+<MediaQuery Media="@Breakpoints.SmallDown" @bind-Matches="IsSmall" />
 
 @code {
-    
+    bool IsSmall = false;
+
+    protected override async Task OnInitializedAsync()
+    {
+    }
+
 }

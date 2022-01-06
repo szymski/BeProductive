@@ -13,7 +13,7 @@
 
 <PageTitle>Goal list</PageTitle>
 
-<div>
+<div style="display: flex; min-height: 100%">
     <Layout Style="min-height: 100%">
         <Content Class=@($"list-content {(SelectedGoal is not null ? "list-content--goal-selected" : "")}")>
             @if (_goals.Count == 0)
