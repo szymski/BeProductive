@@ -3,17 +3,11 @@
 @inject SettingsService SettingsService
 
 <div>
-    <Drawer Closable="true" Visible="_isOpen" WrapClassName="testb" Placement="right" Title=@("Settings") OnClose="@(() => _isOpen = false)">
+    <Drawer Closable="true" Visible="_isOpen" WrapClassName="settings-drawer" Placement="right" Title=@("Settings") OnClose="@(() => _isOpen = false)">
         @SwitchEntry("Dark mode", _isDarkTheme, OnThemeChange)
         @SwitchEntry("Enable sounds", _soundsEnabled, OnSoundsEnabledChange)
     </Drawer>
 </div>
-
-<style>
-    .testa {
-        min-width: 350px;
-    }
-</style>
 
 @code {
 
