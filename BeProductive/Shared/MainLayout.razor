@@ -10,22 +10,24 @@
             <Sidebar @ref="_sidebar"/>
 
             <Layout Class="content-wrapper" Style="min-height: 100vh">
-                <ContextPageHeader OnMenuClicked="OnMenuClicked"/>
+                <ContextPageHeader @ref="_pageHeader" OnMenuClicked="OnMenuClicked"/>
 
-                <Content Class="content">
-                    @{
-                        RenderFragment? body;
-                    }
-                    <ErrorBoundary @ref="_errorBoundary">
-                        <ChildContent>
-                            @Body
-                        </ChildContent>
-                        <ErrorContent Context="error">
-                            <ErrorDisplay Exception="@error"/>
-                            @Body
-                        </ErrorContent>
-                    </ErrorBoundary>
-                </Content>
+                <CascadingValue Value="@_pageHeader">
+                    <Content Class="content">
+                        @{
+                            RenderFragment? body;
+                        }
+                        <ErrorBoundary @ref="_errorBoundary">
+                            <ChildContent>
+                                @Body
+                            </ChildContent>
+                            <ErrorContent Context="error">
+                                <ErrorDisplay Exception="@error"/>
+                                @Body
+                            </ErrorContent>
+                        </ErrorBoundary>
+                    </Content>
+                </CascadingValue>
 
                 <Footer Class="layout-footer" style="box-sizing: border-box;">
                     <Text Disabled>Copyright Szymon Jankowski © @(DateTime.Today.Year)</Text>
@@ -38,6 +40,7 @@
 
 @code {
 
+    private ContextPageHeader _pageHeader;
     private Sidebar _sidebar;
     private SettingsDrawer _settingsDrawer;
     private ErrorBoundary _errorBoundary;
@@ -48,7 +51,7 @@
 
         NotificationService.Config(new()
         {
-            // Placement = NotificationPlacement.BottomLeft,
+    // Placement = NotificationPlacement.BottomLeft,
             Top = 12,
         });
     }
@@ -65,7 +68,7 @@
 
     private async Task OnMenuClicked()
     {
-        _sidebar.ToggleMenu();        
+        _sidebar.ToggleMenu();
     }
 
     public void Dispose()

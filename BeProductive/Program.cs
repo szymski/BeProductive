@@ -11,6 +11,7 @@ using BeProductive.Modules.Timer.Infrastructure;
 using BeProductive.Modules.Users.Domain;
 using BeProductive.Modules.Users.Infrastructure;
 using Blazored.LocalStorage;
+using BlazorPro.BlazorSize;
 using Microsoft.AspNetCore.Identity;
 using Plk.Blazor.DragDrop;
 using Serilog;
@@ -46,6 +47,7 @@ builder.Services.AddServerSideBlazor();
 builder.Services.AddAntDesign();
 builder.Services.AddBlazorDragDrop();
 builder.Services.AddBlazoredLocalStorage();
+builder.Services.AddMediaQueryService();
 
 builder.Services.AddCommonModule(options =>
 {

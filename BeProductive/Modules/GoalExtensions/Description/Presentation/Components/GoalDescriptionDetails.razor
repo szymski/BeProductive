@@ -7,20 +7,21 @@
 </Divider>
 
 <div style="padding: 0 24px; text-align: center">
-        <div class="goal-description">
-            <EditableText
-                WrapperStyle="width: 100%"
-                Placeholder="Description"
-                Disabled=@(!Goal.HasDescription())
-                InitialText=@(Goal.GoalDescription?.Description ?? "")
-                Text=@(Goal.GoalDescription?.Description ?? "No description")
-                EditButtonStyle="position: absolute"
-                MinLength=@(Goal.HasDescription() ? 0 : 1)
-                ShowDeleteButton="@Goal.HasDescription()"
-                Loading="@_isLoading"
-                TextChanged="UpdateDescription"
-                OnDelete="@(() => UpdateDescription(null))"/>
-        </div>
+    <div class="goal-description">
+        @* TODO: Edit icon overlaps text *@
+        <EditableText
+            WrapperStyle="width: 100%"
+            Placeholder="Description"
+            Disabled=@(!Goal.HasDescription())
+            InitialText=@(Goal.GoalDescription?.Description ?? "")
+            Text=@(Goal.GoalDescription?.Description ?? "No description")
+            EditButtonStyle="position: absolute"
+            MinLength=@(Goal.HasDescription() ? 0 : 1)
+            ShowDeleteButton="@Goal.HasDescription()"
+            Loading="@_isLoading"
+            TextChanged="UpdateDescription"
+            OnDelete="@(() => UpdateDescription(null))"/>
+    </div>
 </div>
 
 <style>

@@ -9,8 +9,8 @@
                 Type="@ButtonType.Text"
                 Size="@ButtonSize.Large"
                 Shape="@ButtonShape.Circle"
-                Icon="@IconType.Outline.MenuUnfold"
-                OnClick="OnMenuClick"/>
+                Icon="@(_showBackButton ? IconType.Outline.ArrowLeft : IconType.Outline.MenuUnfold)"
+                OnClick="OnButtonClick"/>
             @_title
         </TitleTemplate>
     </PageHeader>
@@ -35,6 +35,11 @@ else
     
     .menu-button {
         display: none;
+        margin-right: 0.25rem;
+    }
+    
+    .menu-button .anticon {
+        transform: scale(1.5);
     }
     
     @@media(max-width: 768px) {
@@ -53,13 +58,16 @@ else
 
     private string _title = "";
     private string _subtitle = "";
+    private bool _showBackButton = false;
 
     [CascadingParameter]
     public AuthenticationState AuthenticationState { get; set; }
 
     [Parameter]
     public EventCallback OnMenuClicked { get; set; }
-    
+
+    public event Action? OnBackButtonClicked;
+
     protected override void OnInitialized()
     {
         Layout.OnUpdate += OnUpdate;
@@ -68,8 +76,6 @@ else
 
     private void OnNavigation(object? sender, LocationChangedEventArgs e)
     {
-    // Layout.Reset();
-    // InvokeAsync(StateHasChanged);
     }
 
     private void OnUpdate()
@@ -78,13 +84,22 @@ else
         {
             _title = Layout.Title ?? "";
             _subtitle = Layout.Subtitle ?? "";
+            _showBackButton = Layout.ShowBackButton;
         }
         InvokeAsync(StateHasChanged);
     }
 
-    private Task OnMenuClick()
+    private Task OnButtonClick()
     {
-        return OnMenuClicked.InvokeAsync();
+        if (_showBackButton)
+        {
+            OnBackButtonClicked?.Invoke();
+            return Task.CompletedTask;
+        }
+        else
+        {
+            return OnMenuClicked.InvokeAsync();
+        }
     }
 
     public void Dispose()

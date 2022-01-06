@@ -1,0 +1,31 @@
+﻿::deep .sider {
+    margin-left: 1rem;
+    background: transparent;
+}
+
+::deep .list-content {
+}
+
+::deep .list-content--goal-selected {
+}
+
+@media(max-width: 768px) {
+    ::deep .list-content {
+    }
+
+    ::deep .list-content--goal-selected {
+        display: none;
+    }
+    
+    ::deep .sider {
+        margin-left: 0;
+        flex: unset !important;
+        width: unset  !important;;
+        max-width: unset !important;
+        min-width: unset !important;
+    }
+    
+    ::deep .goal-details {
+        min-height: unset;
+    }
+}

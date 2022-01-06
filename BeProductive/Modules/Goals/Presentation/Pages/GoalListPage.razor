@@ -2,57 +2,85 @@
 @page "/goal"
 @using Microsoft.AspNetCore.WebUtilities
 @using BeProductive.Modules.Goals.Domain
+@using BlazorPro.BlazorSize
+@using Microsoft.AspNetCore.Components
 @inject NavigationManager NavigationManager
 @inject GoalService GoalService
-
+@implements IDisposable
 @{
     Layout.Title = "Goals";
 }
 
 <PageTitle>Goal list</PageTitle>
 
-<Layout Style="min-height: 100%">
-    <Content>
-        @if (_goals.Count == 0)
-        {
-            <Empty Description=@("You have no goals defined. Add the first one by clicking the button below.")/>
-        }
+<div>
+    <Layout Style="min-height: 100%">
+        <Content Class=@($"list-content {(SelectedGoal is not null ? "list-content--goal-selected" : "")}")>
+            @if (_goals.Count == 0)
+            {
+                <Empty Description=@("You have no goals defined. Add the first one by clicking the button below.")/>
+            }
 
-        <Dropzone Items="_goals" DragEnd="DragEnd">
-            <GoalContext @key="@context" @ref="@context.Context" Goal="@context.Goal">
-                <GoalListEntry
-                    OnClick="() => OpenGoalDetails(context.Context)"
-                    Selected="@(context == SelectedGoal)"/>
-            </GoalContext>
-        </Dropzone>
+            <Dropzone Items="_goals" DragEnd="DragEnd">
+                <GoalContext @key="@context" @ref="@context.Context" Goal="@context.Goal">
+                    <GoalListEntry
+                        OnClick="() => OpenGoalDetails(context.Context)"
+                        Selected="@(context == SelectedGoal)"/>
+                </GoalContext>
+            </Dropzone>
 
-        <div>
-            <Button Size="large" Block Type="@ButtonType.Link" Icon="@IconType.Outline.Plus" @onclick="NavigateToAddGoal">
-                Add goal
-            </Button>
-        </div>
-
-        @if (HostEnvironment.IsDevelopment())
-        {
             <div>
-                <Button Size="large" Block Type="@ButtonType.Link" Icon="@IconType.Outline.Thunderbolt" OnClick="SeedGoal">
-                    Seed
+                <Button Size="large" Block Type="@ButtonType.Link" Icon="@IconType.Outline.Plus" @onclick="NavigateToAddGoal">
+                    Add goal
                 </Button>
             </div>
-        }
-    </Content>
 
-    <Sider Style="margin-left: 1rem; background: transparent" Width="400" CollapsedWidth="0" Collapsed="@_isDetailsCollapsed">
-        @if (SelectedGoal is not null)
-        {
-            <CascadingValue Value="@SelectedGoal.Context">
-                <CascadingValue Value="@SelectedGoal.Goal">
-                    <GoalDetails @ref="@_goalDetails"/>
+            @if (HostEnvironment.IsDevelopment())
+            {
+                <div>
+                    <Button Size="large" Block Type="@ButtonType.Link" Icon="@IconType.Outline.Thunderbolt" OnClick="SeedGoal">
+                        Seed
+                    </Button>
+                </div>
+            }
+        </Content>
+
+        <Sider Class="sider" Width="400" CollapsedWidth="0" Collapsed="@_isDetailsCollapsed">
+            @if (SelectedGoal is not null)
+            {
+                @if (_isSmall)
+                {
+                    Layout.Title = "Goal details";
+                    Layout.ShowBackButton = true;
+
+                    @*
+                    <div style="margin-bottom: 0.5rem">
+                        <GoalContext Goal="@SelectedGoal.Goal">
+                            <GoalListEntry/>
+                        </GoalContext>
+                    </div>
+                    *@
+
+                    <div style="margin-bottom: 0.5rem">
+                        <CascadingValue Value="@SelectedGoal.Context">
+                            <CascadingValue Value="@SelectedGoal.Goal">
+                                <GoalListEntry/>
+                            </CascadingValue>
+                        </CascadingValue>
+                    </div>
+                }
+
+                <CascadingValue Value="@SelectedGoal.Context">
+                    <CascadingValue Value="@SelectedGoal.Goal">
+                        <GoalDetails @ref="@_goalDetails"/>
+                    </CascadingValue>
                 </CascadingValue>
-            </CascadingValue>
-        }
-    </Sider>
-</Layout>
+            }
+        </Sider>
+    </Layout>
+</div>
+
+<MediaQuery Media="@Breakpoints.SmallDown" @bind-Matches="_isSmall"/>
 
 @* TODO: Move to scoped css *@
 <style>
@@ -76,6 +104,9 @@
     [SupplyParameterFromQuery]
     public int? GoalId { get; set; }
 
+    [CascadingParameter]
+    public ContextPageHeader PageHeader { get; set; }
+
     private GoalEntry? SelectedGoal { get; set; }
 
     private GoalDetails? _goalDetails;
@@ -83,12 +114,15 @@
     private List<GoalEntry> _goals = new();
 
     private bool _isDetailsCollapsed = true;
+    private bool _isSmall = false;
 
     protected override async Task OnInitializedAsync()
     {
         _goals = (await GoalService.GetGoals())
             .Select(goal => new GoalEntry(goal))
             .ToList();
+
+        PageHeader.OnBackButtonClicked += UnselectGoal;
     }
 
     protected override void OnParametersSet()
@@ -100,8 +134,14 @@
         }
         else
         {
+            SelectedGoal = null;
             _isDetailsCollapsed = true;
         }
+    }
+
+    private void UnselectGoal()
+    {
+        NavigationManager.NavigateTo(Url);
     }
 
     private void OpenGoalDetails(GoalContext context)
@@ -150,6 +190,11 @@
     private async void DragEnd(GoalEntry _)
     {
         await ReorderEntries();
+    }
+
+    public void Dispose()
+    {
+        PageHeader.OnBackButtonClicked -= UnselectGoal;
     }
 
 }

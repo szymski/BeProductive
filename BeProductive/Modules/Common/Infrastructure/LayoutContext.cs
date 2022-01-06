@@ -5,7 +5,11 @@ public class LayoutContext
     public string? Title
     {
         get => _title;
-        set => SetField(ref _title, value);
+        set
+        {
+            SetField(ref _title, value);
+            SetField(ref _showBackButton, false);
+        }
     }
 
     public string? Subtitle
@@ -13,9 +17,16 @@ public class LayoutContext
         get => _subtitle;
         set => SetField(ref _subtitle, value);
     }
+    
+    public bool ShowBackButton
+    {
+        get => _showBackButton;
+        set => SetField(ref _showBackButton, value);
+    }
 
     private string? _subtitle = "";
     private string _title = "";
+    private bool _showBackButton = false;
 
     public event Action OnUpdate;
 

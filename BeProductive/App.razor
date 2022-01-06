@@ -1,6 +1,7 @@
 ﻿@using BeProductive.Modules.Users.Presentation.Components
 @using BeProductive.Modules.Users.Presentation.Layouts
 @using BeProductive.Modules.Settings.Infrastructure
+@using BlazorPro.BlazorSize
 @implements IDisposable
 @inject MessageService MessageService
 @inject SettingsService SettingsService
@@ -13,33 +14,35 @@
         </HeadContent>
     }
 
-    <CascadingAuthenticationState>
-        <AuthorizeView>
-            <Authorized Context="state">
-                <Router AppAssembly="@typeof(App).Assembly">
-                    <Found Context="routeData">
-                        @* <RouteView RouteData="@routeData" IconLayout="@typeof(MainLayout)"/> *@
-                        <AuthorizeRouteView RouteData="@routeData" DefaultLayout="@typeof(MainLayout)">
-                            <NotAuthorized>
-                                Not authorized
-                            </NotAuthorized>
-                        </AuthorizeRouteView>
-                        <FocusOnNavigate RouteData="@routeData" Selector="h1"/>
-                    </Found>
-                    <NotFound>
-                        <LayoutView Layout="@typeof(MainLayout)">
-                            <NotFoundPage/>
-                        </LayoutView>
-                    </NotFound>
-                </Router>
-            </Authorized>
-            <NotAuthorized>
-                <LayoutView Layout="typeof(NotAuthorizedLayout)">
-                    <LoginComponent/>
-                </LayoutView>
-            </NotAuthorized>
-        </AuthorizeView>
-    </CascadingAuthenticationState>
+    <MediaQueryList>
+        <CascadingAuthenticationState>
+            <AuthorizeView>
+                <Authorized Context="state">
+                    <Router AppAssembly="@typeof(App).Assembly">
+                        <Found Context="routeData">
+                            @* <RouteView RouteData="@routeData" IconLayout="@typeof(MainLayout)"/> *@
+                            <AuthorizeRouteView RouteData="@routeData" DefaultLayout="@typeof(MainLayout)">
+                                <NotAuthorized>
+                                    Not authorized
+                                </NotAuthorized>
+                            </AuthorizeRouteView>
+                            <FocusOnNavigate RouteData="@routeData" Selector="h1"/>
+                        </Found>
+                        <NotFound>
+                            <LayoutView Layout="@typeof(MainLayout)">
+                                <NotFoundPage/>
+                            </LayoutView>
+                        </NotFound>
+                    </Router>
+                </Authorized>
+                <NotAuthorized>
+                    <LayoutView Layout="typeof(NotAuthorizedLayout)">
+                        <LoginComponent/>
+                    </LayoutView>
+                </NotAuthorized>
+            </AuthorizeView>
+        </CascadingAuthenticationState>
+    </MediaQueryList>
 
     <AntContainer/>
 </div>

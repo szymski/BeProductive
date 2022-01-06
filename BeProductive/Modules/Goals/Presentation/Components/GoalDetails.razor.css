@@ -5,8 +5,13 @@
     height: 0;
     overflow: auto;
     overflow-x: hidden;
-    /*width: 400px;*/
     width: auto;
+}
+
+@media (max-width: 768px) {
+    .goal-details {
+        height: auto;
+    }
 }
 
 .goal-details ::deep .card {
