@@ -14,7 +14,15 @@
             @Goal.Name
         </TitleTemplate>
         <Extra>
-            <a @onclick="NavigateToEditGoalPage">Edit</a>
+            @* <a @onclick="NavigateToEditGoalPage">Edit</a> *@
+            <Popover Content="Edit goal" Placement="Placement.Right">
+                <Button Type="@ButtonType.Text"
+                        Shape="@ButtonShape.Circle"
+                        Icon="@IconType.Outline.Edit"
+                        Size="@ButtonSize.Large"
+                        Style="margin-right: -8px"
+                        OnClick="NavigateToEditGoalPage"/>
+            </Popover>
         </Extra>
         <Body>
             <Card Size="@AntSizeLDSType.Small" Style="border-bottom: none">

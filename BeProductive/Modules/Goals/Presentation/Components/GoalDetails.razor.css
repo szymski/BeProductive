@@ -24,3 +24,7 @@
 .goal-details ::deep .card .ant-card-actions:empty {
     display: none;
 }
+
+.goal-details ::deep .ant-card-extra {
+    padding: 0;
+}

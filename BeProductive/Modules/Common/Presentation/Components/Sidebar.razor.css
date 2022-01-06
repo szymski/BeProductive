@@ -29,12 +29,19 @@
         display: block;
         position: absolute;
         right: 100%;
-        margin-right: 4px;
+    }
+    
+    ::deep .sidebar-menu-button .anticon {
+        transform: scale(1.5);
     }
 
     .logo-link {
         margin-left: 28px;
         position: relative;
+    }
+    
+    .logo-link h1 {
+        margin-left: 4px;
     }
 }
 

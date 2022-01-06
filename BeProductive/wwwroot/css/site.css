@@ -55,3 +55,8 @@ html, body {
         font-size: 18px;
     }
 }
+
+.ant-page-header-back .anticon {
+    transform: scale(1.5);
+    /*background: orangered;*/
+}
