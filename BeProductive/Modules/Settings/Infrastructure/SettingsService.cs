@@ -1,22 +1,23 @@
-﻿using System.Text.Json;
-using Blazored.LocalStorage;
-using Dapper;
+﻿using Blazored.LocalStorage;
 
 namespace BeProductive.Modules.Settings.Infrastructure;
 
-public class SettingsService
-{
+public class SettingsService {
     private const string SettingsStorageKey = "settings";
-    
+    private const string ThemeCookieName = "theme";
+
+    private readonly IHttpContextAccessor _httpContextAccessor;
     private readonly ILocalStorageService _localStorage;
     private readonly ILogger<SettingsService> _logger;
 
     public SettingsService(
         ILocalStorageService localStorage,
-        ILogger<SettingsService> logger)
+        ILogger<SettingsService> logger,
+        IHttpContextAccessor httpContextAccessor)
     {
         _localStorage = localStorage;
         _logger = logger;
+        _httpContextAccessor = httpContextAccessor;
     }
 
     public bool IsDarkTheme { get; private set; }
@@ -58,12 +59,12 @@ public class SettingsService
     public async ValueTask LoadSettings()
     {
         _logger.LogInformation("Loading settings from local storage");
-        
+
         var settings = await _localStorage.GetItemAsync<Domain.Settings?>(SettingsStorageKey);
         if (settings is not null)
         {
             _logger.LogDebug("Settings loaded: {@Settings}", settings);
-            
+
             if (IsDarkTheme != settings.DarkThemeEnabled)
             {
                 IsDarkTheme = settings.DarkThemeEnabled;
@@ -71,6 +72,21 @@ public class SettingsService
             }
 
             SoundsEnabled = settings.SoundsEnabled;
+        }
+        
+        // TODO: Save theme to cookie - like AuthService
+    }
+
+    public void LoadCookiesSync()
+    {
+        if (_httpContextAccessor?.HttpContext?.Request.Cookies is {} cookies)
+        {
+            if (cookies.TryGetValue(ThemeCookieName, out var theme))
+            {
+                IsDarkTheme = theme == "dark";
+                ThemeChanged?.Invoke(this, Theme);
+                _logger.LogWarning("Loaded theme from cookies: {Theme}", cookies[ThemeCookieName]);
+            }
         }
     }
 }

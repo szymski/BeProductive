@@ -52,6 +52,7 @@
 
     protected override void OnInitialized()
     {
+        SettingsService.LoadCookiesSync();
         _theme = SettingsService.Theme;
         SettingsService.ThemeChanged += OnThemeChanged;
         _ = SettingsService.LoadSettings();
