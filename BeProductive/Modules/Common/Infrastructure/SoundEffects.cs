@@ -6,6 +6,7 @@ public enum SoundEffect
     SelectGoalFailure,
     SelectGoalUncheck,
     SelectGoalEmergency,
+    SelectGoalNotApplicable,
     Select,
     Cancel,
     

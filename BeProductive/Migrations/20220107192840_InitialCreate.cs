@@ -11,6 +11,8 @@ namespace BeProductive.Migrations
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
+            return;
+            
             migrationBuilder.AlterDatabase()
                 .Annotation("Npgsql:Enum:goal_state", "unknown,Success,Failure,Emergency");
 
@@ -340,6 +342,8 @@ namespace BeProductive.Migrations
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
+            return;
+            
             migrationBuilder.DropTable(
                 name: "AspNetRoleClaims");
 

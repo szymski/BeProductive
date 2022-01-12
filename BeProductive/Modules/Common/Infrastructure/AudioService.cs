@@ -24,6 +24,7 @@ public class AudioService
             SoundEffect.SelectGoalFailure => "/sounds/Ding-Error-Pitch-Drop-01.wav",
             SoundEffect.SelectGoalUncheck => "/sounds/Pop-High-Round-Short-01.wav",
             SoundEffect.SelectGoalEmergency => "/sounds/state-change_confirm-down.ogg",
+            SoundEffect.SelectGoalNotApplicable => "/sounds/timer/pause.wav",
             SoundEffect.Select or SoundEffect.Cancel => "/sounds/navigation-cancel.ogg",
             SoundEffect.TimerStart => "/sounds/timer/start.wav",
             SoundEffect.TimerPause => "/sounds/timer/pause.wav",

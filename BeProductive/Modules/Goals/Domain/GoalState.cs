@@ -11,4 +11,6 @@ public enum GoalState
     Failure,
     [PgName(nameof(Emergency))]
     Emergency,
+    [PgName(nameof(NotApplicable))]
+    NotApplicable,
 }

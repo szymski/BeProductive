@@ -10,10 +10,19 @@ namespace BeProductive.Modules.Common.Persistence;
 
 public static class DbUtils
 {
-    public static async Task InitializeDb(AppContext context, UserManager<User> userManager)
+    public static async Task InitializeDb(AppContext context, UserManager<User> userManager, bool isDevelopment)
     {
         CreateSchema(context);
-        await context.Database.EnsureCreatedAsync();
+        if (isDevelopment)
+        {
+            Log.Information("Development environment - Creating database without migrations...");
+            await context.Database.EnsureCreatedAsync();
+        }
+        else
+        {
+            Log.Information("Production environment - Applying migrations...");
+            await context.Database.MigrateAsync();
+        }
         SeedDb(context, userManager);
     }
 

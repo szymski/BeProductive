@@ -17,20 +17,21 @@ public class GoalStatsService
         _logger = logger;
     }
 
-    private const string GetCurrentStreakSql = @"
-WITH last_failed AS (
-SELECT ""Day""
-FROM ""GoalDayStates"" ls
+    private const string GetCurrentStreakSql = @"WITH last_failed AS (
+    SELECT ""Day""
+    FROM ""GoalDayStates"" ls
     WHERE ls.""GoalId"" = @GoalId
-    AND ls.""State"" <> 'Success'
+        AND ls.""State"" <> 'Success'
+        AND ls.""State"" <> 'NotApplicable'
     ORDER BY ls.""Day"" DESC
     LIMIT 1
 ),
 states AS (
     SELECT *
-        FROM ""GoalDayStates"" s
+    FROM ""GoalDayStates"" s
     WHERE s.""GoalId"" = @GoalId
         AND ((SELECT COUNT(""Day"") FROM last_failed) = 0 OR S.""Day"" > (SELECT ""Day"" FROM last_failed))
+        AND s.""State"" <> 'NotApplicable'
     ORDER BY s.""Day"" DESC
 )
 SELECT count(*)

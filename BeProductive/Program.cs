@@ -13,6 +13,7 @@ using BeProductive.Modules.Users.Infrastructure;
 using Blazored.LocalStorage;
 using BlazorPro.BlazorSize;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using Plk.Blazor.DragDrop;
 using Serilog;
 using Serilog.Events;
@@ -66,7 +67,7 @@ var app = builder.Build();
 await using var scope = app.Services.GetRequiredService<IServiceScopeFactory>().CreateAsyncScope();
 var context = scope.ServiceProvider.GetRequiredService<AppContext>();
 var userManager = scope.ServiceProvider.GetRequiredService<UserManager<User>>();
-await DbUtils.InitializeDb(context, userManager);
+await DbUtils.InitializeDb(context, userManager, app.Environment.IsDevelopment());
 
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())

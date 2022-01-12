@@ -78,6 +78,7 @@
             GoalState.Success => SoundEffect.SelectGoalSuccess,
             GoalState.Failure => SoundEffect.SelectGoalFailure,
             GoalState.Emergency => SoundEffect.SelectGoalEmergency,
+            GoalState.NotApplicable => SoundEffect.SelectGoalNotApplicable,
             _ => throw new ArgumentOutOfRangeException(nameof(state), state, null)
             };
 

@@ -2,6 +2,7 @@
     --goal-color-success: #4dd020;
     --goal-color-failure: #e51818;
     --goal-color-emergency: #f1b61f;
+    --goal-color-not-applicable: #888888;
     --goal-color-unknown: #ffffff;
 
     --goal-glow-color: orange;

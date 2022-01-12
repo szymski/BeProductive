@@ -1,7 +1,7 @@
 ﻿@page "/components"
 @using BeProductive.Modules.Goals.Domain
 @using BeProductive.Modules.Goals.Presentation.Models
-@using DateHelper = BeProductive.Modules.Common.Helpers.DateHelper
+@using DateHelper=BeProductive.Modules.Common.Helpers.DateHelper
 @inject IJSRuntime JS
 
 @{
@@ -27,6 +27,9 @@
     </SpaceItem>
     <SpaceItem>
         <GoalStateSelector State="GoalState.Emergency"/>
+    </SpaceItem>
+    <SpaceItem>
+        <GoalStateSelector State="GoalState.NotApplicable"/>
     </SpaceItem>
 </Space>
 

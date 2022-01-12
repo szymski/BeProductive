@@ -88,13 +88,14 @@
         await StateChanged.InvokeAsync(state);
     }
 
-    private static string StateToClass(GoalState state)
+    private static string StateToClass(GoalState state) 
         => state switch
         {
             GoalState.Unknown => "unknown",
             GoalState.Success => "success",
             GoalState.Failure => "failure",
             GoalState.Emergency => "emergency",
+            GoalState.NotApplicable => "not-applicable",
             _ => "error"
             };
 
