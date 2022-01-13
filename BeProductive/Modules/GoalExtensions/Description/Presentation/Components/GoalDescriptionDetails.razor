@@ -11,12 +11,13 @@
         @* TODO: Delete confirmation *@
         @* TODO: Edit icon overlaps text *@
         <EditableText
+            Style="position: relative; display: inline-flex"
             WrapperStyle="width: 100%"
             Placeholder="Description"
             Disabled=@(!Goal.HasDescription())
             InitialText=@(Goal.GoalDescription?.Description ?? "")
             Text=@(Goal.GoalDescription?.Description ?? "No description")
-            EditButtonStyle="position: absolute"
+            EditButtonStyle="position: absolute; left: 100%; margin-bottom: 0px"
             MinLength=@(Goal.HasDescription() ? 0 : 1)
             ShowDeleteButton="@Goal.HasDescription()"
             Loading="@_isLoading"

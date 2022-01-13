@@ -11,11 +11,11 @@
     {
         @StateButton(GoalState.Emergency, "Emergency", Color.Orange5)
     }
+    @StateButton(GoalState.NotApplicable, "N/A", Color.Gray8)
     @if (State != GoalState.Unknown)
     {
         @StateButton(GoalState.Unknown, "Uncheck", Color.None, ButtonType.Default)
     }
-    @StateButton(GoalState.NotApplicable, "N/A", Color.Gray8)
 </Space>
 
 @code {

@@ -1,6 +1,6 @@
 ﻿@if (!Editing)
 {
-    <div style="display: inline-flex; align-items: center">
+    <div style=@($"display: inline-flex; align-items: center; {Style}")>
         <Text @attributes="@Attributes">
             @Text
         </Text>
@@ -98,6 +98,9 @@ else
     [Parameter]
     public string InputStyle { get; set; } = "";
 
+    [Parameter]
+    public string Style { get; set; } = "";
+    
     [Parameter]
     public string WrapperStyle { get; set; } = "";
 

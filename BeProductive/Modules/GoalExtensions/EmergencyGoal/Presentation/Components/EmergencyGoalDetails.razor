@@ -11,10 +11,11 @@
         // TODO: Delete button confirmation
         <div class="emergency-goal">
             <EditableText
+                Style="position: relative; display: inline-flex"
                 WrapperStyle="width: 100%"
                 Placeholder="Emergency goal"
                 Text="@Goal.EmergencyGoal.Title"
-                EditButtonStyle="position: absolute"
+                EditButtonStyle="position: absolute; left: 100%; margin-bottom: 0px"
                 ShowDeleteButton
                 Loading="@_isLoading"
                 TextChanged="UpdateEmergencyGoal"
