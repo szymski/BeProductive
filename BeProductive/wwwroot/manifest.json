@@ -3,7 +3,7 @@
   "short_name": "beProductive",
   "start_url": "./",
   "display": "standalone",
-  "background_color": "#ffffff",
+  "background_color": "#288DFF",
   "theme_color": "#288DFF",
   "prefer_related_applications": false,
   "icons": [

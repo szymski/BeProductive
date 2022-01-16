@@ -21,7 +21,7 @@
 
 ### UI Improvements:
 - ✔ ~~Goal state selector animation when waiting for states~~
-- Responsiveness 👹
+- ✔ ~~Responsiveness 👹~~
 
 ### Goal Gamification:
 - ✔ ~~Current streak~~

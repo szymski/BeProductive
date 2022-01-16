@@ -7,12 +7,13 @@
 @inject SettingsService SettingsService
 
 <div data-theme="@_theme">
-    @if (SettingsService.IsDarkTheme)
-    {
-        <HeadContent>
+    <HeadContent>
+        @if (SettingsService.IsDarkTheme)
+        {
             <link href="_content/AntDesign/css/ant-design-blazor.dark.css" rel="stylesheet"/>
-        </HeadContent>
-    }
+        }
+        <meta name="theme-color" content=@(SettingsService.IsDarkTheme ? "#141414" : "#ffffff")/>
+    </HeadContent>
 
     <MediaQueryList>
         <CascadingAuthenticationState>

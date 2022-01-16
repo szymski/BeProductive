@@ -21,9 +21,16 @@
             </div>
         </div>
         <Menu Class="menu" Mode="@MenuMode.Inline">
-            @foreach (var (name, route) in MenuItems.Items)
+            @foreach (var (name, route, icon) in MenuItems.Items)
             {
-                <MenuItem RouterLink="@route" RouterMatch="NavLinkMatch.Prefix" Title="@name"/>
+                <MenuItem RouterLink="@route" RouterMatch="NavLinkMatch.Prefix" Title="@name" Icon="@icon">
+                    <IconTemplate>
+                        @if (icon is not null)
+                        {
+                            <Icon Type="@icon" Width="20px" Height="20px"/>
+                        }
+                    </IconTemplate>
+                </MenuItem>
             }
         </Menu>
         <div class="footer">

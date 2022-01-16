@@ -10,4 +10,17 @@
 
 ::deep .card {
     align-content: center;
+    /*z-index: 1;*/
 }
+
+/*::deep .card * {*/
+/*    z-index: 10;*/
+/*}*/
+
+/*::deep .card::after {*/
+/*    position: absolute;*/
+/*    inset: 0;*/
+/*    !*background: linear-gradient(to bottom, transparent 50%, rgba(100, 196, 43, 0.2) 100%);*!*/
+/*    content: '';*/
+/*    z-index: 2;*/
+/*}*/

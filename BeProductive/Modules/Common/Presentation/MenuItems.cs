@@ -1,15 +1,17 @@
-﻿namespace BeProductive.Modules.Common.Presentation; 
+﻿using AntDesign;
 
-public record MenuItem(string Name, string Route);
+namespace BeProductive.Modules.Common.Presentation; 
+
+public record MyMenuItem(string Name, string Route, string? Icon = null);
 
 public static class MenuItems {
-    public static readonly List<MenuItem> Items = new()
+    public static readonly List<MyMenuItem> Items = new()
     {
-        new("Goals", "/"),
-        new("Rituals", "/rituals"),
-        new("Timer", "/timer"),
-        new("To do", "/todo"),
-        new("Components", "/components"),
-        new("Account", "/account"),
+        new("Goals", "/", IconType.Outline.UnorderedList),
+        new("Rituals", "/rituals", IconType.Outline.Bell),
+        new("Timer", "/timer", IconType.Fill.ClockCircle),
+        new("To do", "/todo", IconType.Outline.Check),
+        new("Components", "/components", IconType.Fill.Layout),
+        new("Account", "/account", IconType.Outline.User),
     };   
 }
