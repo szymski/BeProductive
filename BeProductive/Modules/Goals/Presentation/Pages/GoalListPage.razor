@@ -30,7 +30,7 @@
             </Dropzone>
 
             <div>
-                <Button Size="large" Block Type="@ButtonType.Link" Icon="@IconType.Outline.Plus" @onclick="NavigateToAddGoal">
+                <Button Size="large" Block Type="@ButtonType.Text" Icon="@IconType.Outline.Plus" @onclick="NavigateToAddGoal">
                     Add goal
                 </Button>
             </div>
@@ -38,7 +38,7 @@
             @if (HostEnvironment.IsDevelopment())
             {
                 <div>
-                    <Button Size="large" Block Type="@ButtonType.Link" Icon="@IconType.Outline.Thunderbolt" OnClick="SeedGoal">
+                    <Button Size="large" Block Type="@ButtonType.Text" Icon="@IconType.Outline.Thunderbolt" OnClick="SeedGoal">
                         Seed
                     </Button>
                 </div>

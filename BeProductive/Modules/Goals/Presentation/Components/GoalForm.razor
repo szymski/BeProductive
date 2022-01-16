@@ -73,8 +73,7 @@
 
 @code {
 
-    public enum GoalFormType
-    {
+    public enum GoalFormType {
         New,
         Edit,
     }
@@ -99,17 +98,43 @@
 
     private CheckboxOption[] _dayOptions =
     {
-        new() { Value = "all", Label = "Everyday" },
-        new() { Value = "monday", Label = "Monday" },
-        new() { Value = "tuesday", Label = "Tuesday" },
-        new() { Value = "wednesday", Label = "Wednesday" },
-        new() { Value = "thursday", Label = "Thursday" },
-        new() { Value = "friday", Label = "Friday" },
-        new() { Value = "saturday", Label = "Saturday" },
-        new() { Value = "sunday", Label = "Sunday" },
+        new()
+        {
+            Value = "all", Label = "Everyday"
+        },
+        new()
+        {
+            Value = "monday", Label = "Monday"
+        },
+        new()
+        {
+            Value = "tuesday", Label = "Tuesday"
+        },
+        new()
+        {
+            Value = "wednesday", Label = "Wednesday"
+        },
+        new()
+        {
+            Value = "thursday", Label = "Thursday"
+        },
+        new()
+        {
+            Value = "friday", Label = "Friday"
+        },
+        new()
+        {
+            Value = "saturday", Label = "Saturday"
+        },
+        new()
+        {
+            Value = "sunday", Label = "Sunday"
+        },
     };
 
-    private string[] _days = { };
+    private string[] _days =
+    {
+    };
 
     private string[] Days
     {
@@ -128,14 +153,19 @@
 
         if (_days.Contains("all") && !values.Contains("all"))
         {
-            _days = new string[] { };
+            _days = new string[]
+            {
+            };
         }
         else
         {
             var selectedAllDays = daysOfWeek.All(values.Contains) || (values.Contains("all") && !_days.Contains("all"));
             if (selectedAllDays)
             {
-                _days = daysOfWeek.Concat(new[] { "all" }).ToArray();
+                _days = daysOfWeek.Concat(new[]
+                {
+                    "all"
+                }).ToArray();
             }
             else
             {

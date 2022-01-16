@@ -24,14 +24,14 @@
 else
 {
     <div>
-        <Button Size="large" Block Type="@ButtonType.Link" Icon="@IconType.Outline.Plus" @onclick="StartAddingEntry">
+        <Button Size="large" Block Type="@ButtonType.Text" Icon="@IconType.Outline.Plus" @onclick="StartAddingEntry">
             Add step
         </Button>
     </div>
     @if (HostEnvironment.IsDevelopment())
     {
         <div>
-            <Button Size="large" Block Type="@ButtonType.Link" Icon="@IconType.Outline.Thunderbolt" @onclick="SeedEntry">
+            <Button Size="large" Block Type="@ButtonType.Text" Icon="@IconType.Outline.Thunderbolt" @onclick="SeedEntry">
                 Seed
             </Button>
         </div>
