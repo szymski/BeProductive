@@ -33,7 +33,10 @@
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        _animation ??= await JS.InvokeAsync<IJSObjectReference>("LoadAnimation", Path, _container);
+        if (firstRender)
+        {
+            _animation ??= await JS.InvokeAsync<IJSObjectReference>("LoadAnimation", Path, _container);
+        }
     }
 
     public async void Play()
