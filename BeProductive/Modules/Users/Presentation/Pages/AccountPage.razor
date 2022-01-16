@@ -8,72 +8,25 @@
     Layout.Title = "Account";
 }
 
-@* TODO: Looks like shit on mobile devices *@
+<div>
+    <Card>
+        <Body>
+            <Descriptions Class="descriptions" Column="1">
+                <Avatar Size="large" Style="width: 72px; height: 72px; font-size: 72px; margin-bottom: 1rem" Icon="user"/>
 
-<Card>
-    <Body>
-        <Row Class="row" Gutter="(16, 2)">
-            <Col Span="4" Flex=@("auto")>
-                <Avatar Size="large" Style="width: 72px; height: 72px; font-size: 72px" Icon="user"/>
-            </Col>
-            <Col Span="20"/>
-            <Col Span="4">
-                User ID
-            </Col>
-            <Col Span="20">
-                @_authData?.UserId
-            </Col>
-            <Col Span="4">
-                Username
-            </Col>
-            <Col Span="20">
-                <EditableText Text="@_username" TextChanged="@OnUsernameChanged"/>
-            </Col>
-            <Col Span="4">
-                Password
-            </Col>
-            <Col Span="20">
-                <EditableText Text="******" InitialText="" InputType="password" Placeholder="Change password" MinLength="3" TextChanged="@OnPasswordChanged"/>
-            </Col>
-            <Col Span="4">
-                Date joined
-            </Col>
-            <Col Span="20">
-                @_user?.CreatedAt.ToString("g")
-            </Col>
-            <Col Span="4">
-                Last login
-            </Col>
-            <Col Span="20">
-                @_user?.LastSignedInAt.ToString("g")
-            </Col>
-        </Row>
-    </Body>
-</Card>
-
-<style>
-    .row {
-        font-size: 22px;
-    }
-    
-    .ant-row .ant-col {
-        margin: auto;
-    }
-    
-    .ant-row .ant-col:nth-child(2n+1) {
-      /*background: red;*/
-      text-align: right;
-    }
-    
-    .ant-row .ant-col:nth-child(2n) {
-      /*background: orange;*/
-      text-align: left;
-    }
-    
-    .ant-col {
-        /*border: 1px solid red;*/
-    }
-</style>
+                <DescriptionsItem Title="User ID">@_authData.UserId</DescriptionsItem>
+                <DescriptionsItem Title="Username">
+                    <EditableText Text="@_username" TextChanged="@OnUsernameChanged"/>
+                </DescriptionsItem>
+                <DescriptionsItem Title="Password">
+                    <EditableText Text="******" InitialText="" InputType="password" Placeholder="Change password" MinLength="3" TextChanged="@OnPasswordChanged"/>
+                </DescriptionsItem>
+                <DescriptionsItem Title="Date joined">@_user?.CreatedAt.ToString("g")</DescriptionsItem>
+                <DescriptionsItem Title="Last login">@_user?.LastSignedInAt.ToString("g")</DescriptionsItem>
+            </Descriptions>
+        </Body>
+    </Card>
+</div>
 
 @code {
 

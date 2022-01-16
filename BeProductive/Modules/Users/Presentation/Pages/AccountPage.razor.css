@@ -1,0 +1,16 @@
+﻿::deep .descriptions .ant-descriptions-item-container {
+    align-items: center;
+    height: 2rem;
+}
+
+::deep .descriptions .ant-descriptions-item {
+    padding-bottom: 0;
+}
+
+::deep .descriptions .ant-descriptions-item-label {
+    font-weight: bold;
+}
+
+::deep .descriptions .ant-descriptions-item-label, ::deep .descriptions .ant-descriptions-item-content {
+    font-size: 1.1rem;
+}
