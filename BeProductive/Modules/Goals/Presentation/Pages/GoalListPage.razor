@@ -123,6 +123,15 @@
             .ToList();
 
         PageHeader.OnBackButtonClicked += UnselectGoal;
+        GoalService.GoalsUpdated += OnGoalsUpdated;
+    }
+
+    private void OnGoalsUpdated()
+    {
+        InvokeAsync(async () => {
+            await OnInitializedAsync();
+            StateHasChanged();
+        });
     }
 
     protected override void OnParametersSet()
@@ -166,8 +175,6 @@
             Name = faker.Department(),
             Order = _goals.Count,
         });
-
-        await OnInitializedAsync();
     }
 
     private async Task ReorderEntries()
@@ -195,6 +202,7 @@
     public void Dispose()
     {
         PageHeader.OnBackButtonClicked -= UnselectGoal;
+        GoalService.GoalsUpdated -= OnGoalsUpdated;
     }
 
 }

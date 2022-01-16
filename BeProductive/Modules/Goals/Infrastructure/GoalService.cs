@@ -1,4 +1,5 @@
 ﻿using BeProductive.Modules.Common.Helpers;
+using BeProductive.Modules.Goals.Presentation.Components;
 using BeProductive.Modules.Users.Infrastructure;
 using Microsoft.EntityFrameworkCore;
 
@@ -20,6 +21,8 @@ public class GoalService {
         _contextFactory = contextFactory;
         _authService = authService;
     }
+    
+    public event Action GoalsUpdated;
 
     public async Task<List<Goal>> GetGoals()
     {
@@ -82,6 +85,8 @@ public class GoalService {
         await context.Goals.AddAsync(goal);
         await context.SaveChangesAsync();
         _logger.LogInformation("Added new goal {@Goal}", goal);
+        
+        GoalsUpdated?.Invoke();
 
         return goal;
     }
@@ -120,6 +125,8 @@ public class GoalService {
         _logger.LogInformation("Deleting goal {@Goal}", goal);
         context.Goals.Remove(goal);
         await context.SaveChangesAsync();
+        
+        GoalsUpdated?.Invoke();
     }
 
     public async Task<GoalDayState?> GetStateForDay(Goal goal, DateOnly date)

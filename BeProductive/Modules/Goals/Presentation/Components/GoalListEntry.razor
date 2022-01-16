@@ -1,39 +1,61 @@
 ﻿@using BeProductive.Modules.Goals.Domain
 @using BeProductive.Modules.Goals.Domain.Services
+@using BeProductive.Modules.Goals.Presentation.Pages
 @* @inject GoalDomainService GoalDomainService *@
 
 <div Class="@(Selected ? "selected" : "")" @onclick="OnClick">
-    <Card Class="card" Bordered="true" Size="small" Hoverable>
-        <Space Style="width: 100%">
-            <SpaceItem>
-                @if (string.IsNullOrEmpty(Goal.Icon))
-                {
-                    <Avatar Size="large" Style=@($"background: {@Goal.Color}")/>
-                }
-                else
-                {
-                    <Avatar Size="large" Style=@($"color: {@Goal.Color}; background: transparent; font-size: 36px") Icon="@Goal.Icon"/>
-                }
-            </SpaceItem>
-            <SpaceItem>
-                <Text Strong Style="font-size: 18px">
-                    @Goal.Name
-                </Text>
-                @* <Text Disabled>@Goal.Id</Text> *@
-                @* <Text Strong >@GoalContext.Goal.Id</Text> *@
-            </SpaceItem>
-            <SpaceItem Style="float: right; margin-left: auto;">
-                <ContextGoalStateSelector/>
-            </SpaceItem>
-        </Space>
-    </Card>
+    <Dropdown Trigger="new Trigger[] { Trigger.ContextMenu }" Style="width: 100%">
+        <Overlay>
+            <Menu>
+                <MenuItem OnClick="NavigateToEditGoalPage">Edit</MenuItem>
+                <MenuItem >
+                    <Popconfirm Title="This cannot be undone!"
+                                OnConfirm="DeleteGoal"
+                                OkText="Delete"
+                                OkButtonProps="@(new ButtonProps() { Danger = true })"
+                                CancelText="Cancel"
+                                CancelButtonProps="@(new ButtonProps() { Type = "text" })"
+                                Placement="Placement.Bottom">
+                        <Text Type="@TextElementType.Danger">Delete</Text>
+                    </Popconfirm>
+                </MenuItem>
+            </Menu>
+        </Overlay>
+        <ChildContent>
+            <Card Class="card" Bordered="true" Size="small" Hoverable>
+                <Space Style="width: 100%">
+                    <SpaceItem>
+                        @if (string.IsNullOrEmpty(Goal.Icon))
+                        {
+                            <Avatar Size="large" Style=@($"background: {@Goal.Color}")/>
+                        }
+                        else
+                        {
+                            <Avatar Size="large" Style=@($"color: {@Goal.Color}; background: transparent; font-size: 36px") Icon="@Goal.Icon"/>
+                        }
+                    </SpaceItem>
+                    <SpaceItem>
+                        <Text Strong Style="font-size: 18px">
+                            @Goal.Name
+                        </Text>
+                        @* <Text Disabled>@Goal.Id</Text> *@
+                        @* <Text Strong >@GoalContext.Goal.Id</Text> *@
+                    </SpaceItem>
+                    <SpaceItem Style="float: right; margin-left: auto;">
+                        <ContextGoalStateSelector/>
+                    </SpaceItem>
+                </Space>
+            </Card>
+        </ChildContent>
+    </Dropdown>
 </div>
+
 
 @code {
 
     [CascadingParameter]
     public Goal Goal { get; set; }
-    
+
     [CascadingParameter]
     public GoalContext GoalContext { get; set; }
 
@@ -51,5 +73,22 @@
     // {
     //     await GoalDetails?.UpdateStates();
     // }
+
+    private void NavigateToEditGoalPage()
+    {
+        NavigationManager.NavigateTo($"/goal/{Goal.Id}/edit");
+    }
+
+    private async Task DeleteGoal()
+    {
+        if (Goal.IsSystem)
+        {
+            NotificationService.Error("System goals cannot be deleted.");
+            return;
+        }
+        
+        await GoalService.DeleteGoal(Goal);
+        NotificationService.Success("The goal has been deleted");
+    }
 
 }
