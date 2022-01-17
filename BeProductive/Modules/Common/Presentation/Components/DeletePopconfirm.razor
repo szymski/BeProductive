@@ -1,0 +1,21 @@
+﻿<Popconfirm Title="This cannot be undone!"
+            OnConfirm="OnDelete"
+            OkText="Delete"
+            OkButtonProps="@(new ButtonProps() { Danger = true })"
+            CancelText="Cancel"
+            CancelButtonProps="@(new ButtonProps() { Type = "text" })"
+            Placement="Placement.Bottom">
+    @ChildContent
+</Popconfirm>
+
+@code {
+
+    [Parameter]
+    [EditorRequired]
+    public RenderFragment ChildContent { get; set; }
+    
+    [Parameter]
+    [EditorRequired]
+    public EventCallback OnDelete { get; set; }
+
+}

@@ -47,15 +47,9 @@
                             }
                             else
                             {
-                                <Popconfirm Title="This cannot be undone!"
-                                            OnConfirm="OnDeleted"
-                                            OkText="Delete"
-                                            OkButtonProps="@(new ButtonProps() { Danger = true })"
-                                            CancelText="Cancel"
-                                            CancelButtonProps="@(new ButtonProps() { Type = "text" })"
-                                            Placement="Placement.Bottom">
+                                <DeletePopconfirm OnDelete="OnDeleted">
                                     <Button Danger Type="@ButtonType.Primary">Delete</Button>
-                                </Popconfirm>
+                                </DeletePopconfirm>
                             }
                         </SpaceItem>
                         <SpaceItem Style="margin-left: auto">

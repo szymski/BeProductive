@@ -9,15 +9,9 @@
             <Menu>
                 <MenuItem OnClick="NavigateToEditGoalPage">Edit</MenuItem>
                 <MenuItem >
-                    <Popconfirm Title="This cannot be undone!"
-                                OnConfirm="DeleteGoal"
-                                OkText="Delete"
-                                OkButtonProps="@(new ButtonProps() { Danger = true })"
-                                CancelText="Cancel"
-                                CancelButtonProps="@(new ButtonProps() { Type = "text" })"
-                                Placement="Placement.Bottom">
+                    <DeletePopconfirm OnDelete="DeleteGoal">
                         <Text Type="@TextElementType.Danger">Delete</Text>
-                    </Popconfirm>
+                    </DeletePopconfirm>
                 </MenuItem>
             </Menu>
         </Overlay>
@@ -83,7 +77,7 @@
     {
         if (Goal.IsSystem)
         {
-            NotificationService.Error("System goals cannot be deleted.");
+            NotificationService.Error("System goals cannot be deleted");
             return;
         }
         
