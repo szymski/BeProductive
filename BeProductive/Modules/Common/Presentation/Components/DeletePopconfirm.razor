@@ -4,7 +4,7 @@
             OkButtonProps="@(new ButtonProps() { Danger = true })"
             CancelText="Cancel"
             CancelButtonProps="@(new ButtonProps() { Type = "text" })"
-            Placement="Placement.Bottom">
+            Placement="@Placement">
     @ChildContent
 </Popconfirm>
 
@@ -17,5 +17,8 @@
     [Parameter]
     [EditorRequired]
     public EventCallback OnDelete { get; set; }
+
+    [Parameter]
+    public Placement Placement { get; set; } = Placement.Bottom;
 
 }

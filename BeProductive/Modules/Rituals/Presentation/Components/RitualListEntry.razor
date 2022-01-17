@@ -22,20 +22,14 @@
         {
             <SpaceItem Style="margin-left: auto">
                 <Tooltip Title=@("Remove") OverlayStyle="pointer-events: none;">
-                    <Popconfirm Title="Delete ritual item?"
-                                OnConfirm="OnRemoveButtonClick"
-                                OkText="Delete"
-                                OkButtonProps="@(new ButtonProps() { Danger = true })"
-                                CancelText="Cancel"
-                                CancelButtonProps="@(new ButtonProps() { Type = "text"})"
-                                Placement="Placement.Left">
+                    <DeletePopconfirm OnDelete="OnRemoveButtonClick" Placement="Placement.Left">
                         <Button Danger
                                 Loading="@_isLoadingRemove"
                                 Shape="@ButtonShape.Circle"
                                 Icon="@IconType.Outline.Close"
                                 Size="@AntSizeLDSType.Default"
                                 Type="@ButtonType.Default"/>
-                    </Popconfirm>
+                    </DeletePopconfirm>
                 </Tooltip>
             </SpaceItem>
         }

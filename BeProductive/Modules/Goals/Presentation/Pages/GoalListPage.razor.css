@@ -1,6 +1,11 @@
 ﻿::deep .sider {
     margin-left: 1rem;
     background: transparent;
+    transition: margin-right 0.3s ease;
+}
+
+::deep aside.ant-layout-sider-collapsed {
+    margin-right: -400px;
 }
 
 ::deep .list-content {
@@ -27,5 +32,10 @@
     
     ::deep .goal-details {
         min-height: unset;
+    }
+
+    ::deep aside.ant-layout-sider-collapsed {
+        margin-right: 0px !important;
+        /*background: red;*/
     }
 }
