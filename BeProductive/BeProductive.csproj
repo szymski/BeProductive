@@ -39,4 +39,8 @@
         <Content Include="TODO.md" CopyToPublishDirectory="PreserveNewest" />
         <Content Remove="Modules\Goals\Presentation\Pages\MobileGoalDetailsPage.razor" />
     </ItemGroup>
+    
+    <ItemGroup>
+      <Folder Include="Modules\Rewards\Presentation\Components" />
+    </ItemGroup>
 </Project>

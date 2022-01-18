@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using BeProductive.Modules.Common.Domain;
+using BeProductive.Modules.Rewards.Domain;
 using BeProductive.Modules.Rituals.Domain;
 using Microsoft.AspNetCore.Identity;
 
@@ -14,6 +15,7 @@ public class User : IdentityUser<int>
     public string FullName { get; set; }
     public List<Goal> Goals { get; set; }
     public List<Ritual> Rituals { get; set; }
+    public List<PointClaimEvent> PointEvents { get; set; }
 
     public override string ToString()
         => $"User {{ {nameof(Id)} = {Id}, {nameof(UserName)} = {UserName} }}";

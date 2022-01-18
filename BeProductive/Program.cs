@@ -4,6 +4,7 @@ using BeProductive.Modules.Common.Domain;
 using BeProductive.Modules.Common.Infrastructure;
 using BeProductive.Modules.Common.Persistence;
 using BeProductive.Modules.Goals.Infrastructure;
+using BeProductive.Modules.Rewards.Infrastructure;
 using BeProductive.Modules.Rituals.Domain;
 using BeProductive.Modules.Rituals.Infrastructure;
 using BeProductive.Modules.Settings.Infrastructure;
@@ -61,6 +62,7 @@ builder.Services.AddUsersModule();
 builder.Services.AddGoalsModule();
 builder.Services.AddRitualsModule();
 builder.Services.AddTimerModule();
+builder.Services.AddRewardsModule();
 
 var app = builder.Build();
 

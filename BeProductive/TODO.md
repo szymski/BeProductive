@@ -8,8 +8,6 @@
 - Ability to add note to GoalDayState
 - ✔ ~~System goals which cannot be removed/edited by user (rituals for example)~~
 - Gamification
-- Rewards for long goal success streaks
-- Reward - ticket for skipping goal
 
 ### Goal extensions:
 - ✔ ~~Goal description/notes~~
@@ -29,6 +27,14 @@
 - ✔ ~~Maybe add sounds for goal selector~~
 - UI smiles or fire icon for long streaks and sad faces for fails
 - Longest streak
+- Goal rewards
+
+### Goal rewards:
+- Counting points for goal successes (disallow getting points by changing goal states randomly)
+- Reward entity
+- Reward page
+- Reward add/edit form
+- Claiming rewards
 
 ### Users:
 - ✔ ~~User entity~~

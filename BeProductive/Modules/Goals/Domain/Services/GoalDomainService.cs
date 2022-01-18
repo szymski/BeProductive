@@ -1,4 +1,5 @@
 ﻿using BeProductive.Modules.Common.Helpers;
+using BeProductive.Modules.Rewards.Domain.Services;
 using BeProductive.Modules.Users.Infrastructure;
 using BeProductive.Modules.Users.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
@@ -10,17 +11,20 @@ public class GoalDomainService
     private readonly IDbContextFactory<AppContext> _contextFactory;
     private readonly AuthService _authService;
     private readonly ILogger<GoalDomainService> _logger;
+    private readonly PointsDomainService _pointsService;
 
     protected int UserId => _authService.GetAuthData()!.UserId;
 
     public GoalDomainService(
         ILogger<GoalDomainService> logger,
         IDbContextFactory<AppContext> contextFactory,
-        AuthService authService)
+        AuthService authService,
+        PointsDomainService pointsService)
     {
         _logger = logger;
         _contextFactory = contextFactory;
         _authService = authService;
+        _pointsService = pointsService;
     }
 
     public async Task<bool> SetStateForDay(Goal goal, DateOnly day, GoalState state)
@@ -43,6 +47,7 @@ public class GoalDomainService
             if (entry is null) return false;
 
             context.GoalDayStates.Remove(entry);
+            entry = null;
         }
         else
         {
@@ -78,6 +83,8 @@ public class GoalDomainService
         }
 
         await context.SaveChangesAsync();
+
+        await _pointsService.AddGoalDayStatePoints(entry);
 
         return true;
     }

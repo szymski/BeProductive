@@ -2,6 +2,7 @@
 using BeProductive.Modules.GoalExtensions.Description.Domain;
 using BeProductive.Modules.GoalExtensions.EmergencyGoal.Domain;
 using BeProductive.Modules.Goals.Domain;
+using BeProductive.Modules.Rewards.Domain;
 using BeProductive.Modules.Rituals.Domain;
 using BeProductive.Modules.Users.Domain;
 using Microsoft.AspNetCore.Identity;
@@ -19,7 +20,10 @@ public class AppContext : IdentityDbContext<User, IdentityRole<int>, int>
     public DbSet<GoalDescription> GoalDescriptions { get; set; }
 
     public DbSet<Ritual> Rituals { get; set; }
-
+    
+    public DbSet<PointClaimEvent> PointClaimEvents { get; set; }
+    public DbSet<Reward> Rewards { get; set; }
+    
     public AppContext(DbContextOptions options) : base(options)
     {
     }
@@ -38,6 +42,7 @@ public class AppContext : IdentityDbContext<User, IdentityRole<int>, int>
         if (Database.IsNpgsql())
         {
             modelBuilder.HasPostgresEnum<GoalState>();
+            modelBuilder.HasPostgresEnum<PointClaimSourceType>();
         }
         
         modelBuilder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
@@ -46,6 +51,7 @@ public class AppContext : IdentityDbContext<User, IdentityRole<int>, int>
     static AppContext()
     {
         NpgsqlConnection.GlobalTypeMapper.MapEnum<GoalState>();
+        NpgsqlConnection.GlobalTypeMapper.MapEnum<PointClaimSourceType>();
     }
     
     public static string Provider { get; set; } = "Uninitialized";

@@ -6,4 +6,6 @@ public class GoalDayState : GoalExtensionBaseEntity
 {
     public DateOnly Day { get; set; }
     public GoalState State { get; set; }
+    
+    // TODO: Add CreatedAt and UpdatedAt
 }

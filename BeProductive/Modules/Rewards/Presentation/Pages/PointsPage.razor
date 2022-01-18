@@ -1,0 +1,33 @@
+﻿@page "/points"
+@using BeProductive.Modules.Rewards.Domain.Services
+@inject PointsDomainService PointsService
+@inject AuthService AuthService
+@{
+    Layout.Title = "Points";
+}
+
+<Paragraph Strong Style="font-size: 24px">Your points: @_points</Paragraph>
+<Button Type="primary" Size="large" OnClick="SeedPoints">Seed points</Button>
+
+@code {
+
+    private int _userId = 0;
+    private int _points = 0;
+
+    protected override async Task OnInitializedAsync()
+    {
+        if (_userId == 0)
+        {
+            var authData = await AuthService.GetAuthDataAsync();
+            _userId = authData!.UserId;
+        }
+        _points = await PointsService.GetPointBalance(_userId);
+    }
+
+    private async Task SeedPoints()
+    {
+        await PointsService.AddSeedPoints(_userId, 1);
+        await OnInitializedAsync();
+    }
+
+}
