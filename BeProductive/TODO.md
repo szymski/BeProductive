@@ -44,6 +44,6 @@
 - ✔ ~~Simple timer with adjustable minutes~~
 - ✔ ~~Sound effects~~
 - ✔ ~~Finishing goal when timer finishes~~
-- Browser notifications
+- ✔ ~~Browser notifications~~
 - Presets
 - Breaks
