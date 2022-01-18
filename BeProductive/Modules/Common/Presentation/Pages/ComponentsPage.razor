@@ -3,6 +3,9 @@
 @using BeProductive.Modules.Goals.Presentation.Models
 @using DateHelper=BeProductive.Modules.Common.Helpers.DateHelper
 @inject IJSRuntime JS
+@using Append.Blazor.Notifications
+@using Serilog
+@inject HtmlNotificationService NotificationService
 
 @{
     Layout.Title = "Components preview";
@@ -52,6 +55,11 @@
     <Button Type="@ButtonType.Primary" style="width: 64px; height: 64px; margin: auto; z-index: 2" @onclick="@(() => context.Play())">Play!</Button>
 </LottieWrapper>
 
+<br>
+<br>
+
+<Button Type="primary" OnClick="ShowNotification">Notification</Button>
+
 <style> 
     .timer-inside {
         position: relative;
@@ -85,6 +93,11 @@
 
 @code {
 
+    protected override async Task OnInitializedAsync()
+    {
+        
+    }
+
     private readonly List<DayState> _dayStates = new()
     {
         new(DateTime.Today.AddDays(-2), GoalState.Success),
@@ -100,6 +113,11 @@
         {
             _dayStates.Add(new(date, state));
         }
+    }
+
+    private async Task ShowNotification()
+    {
+        await NotificationService.Show("Hello", "fucking world");
     }
 
 }

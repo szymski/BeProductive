@@ -9,6 +9,7 @@
 @inject AudioService AudioService
 @inject GoalDomainService GoalDomainService
 @inject ILocalStorageService LocalStorage
+@inject HtmlNotificationService NotificationService
 @implements IDisposable
 @{
     Layout.Title = "Pomodoro timer";
@@ -155,6 +156,8 @@
             {
     // ignored
             }
+
+            await NotificationService.RequestPermissions();
         }
     }
 
@@ -224,6 +227,12 @@
         {
             _animation!.Play();
             InvokeAsync(AddSuccessStateForGoal);
+
+            _ = NotificationService.Show("Time is up!", $"Your goal '{Goal.Name}' has been marked as success today!");
+        }
+        else
+        {
+            _ = NotificationService.Show("Time is up!", $"Let's take a break now.");
         }
     }
 

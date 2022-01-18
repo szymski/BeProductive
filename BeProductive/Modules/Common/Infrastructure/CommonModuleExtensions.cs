@@ -1,4 +1,5 @@
-﻿using BeProductive.Modules.Common.Presentation;
+﻿using Append.Blazor.Notifications;
+using BeProductive.Modules.Common.Presentation;
 using Microsoft.EntityFrameworkCore;
 using Serilog;
 
@@ -50,6 +51,9 @@ public static class CommonModuleExtensions
 
         services.AddScoped<LayoutContext>();
         services.AddScoped<AudioService>();
+
+        services.AddScoped<HtmlNotificationService>();
+        services.AddNotifications();
 
         return services;
     }
