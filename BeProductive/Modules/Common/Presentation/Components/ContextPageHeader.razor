@@ -1,17 +1,28 @@
-﻿@implements IDisposable
+﻿@using Serilog
+@using BeProductive.Modules.Utils.FluentScheduler
+@using System.Text.RegularExpressions
+@implements IDisposable
 
 @if (!string.IsNullOrEmpty(_title))
 {
     <PageHeader Class=@($"page-header {(string.IsNullOrEmpty(Layout.Title) ? "hidden" : "")}") Title="@_title" Subtitle="@_subtitle">
         <TitleTemplate>
-            <Button
-                Class="menu-button"
-                Type="@ButtonType.Text"
-                Size="@ButtonSize.Large"
-                Shape="@ButtonShape.Circle"
-                Icon="@(_showBackButton ? IconType.Outline.ArrowLeft : IconType.Outline.MenuUnfold)"
-                OnClick="OnButtonClick"/>
-            @_title
+            <div style="display: flex; width: 100%">
+                <Button
+                    Class="menu-button"
+                    Type="@ButtonType.Text"
+                    Size="@ButtonSize.Large"
+                    Shape="@ButtonShape.Circle"
+                    Icon="@(_showBackButton ? IconType.Outline.ArrowLeft : IconType.Outline.MenuUnfold)"
+                    OnClick="OnButtonClick"/>
+                @_title
+                @if (_extraContent is not null)
+                {
+                    <div style="flex: 1">
+                        @_extraContent
+                    </div>
+                }
+            </div>
         </TitleTemplate>
     </PageHeader>
     <PageTitle>@Layout.Title - beProductive</PageTitle>
@@ -24,6 +35,14 @@ else
 
 @* TODO: Separate file *@
 <style>
+    .ant-page-header-heading-left, .ant-page-header-heading-title {
+        width: 100%;
+    }
+    
+    .ant-page-header-heading-title, .ant-page-header-heading-sub-title {
+        margin: 0;
+    }
+
     .page-header {
         margin-top: 0;
         transition: margin-top 0.3s ease-in-out;
@@ -59,6 +78,8 @@ else
     private string _title = "";
     private string _subtitle = "";
     private bool _showBackButton = false;
+    private RenderFragment? _extraContent = null;
+    private Job? _updateJob = null;
 
     [CascadingParameter]
     public AuthenticationState AuthenticationState { get; set; }
@@ -74,19 +95,43 @@ else
         NavigationManager.LocationChanged += OnNavigation;
     }
 
+    private string _lastLocation = "";
+
+    // TODO: Might need optimizing
     private void OnNavigation(object? sender, LocationChangedEventArgs e)
     {
+        var trimmedLocation = Regex.Match(e.Location, @"^(.*)[?]?").Groups[1].Value;
+        // Log.Warning("not trimmed: {a}", e.Location);
+        // Log.Warning("trimmed: {a}", trimmedLocation);
+        if (trimmedLocation != _lastLocation)
+        {
+            _lastLocation = trimmedLocation;
+            Layout.ExtraContent = null;
+            _extraContent = null;
+        }
     }
 
     private void OnUpdate()
     {
+        // Log.Warning("OnUpdate");
         if (!string.IsNullOrEmpty(Layout.Title))
         {
             _title = Layout.Title ?? "";
             _subtitle = Layout.Subtitle ?? "";
             _showBackButton = Layout.ShowBackButton;
+            _extraContent = Layout.ExtraContent;
         }
-        InvokeAsync(StateHasChanged);
+
+        if (_updateJob is not null)
+        {
+            _updateJob.Stop();
+            _updateJob = null;
+        }
+
+        _updateJob = JobHelper.AddJob(() => {
+            // Log.Warning("State has changed!");
+            InvokeAsync(StateHasChanged);
+        }, (s) => s.ToRunOnceAt(DateTime.Now.AddSeconds(0.05)));
     }
 
     private Task OnButtonClick()

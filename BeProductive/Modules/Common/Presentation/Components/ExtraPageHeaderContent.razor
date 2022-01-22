@@ -1,0 +1,17 @@
+﻿@code {
+
+    [Parameter]
+    [EditorRequired]
+    public RenderFragment ChildContent { get; set; }
+
+    protected override void OnAfterRender(bool firstRender)
+    {
+        Layout.ExtraContent = ChildContent;
+    }
+
+    // protected override void OnAfterRender()
+    // {
+    //     Layout.ExtraContent = ChildContent;
+    // }
+
+}
