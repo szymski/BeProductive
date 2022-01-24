@@ -14,3 +14,47 @@
 ::deep .descriptions .ant-descriptions-item-label, ::deep .descriptions .ant-descriptions-item-content {
     font-size: 1.1rem;
 }
+
+::deep .upload {
+    display: block;
+    margin-bottom: 1rem;
+    border-radius: 50%;
+}
+
+::deep .avatar-upload {
+    display: flex;
+    position: relative;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+    cursor: pointer;
+    /*background: yellowgreen;*/
+}
+
+::deep .avatar-upload::after {
+    position: absolute;
+    inset: 0;
+    content: '';
+    background: rgba(0, 0, 0, 0.5);
+    border: 2px solid rgba(155, 155, 155, 0.35);
+    border-radius: 50%;
+    opacity: 0;
+    transition: 0.2s opacity;
+}
+
+::deep .avatar-upload:hover::after {
+    opacity: 1;
+}
+
+::deep .avatar-upload .icon2 {
+    position: absolute;
+    align-self: center;
+    z-index: 10;
+    opacity: 0;
+    transition: 0.2s opacity;
+}
+
+::deep .avatar-upload:hover .icon2 {
+    opacity: 1;
+}

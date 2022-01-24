@@ -12,11 +12,22 @@
     <Card>
         <Body>
             <Descriptions Class="descriptions" Column="1">
-                <Avatar Size="large" Style="width: 72px; height: 72px; font-size: 72px; margin-bottom: 1rem" Icon="user"/>
+                <Upload
+                    Action="/api/Avatar"
+                    Class="upload"
+                    Name="file"
+                    ShowUploadList="false"
+                    OnChange="OnAvatarUpload"
+                    OnCompleted="OnAvatarUploadComplete">
+                    <div class="avatar-upload">
+                        <Avatar Size="large" Style="width: 128px; height: 128px; font-size: 128px;" Icon="user" Src="/api/Avatar"/>
+                        <Icon Class="icon2" Type="@IconType.Outline.Upload" Width="32" Height="32"/>
+                    </div>
+                </Upload>
 
                 <DescriptionsItem Title="User ID">@_authData.UserId</DescriptionsItem>
                 <DescriptionsItem Title="Username">
-                    <EditableText Text="@_username" TextChanged="@OnUsernameChanged"/>
+                    <EditableText Text="@_username" TextChanged="OnUsernameChanged"/>
                 </DescriptionsItem>
                 <DescriptionsItem Title="Password">
                     <EditableText Text="******" InitialText="" InputType="password" Placeholder="Change password" MinLength="3" TextChanged="@OnPasswordChanged"/>
@@ -69,6 +80,22 @@
             Log.Error(e, "Failed to change password");
             NotificationService.Error(e.Message);
         }
+    }
+
+    private async Task OnAvatarUpload(UploadInfo upload)
+    {
+        if (!upload.File.IsPicture())
+        {
+            _ = NotificationService.Error("Only images are allowed!");
+            return;
+        }
+        
+        _ = NotificationService.Info("Uploading avatar...");
+    }
+
+    private async Task OnAvatarUploadComplete(UploadInfo upload)
+    {
+        
     }
 
 }

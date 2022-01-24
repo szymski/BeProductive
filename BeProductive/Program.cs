@@ -44,6 +44,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.WebHost.UseSerilog();
 
 // Add services to the container.
+builder.Services.AddControllers();
 builder.Services.AddRazorPages();
 builder.Services.AddServerSideBlazor();
 builder.Services.AddAntDesign();
@@ -88,6 +89,12 @@ app.UseStaticFiles();
 
 app.UseRouting();
 
+// app.UseEndpoints(endpoints => {
+//     endpoints.MapBlazorHub();
+//     endpoints.MapControllers();
+// });
+
+app.MapControllers();
 app.MapBlazorHub();
 
 app.UseAuthentication();

@@ -42,6 +42,10 @@ public static class UserModuleExtensions
 
         services.AddScoped<AuthService>();
         services.AddScoped<UserService>();
+        services.AddScoped<UserAvatarService>()
+            .Configure<UserAvatarService.Options>(o => {
+                o.Directory = "data/avatars/";
+            });
 
         return services;
     }
