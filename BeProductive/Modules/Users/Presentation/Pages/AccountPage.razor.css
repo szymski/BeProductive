@@ -1,4 +1,11 @@
-﻿::deep .descriptions .ant-descriptions-item-container {
+﻿.avatar-upload ::deep {
+    --upload-icon-color: white;
+}
+[data-theme="dark"] .avatar-upload ::deep {
+     --upload-icon-color: white;
+}
+
+::deep .descriptions .ant-descriptions-item-container {
     align-items: center;
     height: 2rem;
 }
@@ -29,7 +36,6 @@
     width: 100%;
     height: 100%;
     cursor: pointer;
-    /*background: yellowgreen;*/
 }
 
 ::deep .avatar-upload::after {
@@ -47,7 +53,8 @@
     opacity: 1;
 }
 
-::deep .avatar-upload .icon2 {
+::deep .avatar-upload .av-icon {
+    color: var(--upload-icon-color);
     position: absolute;
     align-self: center;
     z-index: 10;
@@ -55,6 +62,10 @@
     transition: 0.2s opacity;
 }
 
-::deep .avatar-upload:hover .icon2 {
+[data-theme="dark"] ::deep .avatar-upload .av-icon {
+    /*color: red;*/
+}
+
+::deep .avatar-upload:hover .av-icon {
     opacity: 1;
 }
