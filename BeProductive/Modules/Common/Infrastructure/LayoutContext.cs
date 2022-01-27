@@ -48,4 +48,11 @@ public class LayoutContext
         OnUpdate?.Invoke();
         return true;
     }
+
+    public event Action OnExtraContentRefresh;
+    
+    public void RefreshExtraContent()
+    {
+        OnExtraContentRefresh?.Invoke();
+    }
 }

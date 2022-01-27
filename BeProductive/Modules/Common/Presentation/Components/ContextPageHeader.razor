@@ -92,6 +92,7 @@ else
     protected override void OnInitialized()
     {
         Layout.OnUpdate += OnUpdate;
+        Layout.OnExtraContentRefresh += OnUpdateExtra;
         NavigationManager.LocationChanged += OnNavigation;
     }
 
@@ -100,20 +101,19 @@ else
     // TODO: Might need optimizing
     private void OnNavigation(object? sender, LocationChangedEventArgs e)
     {
-        var trimmedLocation = Regex.Match(e.Location, @"^(.*)[?]?").Groups[1].Value;
-        // Log.Warning("not trimmed: {a}", e.Location);
-        // Log.Warning("trimmed: {a}", trimmedLocation);
-        if (trimmedLocation != _lastLocation)
-        {
-            _lastLocation = trimmedLocation;
-            Layout.ExtraContent = null;
-            _extraContent = null;
-        }
+        // var trimmedLocation = Regex.Match(e.Location, @"^(.*)[?]?").Groups[1].Value;
+        // // Log.Warning("not trimmed: {a}", e.Location);
+        // // Log.Warning("trimmed: {a}", trimmedLocation);
+        // if (trimmedLocation != _lastLocation)
+        // {
+        //     _lastLocation = trimmedLocation;
+        //     Layout.ExtraContent = null;
+        //     _extraContent = null;
+        // }
     }
 
     private void OnUpdate()
     {
-        // Log.Warning("OnUpdate");
         if (!string.IsNullOrEmpty(Layout.Title))
         {
             _title = Layout.Title ?? "";
@@ -129,9 +129,13 @@ else
         }
 
         _updateJob = JobHelper.AddJob(() => {
-            // Log.Warning("State has changed!");
             InvokeAsync(StateHasChanged);
         }, (s) => s.ToRunOnceAt(DateTime.Now.AddSeconds(0.05)));
+    }
+
+    private void OnUpdateExtra()
+    {
+        InvokeAsync(StateHasChanged);
     }
 
     private Task OnButtonClick()
@@ -150,6 +154,7 @@ else
     public void Dispose()
     {
         Layout.OnUpdate -= OnUpdate;
+        Layout.OnExtraContentRefresh -= OnUpdateExtra;
         NavigationManager.LocationChanged -= OnNavigation;
     }
 

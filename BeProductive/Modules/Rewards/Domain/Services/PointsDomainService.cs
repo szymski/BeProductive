@@ -16,6 +16,8 @@ public class PointsDomainService {
         _logger = logger;
     }
 
+    public event Action<int>? OnPointsChanged;
+
     public async Task<int> GetPointBalance(int userId)
     {
         await using var context = await _contextFactory.CreateDbContextAsync();
@@ -93,6 +95,8 @@ public class PointsDomainService {
 
         context.PointClaimEvents.Add(newEvent);
         await context.SaveChangesAsync();
+        
+        OnPointsChanged?.Invoke(newEvent.TotalBalance);
 
         return newEvent;
     }
@@ -113,6 +117,8 @@ public class PointsDomainService {
         await context.SaveChangesAsync();
 
         _logger.LogInformation("Seeded {Points} points for user id {UserId}", points, userId);
+        
+        OnPointsChanged?.Invoke(newEvent.TotalBalance);
 
         return newEvent;
     }

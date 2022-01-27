@@ -1,17 +1,25 @@
-﻿@code {
+﻿@using Serilog
+@implements IDisposable
+
+@code {
 
     [Parameter]
     [EditorRequired]
     public RenderFragment ChildContent { get; set; }
 
-    protected override void OnAfterRender(bool firstRender)
+    protected override async Task OnInitializedAsync()
     {
         Layout.ExtraContent = ChildContent;
     }
 
-    // protected override void OnAfterRender()
-    // {
-    //     Layout.ExtraContent = ChildContent;
-    // }
+    protected override void OnAfterRender(bool firstRender)
+    {
+        Layout.RefreshExtraContent();
+    }
+
+    public void Dispose()
+    {
+        Layout.ExtraContent = null;
+    }
 
 }

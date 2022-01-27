@@ -1,9 +1,10 @@
 @page "/"
 @page "/goal"
 @using Microsoft.AspNetCore.WebUtilities
-@using BeProductive.Modules.Goals.Domain
 @using BlazorPro.BlazorSize
 @using Microsoft.AspNetCore.Components
+@using BeProductive.Modules.Goals.Domain
+@using BeProductive.Modules.Rewards.Presentation.Components
 @inject NavigationManager NavigationManager
 @inject GoalService GoalService
 @implements IDisposable
@@ -13,12 +14,7 @@
 
 <PageTitle>Goal list</PageTitle>
 
-@* TODO *@
-<ExtraPageHeaderContent>
-    <div style="text-align: center">
-        Reward points: 0
-    </div>
-</ExtraPageHeaderContent>
+<RewardPointsPageHeader/>
 
 <div style="display: flex; min-height: 100%">
     <Layout Style="min-height: 100%">

@@ -1,0 +1,39 @@
+﻿@using BeProductive.Modules.Rewards.Domain.Services
+@using Serilog
+@inject AuthService AuthService
+@inject PointsDomainService PointsService
+@implements IDisposable
+
+<ExtraPageHeaderContent>
+    @if (_points.HasValue && _points != 0)
+    {
+        <div style="text-align: center">
+            Reward points: @_points
+        </div>
+    }
+</ExtraPageHeaderContent>
+
+@code {
+
+    int? _points = null;
+    
+    protected override async Task OnInitializedAsync()
+    {
+        PointsService.OnPointsChanged += OnPointsChanged;
+        
+        var authData = await AuthService.GetAuthDataAsync();
+        _points = await PointsService.GetPointBalance(authData!.UserId);
+    }
+
+    private void OnPointsChanged(int newPoints)
+    {
+        _points = newPoints;
+        InvokeAsync(StateHasChanged);
+    }
+    
+    public void Dispose()
+    {
+        PointsService.OnPointsChanged -= OnPointsChanged;
+    }
+
+}
